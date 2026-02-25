@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ERD — De Basis | SOD Module 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="pastel">
+
+<!-- ======================== THEME BAR ======================== -->
+<div class="theme-bar">
+  <button class="theme-btn active" onclick="setTheme('pastel', this)">🌸 Pastel</button>
+  <button class="theme-btn" onclick="setTheme('dark', this)">🌑 Dark</button>
+  <button class="theme-btn" onclick="setTheme('light', this)">☀️ Light</button>
+  <button class="theme-btn" onclick="setTheme('neon', this)">⚡ Neon</button>
+</div>
+
+<!-- ======================== MODULE NAVIGATIE ======================== -->
+<nav class="module-nav">
+  <div class="module-nav-title">📚 SOD — Alle modules</div>
+  <div class="module-nav-grid">
+    <a class="module-pill active" href="index.html">
+      <span class="pill-num">1</span> ERD Basis
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">2</span> Module 2 <span class="pill-lock">🔒</span>
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">3</span> Module 3 <span class="pill-lock">🔒</span>
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">4</span> Module 4 <span class="pill-lock">🔒</span>
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">5</span> Module 5 <span class="pill-lock">🔒</span>
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">6</span> Module 6 <span class="pill-lock">🔒</span>
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">7</span> Module 7 <span class="pill-lock">🔒</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ======================== SCORE BAR ======================== -->
+<div class="score-bar">
+  <span class="score-label">Voortgang Module 1</span>
+  <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
+  <span class="score-num" id="scoreNum">0 / 20 ⭐</span>
+</div>
+
+<!-- ======================== HERO ======================== -->
+<div class="container">
+  <div class="hero">
+    <div class="hero-label">SOD · Module 1 · MBO</div>
+    <h1>Entity Relationship<br>Diagram</h1>
+    <p>ERD's zijn eigenlijk gewoon <strong>plattegronden voor data</strong> —
+       begrijp de structuur en je bent klaar om echte databases te bouwen. 🗺️</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Onderdelen</div></div>
+      <div class="stat"><div class="stat-num">~30</div><div class="stat-label">Minuten</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Oefeningen</div></div>
+    </div>
+  </div>
+
+  <!-- ======================== PROGRESS STRIP ======================== -->
+  <div class="progress-strip" id="progressStrip">
+    <div class="prog-step active" onclick="scrollToCard(0)"><span class="num">1</span>Wat is een ERD?</div>
+    <div class="prog-step" onclick="scrollToCard(1)"><span class="num">2</span>Entiteiten</div>
+    <div class="prog-step" onclick="scrollToCard(2)"><span class="num">3</span>Attributen &amp; Sleutels</div>
+    <div class="prog-step" onclick="scrollToCard(3)"><span class="num">4</span>Relaties</div>
+    <div class="prog-step" onclick="scrollToCard(4)"><span class="num">5</span>Naamgeving</div>
+    <div class="prog-step" onclick="scrollToCard(5)"><span class="num">6</span>Alles samen</div>
+  </div>
+
+  <!-- ======================== SECTIONS ======================== -->
+  <div class="sections" id="allCards">
+
+    <!-- ==================== CARD 1 — WAT IS EEN ERD ==================== -->
+    <div class="sec-card open" id="card0">
+      <div class="sec-header" onclick="toggleCard(0)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🗺️</div>
+          <div>
+            <div class="sec-title">Wat is een ERD?</div>
+            <div class="sec-sub">De plattegrond van je database</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <div class="box-title">🎯 Vergelijk het zo</div>
+            Stel je bouwt een huis. Voordat je de eerste steen legt, maak je eerst een <strong>bouwtekening</strong>.
+            Een ERD is precies dat — maar dan voor een database. Het laat zien welke <em>data</em> je opslaat
+            en hoe die aan elkaar hangt.
+          </div>
+
+          <h2 class="topic-title">Wat toont een ERD?</h2>
+          <p>Klik op de kaartjes om de begrippen te ontdekken:</p>
+
+          <!-- ===== FLIP CARDS — herschreven structuur ===== -->
+          <div class="flip-grid">
+
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">📦</span>
+                  <span class="flip-front-label">Entiteiten</span>
+                  <span class="flip-front-hint">klik om te onthullen</span>
+                </div>
+                <div class="flip-back">
+                  Objecten die je opslaat in de database. Denk aan een tabel:
+                  <strong>Student</strong>, <strong>Bestelling</strong>, <strong>Product</strong>.
+                </div>
+              </div>
+            </div>
+
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">🏷️</span>
+                  <span class="flip-front-label">Attributen</span>
+                  <span class="flip-front-hint">klik om te onthullen</span>
+                </div>
+                <div class="flip-back">
+                  Eigenschappen van een entiteit — de kolommen in je tabel:
+                  <strong>naam</strong>, <strong>geboortedatum</strong>, <strong>emailadres</strong>.
+                </div>
+              </div>
+            </div>
+
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">🔗</span>
+                  <span class="flip-front-label">Relaties</span>
+                  <span class="flip-front-hint">klik om te onthullen</span>
+                </div>
+                <div class="flip-back">
+                  Hoe entiteiten samenhangen. Een student <em>volgt</em> een klas.
+                  Een klant <em>plaatst</em> een bestelling.
+                </div>
+              </div>
+            </div>
+
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">🔑</span>
+                  <span class="flip-front-label">Sleutels</span>
+                  <span class="flip-front-hint">klik om te onthullen</span>
+                </div>
+                <div class="flip-back">
+                  Unieke ID's. Een <strong>primaire sleutel</strong> maakt elk record uniek.
+                  Een <strong>vreemde sleutel</strong> verbindt twee tabellen.
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- ===== EINDE FLIP CARDS ===== -->
+
+          <h2 class="topic-title">Waarom gebruik je een ERD?</h2>
+          <p>Zonder ERD ga je gewoon maar wat in de database kloppen — en later loop je vast in een chaos van dubbele data en kapotte verbindingen. Met een ERD:</p>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:12px; margin:16px 0;">
+            <div class="hl-box tip" style="margin:0">
+              <div class="box-title">🧹 Geen duplicaten</div>
+              Data maar <em>één keer</em> opslaan. Geen 100 kopietjes van hetzelfde adres.
+            </div>
+            <div class="hl-box info" style="margin:0">
+              <div class="box-title">💬 Communiceren</div>
+              Laat zien aan opdrachtgevers wat je gaat bouwen. Zonder code, wel overzichtelijk.
+            </div>
+            <div class="hl-box warn" style="margin:0">
+              <div class="box-title">🐛 Minder bugs</div>
+              Fouten in het ontwerp vind je veel sneller dan fouten in duizenden regels SQL.
+            </div>
+          </div>
+
+          <div class="hl-box quiz">
+            <div class="box-title">💡 Real-world voorbeeld</div>
+            Spotify heeft een database met <strong>songs</strong>, <strong>artists</strong>, <strong>playlists</strong> en <strong>users</strong>.
+            Elke song is gekoppeld aan een artiest. Elke user heeft playlists met songs.
+            Dat is gewoon een ERD onder de motorkap! 🎵
+          </div>
+
+          <h2 class="topic-title">Data vs. Informatie — niet hetzelfde!</h2>
+          <p>Een veelgemaakte verwarring: <em>data</em> en <em>informatie</em> zijn <strong>niet</strong> hetzelfde.</p>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0;">
+            <div class="hl-box warn" style="margin:0">
+              <div class="box-title">📦 Data = ruwe feiten</div>
+              Losse, betekenisloze getallen of tekst.<br><br>
+              <code>32</code> &nbsp;<code>Anna</code> &nbsp;<code>2024-03-15</code> &nbsp;<code>NL</code><br><br>
+              Op zichzelf zegt dit niets. Wat betekent <code>32</code>? Een leeftijd? Een score?
+            </div>
+            <div class="hl-box tip" style="margin:0">
+              <div class="box-title">💡 Informatie = data + context</div>
+              Zodra data betekenis krijgt, wordt het informatie.<br><br>
+              <strong>Anna</strong> is <strong>32 jaar</strong> oud, woont in <strong>Nederland</strong> en schreef zich in op <strong>15 maart 2024</strong>.<br><br>
+              Nu snap je het! ✅
+            </div>
+          </div>
+
+          <div class="hl-box quiz">
+            <div class="box-title">🎵 Real-world voorbeeld</div>
+            <strong>Data:</strong> <code>3:42</code> &nbsp;<code>127</code> &nbsp;<code>Billie</code><br>
+            <strong>Informatie:</strong> Het liedje van Billie Eilish duurt 3 minuten en 42 seconden en staat op positie 127 in de playlist.<br>
+            Een database slaat de data op — jij maakt er informatie van door context toe te voegen.
+          </div>
+
+          <h2 class="topic-title">Waarom is een ERD belangrijk?</h2>
+          <p>Drie concrete voordelen die je in elk project terugziet:</p>
+
+          <div style="display:flex; flex-direction:column; gap:12px; margin:16px 0;">
+            <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; border-radius:12px; border:2px solid var(--border); background:var(--card-bg);">
+              <div style="font-size:2rem; flex-shrink:0;">🧩</div>
+              <div>
+                <strong style="color:var(--text)">Complexiteit verminderen</strong>
+                <p style="margin:4px 0 0">Een webshop met 20 tabellen wordt onoverzichtelijk. Een ERD maakt in één oogopslag duidelijk hoe alles samenhangt — zonder dat je alle SQL-code hoeft te lezen.</p>
+              </div>
+            </div>
+            <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; border-radius:12px; border:2px solid var(--border); background:var(--card-bg);">
+              <div style="font-size:2rem; flex-shrink:0;">⚡</div>
+              <div>
+                <strong style="color:var(--text)">Efficiëntie verbeteren</strong>
+                <p style="margin:4px 0 0">Zonder ERD sla je het adres van een klant misschien in 5 tabellen op. Met een goed ERD staat het maar op <em>één plek</em> — dat scheelt ruimte én voorkomt fouten bij wijzigingen.</p>
+              </div>
+            </div>
+            <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; border-radius:12px; border:2px solid var(--border); background:var(--card-bg);">
+              <div style="font-size:2rem; flex-shrink:0;">🐛</div>
+              <div>
+                <strong style="color:var(--text)">Fouten minimaliseren</strong>
+                <p style="margin:4px 0 0">Een bug in een database-ontwerp ontdekken na 3 maanden bouwen? Dat kost je dagen werk. Ontdekken in het ERD-stadium? 5 minuten aanpassen.</p>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="topic-title">Tools voor ERD's</h2>
+          <p>Je kunt ERD's maken in allerlei tools. In deze module gebruiken we <strong>Moqups</strong>.</p>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap:12px; margin:16px 0;">
+            <div style="padding:16px; border-radius:12px; border:2px solid var(--border); text-align:center;">
+              <div style="font-size:1.8rem; margin-bottom:8px;">🐬</div>
+              <strong style="color:var(--text)">MySQL Workbench</strong>
+              <p style="font-size:.8rem; margin-top:6px;">Krachtig, gratis en breed ingezet in het bedrijfsleven.</p>
+            </div>
+            <div style="padding:16px; border-radius:12px; border:2px solid var(--border); text-align:center;">
+              <div style="font-size:1.8rem; margin-bottom:8px;">📊</div>
+              <strong style="color:var(--text)">Lucidchart</strong>
+              <p style="font-size:.8rem; margin-top:6px;">Online, ideaal voor samenwerken in teams. Exporteert naar PDF/PNG.</p>
+            </div>
+            <div style="padding:16px; border-radius:12px; border:2px solid var(--border); text-align:center;">
+              <div style="font-size:1.8rem; margin-bottom:8px;">🎨</div>
+              <strong style="color:var(--text)">Draw.io</strong>
+              <p style="font-size:.8rem; margin-top:6px;">Gratis, werkt in je browser. Integreert met Google Drive.</p>
+            </div>
+            <div style="padding:16px; border-radius:12px; border:2px solid var(--border); text-align:center;">
+              <div style="font-size:1.8rem; margin-bottom:8px;">🏢</div>
+              <strong style="color:var(--text)">Microsoft Visio</strong>
+              <p style="font-size:.8rem; margin-top:6px;">Professionele tool. Standaard in veel grote bedrijven.</p>
+            </div>
+            <div style="padding:16px; border-radius:12px; border:2px solid var(--accent1); background:rgba(192,132,252,.08); text-align:center;">
+              <div style="font-size:1.8rem; margin-bottom:8px;">🖼️</div>
+              <strong style="color:var(--accent1)">Moqups</strong>
+              <p style="font-size:.8rem; margin-top:6px;">Gebruiksvriendelijk, realtime samenwerken. Eenvoudige ERD-creatie.</p>
+              <span class="chip chip-green" style="margin-top:8px; display:inline-block;">✅ Wij gebruiken dit</span>
+            </div>
+          </div>
+
+          <div class="mcq">
+            <div class="mcq-question">❓ Wat is het verschil tussen data en informatie?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1')">Data en informatie zijn hetzelfde</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq1')">Data zijn ruwe feiten; informatie is data met betekenis en context</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1')">Informatie is altijd in getal-vorm, data in tekst-vorm</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1')">Data is alleen nuttig als het in een database staat</div>
+            </div>
+            <div class="mcq-feedback" id="mcq1"></div>
+          </div>
+
+          <div class="mcq" style="margin-top:20px">
+            <div class="mcq-question">❓ Wat is het hoofddoel van een ERD?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1b')">Code schrijven voor een database</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq1b')">De structuur van een database visueel in kaart brengen</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1b')">Data opslaan in de cloud</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1b')">Een website ontwerpen</div>
+            </div>
+            <div class="mcq-feedback" id="mcq1b"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(0)">Volgende: Entiteiten →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card0 -->
+
+
+    <!-- ==================== CARD 2 — ENTITEITEN ==================== -->
+    <div class="sec-card" id="card1">
+      <div class="sec-header" onclick="toggleCard(1)">
+        <div class="sec-title-group">
+          <div class="sec-icon">📦</div>
+          <div>
+            <div class="sec-title">Entiteiten</div>
+            <div class="sec-sub">Wat sla je op? De 'dingen' in je database</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <div class="box-title">📖 Definitie</div>
+            Een <strong>entiteit</strong> is een object of concept dat je wilt opslaan in je database.
+            In een ERD wordt een entiteit getoond als een <strong>rechthoek</strong> met de naam erin.
+          </div>
+
+          <h2 class="topic-title">Hoe herken je een entiteit?</h2>
+          <p>Entiteiten zijn bijna altijd <strong>zelfstandige naamwoorden</strong> in een tekst.
+             De truc: vraag jezelf af <em>"Wil ik informatie opslaan over dit ding?"</em> → Dan is het een entiteit.</p>
+
+          <div class="hl-box tip">
+            <div class="box-title">🔍 Stap-voor-stap herkennen</div>
+            Gegeven tekst: <em>"Een school heeft studenten en leraren. Elke student zit in een klas."</em>
+          </div>
+
+          <div class="step-reveal" id="stepReveal1">
+            <div class="step-reveal-item visible">
+              <div class="hl-box" style="border-color:var(--accent1); background:rgba(192,132,252,.08)">
+                <strong>Stap 1:</strong> Zoek de zelfstandige naamwoorden 🔍<br>
+                <span class="chip chip-lila">school</span>
+                <span class="chip chip-pink">student</span>
+                <span class="chip chip-green">leraar</span>
+                <span class="chip chip-blue">klas</span>
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="hl-box" style="border-color:var(--accent2); background:rgba(244,114,182,.08)">
+                <strong>Stap 2:</strong> Vraag: "Sla ik hier data over op?" 🤔<br>
+                <span class="chip chip-pink">❌ school</span> — de school zelf is de context, geen tabel<br>
+                <span class="chip chip-green">✅ student</span> — naam, nummer, geboortedatum...<br>
+                <span class="chip chip-green">✅ leraar</span> — naam, vak, rooster...<br>
+                <span class="chip chip-green">✅ klas</span> — naam, jaar, lokaal...
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="hl-box tip">
+                <div class="box-title">✅ Resultaat: 3 entiteiten</div>
+                <code>student</code> &nbsp;<code>leraar</code> &nbsp;<code>klas</code>
+              </div>
+            </div>
+          </div>
+          <div class="step-controls">
+            <button class="btn" onclick="stepReveal('stepReveal1', -1)" id="stepReveal1-prev" style="display:none">← Terug</button>
+            <button class="btn filled" onclick="stepReveal('stepReveal1', 1)" id="stepReveal1-next">Volgende stap →</button>
+            <span class="step-counter" id="stepReveal1-counter">1 / 3</span>
+          </div>
+
+          <h2 class="topic-title">Hoe ziet een entiteit eruit in MySQL Workbench?</h2>
+
+          <div class="erd-canvas">
+            <p style="color:var(--text2); font-size:.8rem; margin-bottom:16px; font-family:'JetBrains Mono', monospace;">
+              // Voorbeeld: entiteiten van een school-database
+            </p>
+            <div class="erd-wrap">
+              <div class="erd-entity">
+                <div class="erd-entity-name" style="background:var(--accent1); color:var(--bg)">student</div>
+                <ul class="erd-attrs">
+                  <li class="erd-attr"><span class="icon-pk">🔑</span> id</li>
+                  <li class="erd-attr"><span class="icon-req">◆</span> firstname</li>
+                  <li class="erd-attr"><span class="icon-req">◆</span> lastname</li>
+                  <li class="erd-attr"><span class="icon-opt">◇</span> birthday</li>
+                </ul>
+              </div>
+              <div class="erd-entity">
+                <div class="erd-entity-name" style="background:var(--accent2); color:white">klas</div>
+                <ul class="erd-attrs">
+                  <li class="erd-attr"><span class="icon-pk">🔑</span> id</li>
+                  <li class="erd-attr"><span class="icon-req">◆</span> name</li>
+                  <li class="erd-attr"><span class="icon-req">◆</span> year</li>
+                </ul>
+              </div>
+              <div class="erd-entity">
+                <div class="erd-entity-name" style="background:var(--accent3); color:var(--bg)">leraar</div>
+                <ul class="erd-attrs">
+                  <li class="erd-attr"><span class="icon-pk">🔑</span> id</li>
+                  <li class="erd-attr"><span class="icon-req">◆</span> firstname</li>
+                  <li class="erd-attr"><span class="icon-req">◆</span> lastname</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="drag-game" id="dragGame1">
+            <h3>🎮 Sorteer het! Entiteit of Attribuut?</h3>
+            <p style="color:var(--text2); font-size:.85rem; margin-bottom:16px;">
+              Sleep de woorden naar de juiste kolom. Context: een webshop.
+            </p>
+            <div class="drag-area">
+              <div class="drag-col">
+                <h4>📦 Beschikbaar</h4>
+                <div class="drag-items" id="dragSource1">
+                  <div class="drag-item" draggable="true" data-val="product"    data-correct="entity" ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','entityDrop1','attribDrop1')">product</div>
+                  <div class="drag-item" draggable="true" data-val="prijs"      data-correct="attrib" ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','entityDrop1','attribDrop1')">prijs</div>
+                  <div class="drag-item" draggable="true" data-val="klant"      data-correct="entity" ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','entityDrop1','attribDrop1')">klant</div>
+                  <div class="drag-item" draggable="true" data-val="emailadres" data-correct="attrib" ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','entityDrop1','attribDrop1')">emailadres</div>
+                  <div class="drag-item" draggable="true" data-val="bestelling" data-correct="entity" ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','entityDrop1','attribDrop1')">bestelling</div>
+                  <div class="drag-item" draggable="true" data-val="besteldate" data-correct="attrib" ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','entityDrop1','attribDrop1')">besteldate</div>
+                </div>
+              </div>
+              <div class="drag-col">
+                <h4>📦 Entiteiten</h4>
+                <div class="drop-zone" id="entityDrop1"
+                     ondragover="allowDrop(event)"
+                     ondrop="drop(event,'entity','entityDrop1','attribDrop1','dragSource1')"></div>
+              </div>
+              <div class="drag-col">
+                <h4>🏷️ Attributen</h4>
+                <div class="drop-zone" id="attribDrop1"
+                     ondragover="allowDrop(event)"
+                     ondrop="drop(event,'attrib','entityDrop1','attribDrop1','dragSource1')"></div>
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+              <button class="drag-btn" onclick="checkDrag('dragGame1','entityDrop1','attribDrop1')">✅ Controleer</button>
+              <button class="btn" onclick="resetDrag('dragGame1','entityDrop1','attribDrop1','dragSource1')">🔄 Reset</button>
+            </div>
+            <div id="dragGame1-feedback" style="margin-top:10px; font-size:.85rem;"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(1)">Volgende: Attributen &amp; Sleutels →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card1 -->
+
+
+    <!-- ==================== CARD 3 — ATTRIBUTEN & SLEUTELS ==================== -->
+    <div class="sec-card" id="card2">
+      <div class="sec-header" onclick="toggleCard(2)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🏷️</div>
+          <div>
+            <div class="sec-title">Attributen &amp; Sleutels</div>
+            <div class="sec-sub">Eigenschappen en unieke ID's</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <h2 class="topic-title">Attributen — de eigenschappen van een entiteit</h2>
+          <p>Als een entiteit een <em>tabel</em> is, dan zijn attributen de <em>kolommen</em>. Ze beschrijven wat je van een object wil onthouden.</p>
+
+          <div class="erd-canvas">
+            <div style="display:flex; flex-direction:column; align-items:center;">
+              <div style="font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--text2); margin-bottom:10px;">
+                // Legenda van icoontjes in MySQL Workbench
+              </div>
+              <div class="erd-entity" style="min-width:260px;">
+                <div class="erd-entity-name" style="background:var(--accent1); color:var(--bg)">student</div>
+                <ul class="erd-attrs">
+                  <li class="erd-attr" style="background:rgba(251,191,36,.1)">
+                    <span class="icon-pk">🔑</span> <strong>id</strong>
+                    <span style="margin-left:auto; font-size:.7rem; color:#fbbf24;">PRIMAIRE SLEUTEL</span>
+                  </li>
+                  <li class="erd-attr" style="background:rgba(248,113,113,.1)">
+                    <span class="icon-fk">🔷</span> <strong>classid</strong>
+                    <span style="margin-left:auto; font-size:.7rem; color:#f87171;">VREEMDE SLEUTEL</span>
+                  </li>
+                  <li class="erd-attr" style="background:rgba(96,165,250,.1)">
+                    <span class="icon-req">◆</span> firstname
+                    <span style="margin-left:auto; font-size:.7rem; color:var(--accent4);">VERPLICHT</span>
+                  </li>
+                  <li class="erd-attr" style="background:rgba(96,165,250,.1)">
+                    <span class="icon-req">◆</span> lastname
+                    <span style="margin-left:auto; font-size:.7rem; color:var(--accent4);">VERPLICHT</span>
+                  </li>
+                  <li class="erd-attr">
+                    <span class="icon-opt">◇</span> phonenr
+                    <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">OPTIONEEL</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr><th>Symbool</th><th>Type</th><th>Betekenis</th><th>Voorbeeld</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>🔑</td><td><span class="chip chip-lila">Primaire sleutel</span></td><td>Uniek ID per rij, mag nooit leeg zijn</td><td><code>id</code></td></tr>
+              <tr><td>🔷</td><td><span class="chip chip-pink">Vreemde sleutel</span></td><td>Verwijst naar PK in andere tabel</td><td><code>classid</code></td></tr>
+              <tr><td>◆</td><td><span class="chip chip-blue">Verplicht</span></td><td>Moet altijd ingevuld worden (NOT NULL)</td><td><code>firstname</code></td></tr>
+              <tr><td>◇</td><td><span class="chip chip-ora">Optioneel</span></td><td>Mag leeg blijven (NULL toegestaan)</td><td><code>phonenr</code></td></tr>
+            </tbody>
+          </table>
+
+          <h2 class="topic-title">Regels voor attributen</h2>
+
+          <div class="step-reveal" id="stepReveal2">
+            <div class="step-reveal-item visible">
+              <div class="hl-box tip">
+                <div class="box-title">✅ Regel 1 — Een attribuut beschrijft altijd de entiteit</div>
+                <code>naam</code> en <code>geboortedatum</code> beschrijven een <em>student</em>. ✓<br>
+                <code>klasnaam</code> beschrijft een <em>klas</em>, niet de student zelf. ✗
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="hl-box warn">
+                <div class="box-title">✅ Regel 2 — Geen afgeleide attributen</div>
+                <code>geboortedatum</code> mag wel. ✓<br>
+                <code>leeftijd</code> mag <strong>niet</strong> — want leeftijd is <em>berekend</em> uit geboortedatum + vandaag. Morgen klopt het al niet meer! ✗
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="hl-box info">
+                <div class="box-title">✅ Regel 3 — Geen samengestelde attributen</div>
+                <code>firstname</code> en <code>lastname</code> — elk apart. ✓<br>
+                <code>fullname</code> — samengesteld uit vorige twee. ✗ Splits het op!
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="hl-box quiz">
+                <div class="box-title">🧠 Samengevat</div>
+                Attributen = direct, onafhankelijk, niet-berekend, niet-gecombineerd.
+                Denk aan wat er letterlijk in de database-cel staat.
+              </div>
+            </div>
+          </div>
+          <div class="step-controls">
+            <button class="btn" onclick="stepReveal('stepReveal2', -1)" id="stepReveal2-prev" style="display:none">← Terug</button>
+            <button class="btn filled" onclick="stepReveal('stepReveal2', 1)" id="stepReveal2-next">Volgende regel →</button>
+            <span class="step-counter" id="stepReveal2-counter">1 / 4</span>
+          </div>
+
+          <div class="mcq" style="margin-top:24px">
+            <div class="mcq-question">❓ Welke attribuut is <strong>NIET</strong> toegestaan voor entiteit <code>persoon</code>?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq2')">geboortedatum</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq2')">leeftijd</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq2')">emailadres</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq2')">telefoonnummer</div>
+            </div>
+            <div class="mcq-feedback" id="mcq2"></div>
+          </div>
+
+          <div class="mcq" style="margin-top:24px">
+            <div class="mcq-question">❓ Een student heeft <code>classid</code> als attribuut. Dat is een…</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq3')">Primaire sleutel — want het is een ID</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq3')">Vreemde sleutel — want het verwijst naar een andere entiteit</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq3')">Optioneel attribuut</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq3')">Verplicht attribuut zonder sleutelfunctie</div>
+            </div>
+            <div class="mcq-feedback" id="mcq3"></div>
+          </div>
+
+          <div class="step-controls" style="margin-top:20px">
+            <button class="btn filled" onclick="openNextCard(2)">Volgende: Relaties →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card2 -->
+
+
+    <!-- ==================== CARD 4 — RELATIES ==================== -->
+    <div class="sec-card" id="card3">
+      <div class="sec-header" onclick="toggleCard(3)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🔗</div>
+          <div>
+            <div class="sec-title">Relaties &amp; Multipliciteit</div>
+            <div class="sec-sub">Hoe hangen de tabellen samen?</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <div class="box-title">🔗 Wat is een relatie?</div>
+            Een relatie toont hoe twee entiteiten met elkaar verbonden zijn.
+            In MySQL Workbench zie je dit als een <strong>lijn</strong> tussen twee rechthoeken.
+            Aan het einde van die lijn staat de <strong>multipliciteit</strong> — hoeveel van het één hoort bij hoeveel van het ander.
+          </div>
+
+          <h2 class="topic-title">Multipliciteit — de getallen aan de lijn</h2>
+          <table>
+            <thead><tr><th>Notatie</th><th>Betekenis</th><th>Voorbeeld</th></tr></thead>
+            <tbody>
+              <tr><td><code>1</code></td><td>Precies één</td><td>Een student heeft precies 1 primaire sleutel</td></tr>
+              <tr><td><code>0..1</code></td><td>Nul of één</td><td>Een werknemer heeft 0 of 1 parkeerplaats</td></tr>
+              <tr><td><code>1..*</code></td><td>Eén of meer</td><td>Een klas heeft minimaal 1 student</td></tr>
+              <tr><td><code>0..*</code></td><td>Nul of meer</td><td>Een auteur heeft 0 of meer boeken geschreven</td></tr>
+            </tbody>
+          </table>
+
+          <h2 class="topic-title">Interactief ERD — School database</h2>
+
+          <div class="erd-canvas" style="overflow-x:auto;">
+            <svg width="680" height="220" viewBox="0 0 680 220" style="display:block; max-width:100%; height:auto;">
+              <rect x="20" y="30" width="160" height="170" rx="4" fill="var(--card-bg)" stroke="var(--accent1)" stroke-width="2"/>
+              <rect x="20" y="30" width="160" height="34" rx="4" fill="var(--accent1)"/>
+              <rect x="20" y="50" width="160" height="14" fill="var(--accent1)"/>
+              <text x="100" y="53" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--bg)">student</text>
+              <text x="30" y="84"  font-family="JetBrains Mono, monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+              <text x="30" y="104" font-family="JetBrains Mono, monospace" font-size="11" fill="#f87171">🔷 classid</text>
+              <text x="30" y="124" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ firstname</text>
+              <text x="30" y="144" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ lastname</text>
+              <text x="30" y="164" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◇ birthday</text>
+              <text x="30" y="184" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◇ phonenr</text>
+
+              <rect x="260" y="50" width="160" height="120" rx="4" fill="var(--card-bg)" stroke="var(--accent2)" stroke-width="2"/>
+              <rect x="260" y="50" width="160" height="34" rx="4" fill="var(--accent2)"/>
+              <rect x="260" y="70" width="160" height="14" fill="var(--accent2)"/>
+              <text x="340" y="73" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="white">klas</text>
+              <text x="270" y="104" font-family="JetBrains Mono, monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+              <text x="270" y="124" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ name</text>
+              <text x="270" y="144" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ year</text>
+
+              <rect x="500" y="50" width="160" height="120" rx="4" fill="var(--card-bg)" stroke="var(--accent3)" stroke-width="2"/>
+              <rect x="500" y="50" width="160" height="34" rx="4" fill="var(--accent3)"/>
+              <rect x="500" y="70" width="160" height="14" fill="var(--accent3)"/>
+              <text x="580" y="73" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--bg)">leraar</text>
+              <text x="510" y="104" font-family="JetBrains Mono, monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+              <text x="510" y="124" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ firstname</text>
+              <text x="510" y="144" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ lastname</text>
+
+              <line x1="180" y1="110" x2="260" y2="110" stroke="var(--accent4)" stroke-width="2.5"/>
+              <text x="190" y="104" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--accent4)">1..*</text>
+              <text x="236" y="104" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--accent4)">1</text>
+
+              <line x1="420" y1="110" x2="500" y2="110" stroke="var(--accent5)" stroke-width="2.5"/>
+              <text x="428" y="104" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--accent5)">1..*</text>
+              <text x="476" y="104" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--accent5)">1</text>
+
+              <text x="205" y="130" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="var(--accent4)">zit in</text>
+              <text x="455" y="130" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="var(--accent5)">wordt gegeven door</text>
+            </svg>
+          </div>
+
+          <div class="hl-box tip">
+            <div class="box-title">📖 Lees de relaties zo</div>
+            • Een <strong>student</strong> zit in <strong>1</strong> klas → richting student naar klas = 1<br>
+            • Een <strong>klas</strong> heeft <strong>1..*</strong> studenten → richting klas naar student = 1..*<br>
+            • Een <strong>leraar</strong> geeft <strong>1..*</strong> klassen → richting leraar naar klas = 1..*
+          </div>
+
+          <div class="mcq">
+            <div class="mcq-question">❓ Een <strong>bibliotheek</strong> heeft boeken. Welke multipliciteit beschrijft "een bibliotheek heeft boeken"?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq4')">1 (precies één)</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq4')">0..1 (nul of één)</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq4')">0..* (nul of meer)</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq4')">1..* (één of meer)</div>
+            </div>
+            <div class="mcq-feedback" id="mcq4"></div>
+          </div>
+
+          <div class="step-controls" style="margin-top:20px">
+            <button class="btn filled" onclick="openNextCard(3)">Volgende: Naamgeving →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card3 -->
+
+
+    <!-- ==================== CARD 5 — NAAMGEVING ==================== -->
+    <div class="sec-card" id="card4">
+      <div class="sec-header" onclick="toggleCard(4)">
+        <div class="sec-title-group">
+          <div class="sec-icon">✏️</div>
+          <div>
+            <div class="sec-title">Naamgevingsconventies</div>
+            <div class="sec-sub">Hoe schrijf je namen correct?</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box warn">
+            <div class="box-title">⚠️ Waarom maakt het uit hoe je schrijft?</div>
+            Databases zijn <em>case-sensitive</em> en haten spaties. Als jij schrijft
+            <code>Firstname</code> en je collega schrijft <code>firstName</code>,
+            krijg je errors. Afspraken voorkomen dat soort ellende.
+          </div>
+
+          <h2 class="topic-title">De bedrijfsstandaard (wat wij gebruiken)</h2>
+
+          <table>
+            <thead><tr><th>Wat</th><th>Conventie</th><th>❌ Fout</th><th>✅ Goed</th></tr></thead>
+            <tbody>
+              <tr><td>Entiteiten</td><td>Kleine letters, enkelvoud</td><td><code>Student</code> / <code>Studenten</code></td><td><code>student</code></td></tr>
+              <tr><td>Attributen</td><td>Kleine letters, geen spaties</td><td><code>First Name</code></td><td><code>firstname</code></td></tr>
+              <tr><td>Meerdere woorden</td><td>Alles aan elkaar</td><td><code>orderDate</code> / <code>order_date</code></td><td><code>orderdate</code></td></tr>
+              <tr><td>Primaire sleutel</td><td>Altijd <code>id</code> (geen naam entiteit herhalen)</td><td><code>studentid</code></td><td><code>id</code></td></tr>
+              <tr><td>Vreemde sleutel</td><td>Naam referentie-entiteit + id</td><td><code>fk_class</code></td><td><code>classid</code></td></tr>
+            </tbody>
+          </table>
+
+          <div class="typer-box">
+            <h3>⌨️ Typ de correcte naam</h3>
+            <p style="color:var(--text2); font-size:.85rem; margin-bottom:16px;">Schrijf de conventioneel correcte naam.</p>
+
+            <div class="typer-row">
+              <label>Entiteit: Klant</label>
+              <input class="typer-input" id="t1" placeholder="jouw antwoord..."
+                     oninput="checkTyper('t1','klant','h1')" onblur="checkTyper('t1','klant','h1')">
+              <span class="typer-hint" id="h1"></span>
+            </div>
+            <div class="typer-row">
+              <label>Attribuut: Voornaam</label>
+              <input class="typer-input" id="t2" placeholder="jouw antwoord..."
+                     oninput="checkTyper('t2','firstname','h2')" onblur="checkTyper('t2','firstname','h2')">
+              <span class="typer-hint" id="h2"></span>
+            </div>
+            <div class="typer-row">
+              <label>Entiteit: BestelOrder</label>
+              <input class="typer-input" id="t3" placeholder="jouw antwoord..."
+                     oninput="checkTyper('t3','order','h3')" onblur="checkTyper('t3','order','h3')">
+              <span class="typer-hint" id="h3">💡 Tip: gebruik het kernwoord, enkelvoud</span>
+            </div>
+            <div class="typer-row">
+              <label>PK in <code>student</code></label>
+              <input class="typer-input" id="t4" placeholder="jouw antwoord..."
+                     oninput="checkTyper('t4','id','h4')" onblur="checkTyper('t4','id','h4')">
+              <span class="typer-hint" id="h4">💡 Nooit studentid!</span>
+            </div>
+            <div class="typer-row">
+              <label>FK naar <code>klas</code></label>
+              <input class="typer-input" id="t5" placeholder="jouw antwoord..."
+                     oninput="checkTyper('t5','classid','h5')" onblur="checkTyper('t5','classid','h5')">
+              <span class="typer-hint" id="h5">💡 Entiteitnaam + id</span>
+            </div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(4)">Volgende: Alles samen →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card4 -->
+
+
+    <!-- ==================== CARD 6 — ALLES SAMEN ==================== -->
+    <div class="sec-card" id="card5">
+      <div class="sec-header" onclick="toggleCard(5)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🏆</div>
+          <div>
+            <div class="sec-title">Alles samen — Opdracht</div>
+            <div class="sec-sub">Lees een tekst en ontwerp een ERD</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box quiz" style="font-size:1.05rem; line-height:1.9">
+            <div class="box-title">📝 Casus — Videotheek</div>
+            Een <strong>videotheek</strong> verhuurt films aan klanten.
+            Elke <strong>film</strong> heeft een titel, genre en releasejaar.
+            Een <strong>klant</strong> heeft een naam, e-mailadres en telefoonnummer.
+            Een klant kan meerdere films huren en een film kan door meerdere klanten gehuurd worden.
+            Van elke <strong>verhuur</strong> wordt de datum bijgehouden.
+          </div>
+
+          <h2 class="topic-title">Stap voor stap — ontdek het ERD</h2>
+
+          <div class="step-reveal" id="stepReveal3">
+            <div class="step-reveal-item visible">
+              <div class="hl-box" style="border-color:var(--accent1); background:rgba(192,132,252,.08)">
+                <strong>Zelfstandige naamwoorden in de tekst:</strong><br><br>
+                <span class="chip chip-lila">videotheek</span>
+                <span class="chip chip-pink">film</span>
+                <span class="chip chip-green">klant</span>
+                <span class="chip chip-blue">verhuur</span>
+                <span class="chip chip-ora">genre</span>
+                <span class="chip chip-lila">releasejaar</span>
+                <span class="chip chip-pink">datum</span>
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="hl-box tip">
+                <div class="box-title">✅ Echte entiteiten (objecten om op te slaan):</div>
+                <span class="chip chip-green">✅ film</span>
+                <span class="chip chip-green">✅ klant</span>
+                <span class="chip chip-green">✅ verhuur</span><br><br>
+                <span class="chip chip-pink">❌ videotheek</span> — context, geen tabel<br>
+                <span class="chip chip-pink">❌ genre</span> — attribuut van film<br>
+                <span class="chip chip-pink">❌ releasejaar</span> — attribuut van film<br>
+                <span class="chip chip-pink">❌ datum</span> — attribuut van verhuur
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="hl-box info">
+                <div class="box-title">🏷️ Attributen per entiteit:</div>
+                <strong>film:</strong> <code>id</code> · <code>title</code> · <code>genre</code> · <code>releaseyear</code><br>
+                <strong>klant:</strong> <code>id</code> · <code>firstname</code> · <code>lastname</code> · <code>email</code> · <code>phonenr</code><br>
+                <strong>verhuur:</strong> <code>id</code> · <code>filmid</code> (FK) · <code>clientid</code> (FK) · <code>rentaldate</code>
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="erd-canvas" style="overflow-x:auto;">
+                <svg width="660" height="240" viewBox="0 0 660 240" style="display:block; max-width:100%; height:auto;">
+                  <rect x="10" y="20" width="160" height="140" rx="4" fill="var(--card-bg)" stroke="var(--accent1)" stroke-width="2"/>
+                  <rect x="10" y="20" width="160" height="34" rx="4" fill="var(--accent1)"/>
+                  <rect x="10" y="40" width="160" height="14" fill="var(--accent1)"/>
+                  <text x="90" y="43" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--bg)">film</text>
+                  <text x="22" y="72"  font-family="JetBrains Mono, monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+                  <text x="22" y="92"  font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ title</text>
+                  <text x="22" y="112" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ genre</text>
+                  <text x="22" y="132" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◇ releaseyear</text>
+
+                  <rect x="250" y="60" width="160" height="130" rx="4" fill="var(--card-bg)" stroke="var(--accent4)" stroke-width="2"/>
+                  <rect x="250" y="60" width="160" height="34" rx="4" fill="var(--accent4)"/>
+                  <rect x="250" y="80" width="160" height="14" fill="var(--accent4)"/>
+                  <text x="330" y="83" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--bg)">verhuur</text>
+                  <text x="262" y="114" font-family="JetBrains Mono, monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+                  <text x="262" y="134" font-family="JetBrains Mono, monospace" font-size="11" fill="#f87171">🔷 filmid</text>
+                  <text x="262" y="154" font-family="JetBrains Mono, monospace" font-size="11" fill="#f87171">🔷 clientid</text>
+                  <text x="262" y="174" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ rentaldate</text>
+
+                  <rect x="490" y="20" width="160" height="160" rx="4" fill="var(--card-bg)" stroke="var(--accent2)" stroke-width="2"/>
+                  <rect x="490" y="20" width="160" height="34" rx="4" fill="var(--accent2)"/>
+                  <rect x="490" y="40" width="160" height="14" fill="var(--accent2)"/>
+                  <text x="570" y="43" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="white">klant</text>
+                  <text x="502" y="72"  font-family="JetBrains Mono, monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+                  <text x="502" y="92"  font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ firstname</text>
+                  <text x="502" y="112" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ lastname</text>
+                  <text x="502" y="132" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◆ email</text>
+                  <text x="502" y="152" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--text2)">◇ phonenr</text>
+
+                  <line x1="170" y1="115" x2="250" y2="125" stroke="var(--accent1)" stroke-width="2.5"/>
+                  <text x="178" y="108" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--accent1)">0..*</text>
+                  <text x="224" y="115" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--accent1)">1</text>
+
+                  <line x1="490" y1="125" x2="410" y2="128" stroke="var(--accent2)" stroke-width="2.5"/>
+                  <text x="432" y="118" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--accent2)">1</text>
+                  <text x="468" y="118" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--accent2)">0..*</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="step-controls">
+            <button class="btn" onclick="stepReveal('stepReveal3', -1)" id="stepReveal3-prev" style="display:none">← Terug</button>
+            <button class="btn filled" onclick="stepReveal('stepReveal3', 1)" id="stepReveal3-next">Onthul stap →</button>
+            <span class="step-counter" id="stepReveal3-counter">1 / 4</span>
+          </div>
+
+          <h2 class="topic-title" style="margin-top:30px">✅ Leeruitkomsten — Check jezelf</h2>
+          <p style="color:var(--text2)">Klik op een leeruitkomst als jij dit nu snapt!</p>
+          <div class="checklist" id="checkList">
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik weet wat een database is en kan uitleggen waarom dit belangrijk is in softwareontwikkeling.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan het verschil uitleggen tussen data en informatie en voorbeelden geven.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik begrijp wat entiteiten en attributen zijn en kan ze herkennen in een databasecontext.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan primaire sleutels en vreemde sleutels uitleggen en correct toepassen in een ERD.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan een eenvoudig ERD lezen en uitleggen hoe entiteiten en relaties worden weergegeven.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik herken visualisatieconventies van ERD's in tools zoals MySQL Workbench.</div>
+            </div>
+          </div>
+
+          <div class="hl-box tip" style="margin-top:20px; text-align:center;">
+            <div class="box-title">🎉 Klaar met de les!</div>
+            Goed gedaan! Je hebt de basis van ERD's doorlopen.
+            Volgende stap: zelf een ERD tekenen in MySQL Workbench. 💪
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card5 -->
+
+  </div><!-- end sections -->
+</div>
+
+<footer>
+  <div class="big">ERD — Module 1</div>
+  MBO Software Development · Theorie &amp; Oefeningen
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

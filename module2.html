@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Datatypes & Tool | SOD Module 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="pastel">
+
+<!-- ======================== THEME BAR ======================== -->
+<div class="theme-bar">
+  <button class="theme-btn active" onclick="setTheme('pastel', this)">🌸 Pastel</button>
+  <button class="theme-btn" onclick="setTheme('dark', this)">🌑 Dark</button>
+  <button class="theme-btn" onclick="setTheme('light', this)">☀️ Light</button>
+  <button class="theme-btn" onclick="setTheme('neon', this)">⚡ Neon</button>
+</div>
+
+<!-- ======================== MODULE NAVIGATIE ======================== -->
+<nav class="module-nav">
+  <div class="module-nav-title">📚 SOD — Alle modules</div>
+  <div class="module-nav-grid">
+    <a class="module-pill" href="index.html">
+      <span class="pill-num">1</span> ERD Basis
+    </a>
+    <a class="module-pill active" href="module2.html">
+      <span class="pill-num">2</span> Datatypes &amp; Tool
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">3</span> Module 3 <span class="pill-lock">🔒</span>
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">4</span> Module 4 <span class="pill-lock">🔒</span>
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">5</span> Module 5 <span class="pill-lock">🔒</span>
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">6</span> Module 6 <span class="pill-lock">🔒</span>
+    </a>
+    <a class="module-pill locked" href="#">
+      <span class="pill-num">7</span> Module 7 <span class="pill-lock">🔒</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ======================== SCORE BAR ======================== -->
+<div class="score-bar">
+  <span class="score-label">Voortgang Module 2</span>
+  <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
+  <span class="score-num" id="scoreNum">0 / 20 ⭐</span>
+</div>
+
+<!-- ======================== HERO ======================== -->
+<div class="container">
+  <div class="hero">
+    <div class="hero-label">SOD · Module 2 · MBO</div>
+    <h1>Datatypes<br>&amp; Tool</h1>
+    <p>Welk soort data sla je op in een attribuut? Met het juiste datatype
+       zorg je dat een database <strong>correct, snel en betrouwbaar</strong> werkt. 🗄️</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Onderdelen</div></div>
+      <div class="stat"><div class="stat-num">~35</div><div class="stat-label">Minuten</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Oefeningen</div></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS STRIP -->
+  <div class="progress-strip" id="progressStrip">
+    <div class="prog-step active" onclick="scrollToCard(0)"><span class="num">1</span>Wat zijn datatypes?</div>
+    <div class="prog-step" onclick="scrollToCard(1)"><span class="num">2</span>Tekst</div>
+    <div class="prog-step" onclick="scrollToCard(2)"><span class="num">3</span>Getallen &amp; Datum</div>
+    <div class="prog-step" onclick="scrollToCard(3)"><span class="num">4</span>Datatypes in tools</div>
+    <div class="prog-step" onclick="scrollToCard(4)"><span class="num">5</span>Moqups</div>
+  </div>
+
+  <!-- ======================== SECTIONS ======================== -->
+  <div class="sections" id="allCards">
+
+    <!-- ==================== CARD 1 — WAT ZIJN DATATYPES ==================== -->
+    <div class="sec-card open" id="card0">
+      <div class="sec-header" onclick="toggleCard(0)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🗄️</div>
+          <div>
+            <div class="sec-title">Wat zijn datatypes?</div>
+            <div class="sec-sub">Het juiste formaat voor elk attribuut</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <div class="box-title">🔙 Even terugkijken — Module 1</div>
+            In module 1 leerde je dat een <strong>entiteit</strong> een object is (bijv. <code>employee</code>)
+            en dat <strong>attributen</strong> de eigenschappen zijn (bijv. <code>firstname</code>, <code>salary</code>).
+            Maar hoe weet de database wát voor soort waarde erin mag? Dat regelt het <strong>datatype</strong>.
+          </div>
+
+          <h2 class="topic-title">Wat is een datatype?</h2>
+          <p>Een datatype vertelt de database <em>wat voor soort informatie</em> een attribuut mag bevatten.
+             Zonder datatype zou je een leeftijd van "appel" kunnen invullen — en dat wil je niet. 🍎</p>
+
+          <!-- FLIP CARDS — begrippen -->
+          <p>Klik de kaartjes om de drie redenen te ontdekken waarom datatypes belangrijk zijn:</p>
+          <div class="flip-grid">
+
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">✅</span>
+                  <span class="flip-front-label">Validatie</span>
+                  <span class="flip-front-hint">klik om te onthullen</span>
+                </div>
+                <div class="flip-back">
+                  Een attribuut accepteert alleen waarden die bij het datatype passen.
+                  Geen letters in een getal-veld, geen ongeldige datums.
+                </div>
+              </div>
+            </div>
+
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">⚡</span>
+                  <span class="flip-front-label">Efficiëntie</span>
+                  <span class="flip-front-hint">klik om te onthullen</span>
+                </div>
+                <div class="flip-back">
+                  Het juiste datatype gebruikt precies genoeg geheugen.
+                  Een <strong>INT</strong> voor een leeftijd kost minder ruimte dan een <strong>TEXT</strong>.
+                </div>
+              </div>
+            </div>
+
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">🔒</span>
+                  <span class="flip-front-label">Data-integriteit</span>
+                  <span class="flip-front-hint">klik om te onthullen</span>
+                </div>
+                <div class="flip-back">
+                  Datatypes begrenzen lengtes en formaten.
+                  Een landcode is altijd precies 2 tekens — nooit meer, nooit minder.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="hl-box quiz">
+            <div class="box-title">🎵 Real-world voorbeeld</div>
+            Spotify slaat een <strong>song</strong> op. Hoe lang is de songtitel? Variabel → <code>VARCHAR</code>.
+            Hoeveel streams? Een heel getal → <code>INT</code>.
+            Wanneer uitgebracht? Een datum → <code>DATE</code>.<br>
+            Elk attribuut heeft zijn eigen datatype — precies goed afgesteld.
+          </div>
+
+          <div class="mcq">
+            <div class="mcq-question">❓ Wat is het hoofddoel van een datatype?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1')">De naam van een attribuut bepalen</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq1')">Bepalen welk soort data een attribuut mag bevatten</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1')">De relatie tussen twee entiteiten vastleggen</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1')">De primaire sleutel instellen</div>
+            </div>
+            <div class="mcq-feedback" id="mcq1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(0)">Volgende: Tekst datatypes →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card0 -->
+
+
+    <!-- ==================== CARD 2 — TEKST DATATYPES ==================== -->
+    <div class="sec-card" id="card1">
+      <div class="sec-header" onclick="toggleCard(1)">
+        <div class="sec-title-group">
+          <div class="sec-icon">📝</div>
+          <div>
+            <div class="sec-title">Tekst datatypes</div>
+            <div class="sec-sub">CHAR, VARCHAR en TEXT</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <p>Voor het opslaan van tekst zijn er drie hoofdtypes. Ze lijken op elkaar, maar het verschil maakt veel uit voor de performance van je database.</p>
+
+          <!-- Stap voor stap de drie types -->
+          <div class="step-reveal" id="stepReveal1">
+            <div class="step-reveal-item visible">
+              <div class="hl-box" style="border-color:var(--accent1); background:rgba(192,132,252,.08)">
+                <div class="box-title" style="color:var(--accent1)">📌 CHAR(n) — Vaste lengte</div>
+                <p style="margin:8px 0 4px">Altijd precies <strong>n</strong> tekens, ook als de waarde korter is. Lege posities worden opgevuld met spaties.</p>
+                <strong>Gebruik voor:</strong> waarden die altijd even lang zijn.<br><br>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
+                  <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--code-text);">
+                    countrycode <span style="color:var(--accent1)">CHAR(2)</span><br>
+                    <span style="color:#6b7280">-- 'NL', 'DE', 'FR'</span><br>
+                    <span style="color:#6b7280">-- altijd 2 tekens</span>
+                  </div>
+                  <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--code-text);">
+                    productcode <span style="color:var(--accent1)">CHAR(5)</span><br>
+                    <span style="color:#6b7280">-- 'P1234', 'A0042'</span><br>
+                    <span style="color:#6b7280">-- altijd 5 tekens</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="hl-box" style="border-color:var(--accent2); background:rgba(244,114,182,.08)">
+                <div class="box-title" style="color:var(--accent2)">📌 VARCHAR(n) — Variabele lengte</div>
+                <p style="margin:8px 0 4px">Tot maximaal <strong>n</strong> tekens, maar slaat alleen de werkelijke lengte op. Efficiënter als waarden sterk variëren in lengte.</p>
+                <strong>Gebruik voor:</strong> namen, adressen, e-mailadressen.<br><br>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
+                  <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--code-text);">
+                    lastname <span style="color:var(--accent2)">VARCHAR(50)</span><br>
+                    <span style="color:#6b7280">-- 'Jansen' (6)</span><br>
+                    <span style="color:#6b7280">-- 'Van den Berg' (12)</span>
+                  </div>
+                  <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--code-text);">
+                    licenseplate <span style="color:var(--accent2)">VARCHAR(10)</span><br>
+                    <span style="color:#6b7280">-- '6-VH-RT'</span><br>
+                    <span style="color:#6b7280">-- kan uitbreiden</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="hl-box" style="border-color:var(--accent3); background:rgba(52,211,153,.08)">
+                <div class="box-title" style="color:var(--accent3)">📌 TEXT — Grote teksten</div>
+                <p style="margin:8px 0 4px">Voor lange, onbegrensde teksten. Geen maximale lengte instellen nodig. Niet geschikt voor zoeken of sorteren.</p>
+                <strong>Gebruik voor:</strong> beschrijvingen, berichten, opmerkingen.<br><br>
+                <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--code-text); margin-top:8px;">
+                  description <span style="color:var(--accent3)">TEXT</span><br>
+                  <span style="color:#6b7280">-- 'Dit is een uitgebreide productbeschrijving...'</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <!-- Vergelijkingstabel -->
+              <table>
+                <thead><tr><th>Type</th><th>Lengte</th><th>Opslagruimte</th><th>Beste voor</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><code>CHAR(n)</code></td>
+                    <td>Vast — altijd n</td>
+                    <td>Altijd n bytes</td>
+                    <td>Codes, postcodes, landcodes</td>
+                  </tr>
+                  <tr>
+                    <td><code>VARCHAR(n)</code></td>
+                    <td>Variabel — max n</td>
+                    <td>Alleen werkelijke lengte</td>
+                    <td>Namen, adressen, e-mails</td>
+                  </tr>
+                  <tr>
+                    <td><code>TEXT</code></td>
+                    <td>Onbeperkt</td>
+                    <td>Dynamisch</td>
+                    <td>Beschrijvingen, berichten</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="step-controls">
+            <button class="btn" onclick="stepReveal('stepReveal1', -1)" id="stepReveal1-prev" style="display:none">← Terug</button>
+            <button class="btn filled" onclick="stepReveal('stepReveal1', 1)" id="stepReveal1-next">Volgend type →</button>
+            <span class="step-counter" id="stepReveal1-counter">1 / 4</span>
+          </div>
+
+          <!-- CHAR vs VARCHAR visueel -->
+          <h2 class="topic-title">CHAR vs VARCHAR — visueel verschil</h2>
+          <div class="erd-canvas">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--text2); margin-bottom:16px;">
+              // Opslag van de waarde 'NL' (2 tekens) en 'Jansen' (6 tekens)
+            </div>
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+              <div>
+                <div style="font-size:.8rem; color:var(--accent1); font-weight:700; margin-bottom:6px; font-family:'JetBrains Mono',monospace;">CHAR(6) — altijd 6 vakjes</div>
+                <div style="display:flex; gap:3px; align-items:center;">
+                  <div style="width:36px; height:36px; border:2px solid var(--accent1); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.9rem; font-weight:700; color:var(--accent1);">N</div>
+                  <div style="width:36px; height:36px; border:2px solid var(--accent1); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.9rem; font-weight:700; color:var(--accent1);">L</div>
+                  <div style="width:36px; height:36px; border:2px dashed rgba(128,128,128,.3); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--text2);">_</div>
+                  <div style="width:36px; height:36px; border:2px dashed rgba(128,128,128,.3); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--text2);">_</div>
+                  <div style="width:36px; height:36px; border:2px dashed rgba(128,128,128,.3); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--text2);">_</div>
+                  <div style="width:36px; height:36px; border:2px dashed rgba(128,128,128,.3); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--text2);">_</div>
+                  <span style="margin-left:10px; font-size:.75rem; color:var(--text2);">← altijd 6 bytes gebruikt, ook al zijn 4 leeg</span>
+                </div>
+              </div>
+
+              <div>
+                <div style="font-size:.8rem; color:var(--accent2); font-weight:700; margin-bottom:6px; font-family:'JetBrains Mono',monospace;">VARCHAR(50) — alleen wat nodig is</div>
+                <div style="display:flex; gap:3px; align-items:center;">
+                  <div style="width:36px; height:36px; border:2px solid var(--accent2); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.9rem; font-weight:700; color:var(--accent2);">J</div>
+                  <div style="width:36px; height:36px; border:2px solid var(--accent2); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.9rem; font-weight:700; color:var(--accent2);">a</div>
+                  <div style="width:36px; height:36px; border:2px solid var(--accent2); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.9rem; font-weight:700; color:var(--accent2);">n</div>
+                  <div style="width:36px; height:36px; border:2px solid var(--accent2); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.9rem; font-weight:700; color:var(--accent2);">s</div>
+                  <div style="width:36px; height:36px; border:2px solid var(--accent2); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.9rem; font-weight:700; color:var(--accent2);">e</div>
+                  <div style="width:36px; height:36px; border:2px solid var(--accent2); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:.9rem; font-weight:700; color:var(--accent2);">n</div>
+                  <span style="margin-left:10px; font-size:.75rem; color:var(--text2);">← alleen 6 bytes, rest niet gereserveerd</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="mcq" style="margin-top:20px">
+            <div class="mcq-question">❓ Voor welk attribuut gebruik je het beste <code>CHAR(2)</code>?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq2')">lastname</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq2')">countrycode</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq2')">description</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq2')">emailadres</div>
+            </div>
+            <div class="mcq-feedback" id="mcq2"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(1)">Volgende: Getallen &amp; Datum →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card1 -->
+
+
+    <!-- ==================== CARD 3 — GETALLEN & DATUM ==================== -->
+    <div class="sec-card" id="card2">
+      <div class="sec-header" onclick="toggleCard(2)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🔢</div>
+          <div>
+            <div class="sec-title">Getallen &amp; Datum/Tijd</div>
+            <div class="sec-sub">INT, DECIMAL, DATE, TIME en DATETIME</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <h2 class="topic-title">Numerieke datatypes</h2>
+
+          <!-- ERD-stijl tabel met code blokken -->
+          <div style="display:flex; flex-direction:column; gap:14px; margin:16px 0;">
+
+            <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; border-radius:12px; border:2px solid var(--border); background:var(--card-bg);">
+              <div style="font-size:1.8rem; flex-shrink:0;">🔢</div>
+              <div style="flex:1;">
+                <strong style="color:var(--text); font-family:'JetBrains Mono',monospace;">INT</strong>
+                <p style="margin:4px 0 8px; font-size:.9rem;">Hele getallen — geen decimalen. Gebruik voor ID's, aantallen, leeftijden.</p>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <div style="background:var(--code-bg); border-radius:8px; padding:8px 12px; font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--code-text);">id <span style="color:var(--accent1)">INT</span> <span style="color:#6b7280">-- 1, 42, 10000</span></div>
+                  <div style="background:var(--code-bg); border-radius:8px; padding:8px 12px; font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--code-text);">amount <span style="color:var(--accent1)">INT</span> <span style="color:#6b7280">-- 6 personen</span></div>
+                </div>
+                <div class="hl-box info" style="margin-top:10px; padding:10px 14px;">
+                  <div class="box-title" style="font-size:.75rem;">SIGNED vs UNSIGNED</div>
+                  <code>SIGNED</code>: getal mag negatief zijn (bijv. temperatuur: -10)<br>
+                  <code>UNSIGNED</code>: alleen positief (bijv. leeftijd, ID — nooit negatief)
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; border-radius:12px; border:2px solid var(--border); background:var(--card-bg);">
+              <div style="font-size:1.8rem; flex-shrink:0;">💰</div>
+              <div style="flex:1;">
+                <strong style="color:var(--text); font-family:'JetBrains Mono',monospace;">DECIMAL(m, d)</strong>
+                <p style="margin:4px 0 8px; font-size:.9rem;">Decimale getallen met exacte precisie. <strong>m</strong> = totaal aantal cijfers, <strong>d</strong> = cijfers na de komma. Gebruik voor bedragen en maten.</p>
+                <div style="background:var(--code-bg); border-radius:8px; padding:8px 12px; font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--code-text);">
+                  salary <span style="color:var(--accent2)">DECIMAL(10,2)</span><br>
+                  <span style="color:#6b7280">-- max 10 cijfers, 2 na komma</span><br>
+                  <span style="color:#6b7280">-- bijv. 2500.50 of 12345678.90</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <h2 class="topic-title">Datum en tijd datatypes</h2>
+
+          <div style="display:flex; flex-direction:column; gap:14px; margin:16px 0;">
+
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:14px;">
+
+              <div style="padding:16px; border-radius:12px; border:2px solid var(--border); background:var(--card-bg);">
+                <div style="font-family:'JetBrains Mono',monospace; color:var(--accent3); font-weight:700; margin-bottom:8px;">DATE</div>
+                <p style="font-size:.85rem; margin-bottom:8px;">Alleen een datum. Geen tijd.</p>
+                <code>YYYY-MM-DD</code><br>
+                <span style="font-size:.8rem; color:var(--text2);">bijv. <strong>1990-05-23</strong></span>
+                <div class="chip chip-green" style="margin-top:8px; display:inline-block;">geboortedatum, besteldate</div>
+              </div>
+
+              <div style="padding:16px; border-radius:12px; border:2px solid var(--border); background:var(--card-bg);">
+                <div style="font-family:'JetBrains Mono',monospace; color:var(--accent4); font-weight:700; margin-bottom:8px;">TIME</div>
+                <p style="font-size:.85rem; margin-bottom:8px;">Alleen een tijdstip. Geen datum.</p>
+                <code>HH:MM:SS</code><br>
+                <span style="font-size:.8rem; color:var(--text2);">bijv. <strong>14:30:00</strong></span>
+                <div class="chip chip-blue" style="margin-top:8px; display:inline-block;">begintime, endtime</div>
+              </div>
+
+              <div style="padding:16px; border-radius:12px; border:2px solid var(--border); background:var(--card-bg);">
+                <div style="font-family:'JetBrains Mono',monospace; color:var(--accent5); font-weight:700; margin-bottom:8px;">DATETIME</div>
+                <p style="font-size:.85rem; margin-bottom:8px;">Datum én tijd samen.</p>
+                <code>YYYY-MM-DD HH:MM:SS</code><br>
+                <span style="font-size:.8rem; color:var(--text2);">bijv. <strong>2023-01-18 10:45:32</strong></span>
+                <div class="chip chip-ora" style="margin-top:8px; display:inline-block;">createdate, registrationdate</div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Drag-drop oefening: koppel attribuut aan datatype -->
+          <h2 class="topic-title">🎮 Koppel het attribuut aan het juiste datatype</h2>
+          <div class="drag-game" id="dragGame1">
+            <h3>Sleep elk attribuut naar het juiste datatype</h3>
+            <p style="color:var(--text2); font-size:.85rem; margin-bottom:16px;">Context: entiteit <code>employee</code> (werknemer)</p>
+            <div class="drag-area">
+              <div class="drag-col">
+                <h4>📦 Attributen</h4>
+                <div class="drag-items" id="dragSource1">
+                  <div class="drag-item" draggable="true" data-correct="text"    ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','textDrop1','numDrop1')">countrycode</div>
+                  <div class="drag-item" draggable="true" data-correct="num"     ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','textDrop1','numDrop1')">salary</div>
+                  <div class="drag-item" draggable="true" data-correct="text"    ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','textDrop1','numDrop1')">lastname</div>
+                  <div class="drag-item" draggable="true" data-correct="num"     ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','textDrop1','numDrop1')">dayofbirth</div>
+                  <div class="drag-item" draggable="true" data-correct="text"    ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','textDrop1','numDrop1')">description</div>
+                  <div class="drag-item" draggable="true" data-correct="num"     ondragstart="dragStart(event)" onclick="tapItem(this,'dragSource1','textDrop1','numDrop1')">starttime</div>
+                </div>
+              </div>
+              <div class="drag-col">
+                <h4>📝 Tekst (CHAR/VARCHAR/TEXT)</h4>
+                <div class="drop-zone" id="textDrop1" data-accepts="text"
+                     ondragover="allowDrop(event)"
+                     ondrop="drop(event,'text','textDrop1','numDrop1','dragSource1')"></div>
+              </div>
+              <div class="drag-col">
+                <h4>🔢 Getal/Datum (INT/DECIMAL/DATE/TIME)</h4>
+                <div class="drop-zone" id="numDrop1" data-accepts="num"
+                     ondragover="allowDrop(event)"
+                     ondrop="drop(event,'num','textDrop1','numDrop1','dragSource1')"></div>
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+              <button class="drag-btn" onclick="checkDrag('dragGame1','textDrop1','numDrop1')">✅ Controleer</button>
+              <button class="btn" onclick="resetDrag('dragGame1','textDrop1','numDrop1','dragSource1')">🔄 Reset</button>
+            </div>
+            <div id="dragGame1-feedback" style="margin-top:10px; font-size:.85rem;"></div>
+          </div>
+
+          <div class="mcq" style="margin-top:20px">
+            <div class="mcq-question">❓ Je wilt het salaris van een werknemer opslaan: <strong>€ 2500.50</strong>. Welk datatype gebruik je?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq3')">INT</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq3')">VARCHAR(10)</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq3')">DECIMAL(10,2)</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq3')">DATE</div>
+            </div>
+            <div class="mcq-feedback" id="mcq3"></div>
+          </div>
+
+          <!-- ===== MEMORY GAME ===== -->
+          <h2 class="topic-title">🃏 Memory — Koppel datatype aan voorbeeld</h2>
+          <p>Vind de bijpassende paren: een datatype en een bijbehorende waarde of omschrijving. Klik twee kaartjes om ze om te draaien!</p>
+
+          <div id="memoryGame" style="margin:20px 0;">
+            <div id="memoryGrid" style="
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 12px;
+              max-width: 640px;
+            "></div>
+            <div style="display:flex; gap:12px; align-items:center; margin-top:16px; flex-wrap:wrap;">
+              <button class="drag-btn" onclick="resetMemory()">🔄 Opnieuw</button>
+              <span id="memoryStatus" style="font-size:.9rem; color:var(--text2);"></span>
+              <span id="memoryMoves" style="font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--accent1);"></span>
+            </div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(2)">Volgende: Datatypes in tools →</button>
+          </div>
+
+
+    <!-- ==================== CARD 4 — DATATYPES IN TOOLS ==================== -->
+    <div class="sec-card" id="card3">
+      <div class="sec-header" onclick="toggleCard(3)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🛠️</div>
+          <div>
+            <div class="sec-title">Datatypes in tools</div>
+            <div class="sec-sub">Hoe zien datatypes eruit in Moqups, Draw.io en anderen?</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <p>Elke tool toont datatypes op een iets andere manier, maar de datatypes zelf zijn overal hetzelfde. Hieronder zie je hoe populaire tools ermee omgaan.</p>
+
+          <!-- Stap-voor-stap per tool -->
+          <div class="step-reveal" id="stepReveal2">
+
+            <div class="step-reveal-item visible">
+              <div style="padding:20px; border-radius:14px; border:2px solid var(--accent1); background:rgba(192,132,252,.06);">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+                  <span style="font-size:1.8rem;">🖼️</span>
+                  <div>
+                    <strong style="color:var(--accent1); font-size:1.05rem;">Moqups</strong>
+                    <span class="chip chip-green" style="margin-left:8px;">✅ Wij gebruiken dit</span>
+                  </div>
+                </div>
+                <p style="font-size:.9rem; margin-bottom:12px;">In Moqups voeg je datatypes direct toe aan attributen. Voorbeeld: entiteit <code>reservation</code>:</p>
+                <div class="erd-entity" style="min-width:280px; max-width:340px;">
+                  <div class="erd-entity-name" style="background:var(--accent1); color:var(--bg)">reservation</div>
+                  <ul class="erd-attrs">
+                    <li class="erd-attr"><span class="icon-pk">🔑</span> id <span style="margin-left:auto; font-size:.7rem; color:var(--accent1);">INT</span></li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> name <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">VARCHAR(100)</span></li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> date <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">DATE</span></li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> starttime <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">TIME</span></li>
+                    <li class="erd-attr"><span class="icon-opt">◇</span> amount <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">INT</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div style="padding:20px; border-radius:14px; border:2px solid var(--accent2); background:rgba(244,114,182,.06);">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+                  <span style="font-size:1.8rem;">🎨</span>
+                  <strong style="color:var(--accent2); font-size:1.05rem;">Draw.io</strong>
+                </div>
+                <p style="font-size:.9rem; margin-bottom:12px;">Draw.io toont attributen met hun datatype in tekstvorm. Voorbeeld: entiteit <code>event</code>:</p>
+                <div class="erd-entity" style="min-width:280px; max-width:340px;">
+                  <div class="erd-entity-name" style="background:var(--accent2); color:white">event</div>
+                  <ul class="erd-attrs">
+                    <li class="erd-attr"><span class="icon-pk">🔑</span> id <span style="margin-left:auto; font-size:.7rem; color:var(--accent2);">INT</span></li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> name <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">VARCHAR(50)</span></li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> date <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">DATE</span></li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> begintime <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">TIME</span></li>
+                    <li class="erd-attr"><span class="icon-opt">◇</span> endtime <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">TIME</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div style="padding:20px; border-radius:14px; border:2px solid var(--accent3); background:rgba(52,211,153,.06);">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+                  <span style="font-size:1.8rem;">📊</span>
+                  <strong style="color:var(--accent3); font-size:1.05rem;">Lucidchart</strong>
+                </div>
+                <p style="font-size:.9rem; margin-bottom:12px;">Lucidchart laat datatypes zien naast de attribuutnaam. Voorbeeld: entiteit <code>product</code>:</p>
+                <div class="erd-entity" style="min-width:280px; max-width:340px;">
+                  <div class="erd-entity-name" style="background:var(--accent3); color:var(--bg)">product</div>
+                  <ul class="erd-attrs">
+                    <li class="erd-attr"><span class="icon-pk">🔑</span> id <span style="margin-left:auto; font-size:.7rem; color:var(--accent3);">INT</span></li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> productcode <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">CHAR(5)</span></li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> description <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">TEXT</span></li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> createdate <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">DATETIME</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="hl-box tip">
+                <div class="box-title">💡 Conclusie — tools, zelfde datatypes</div>
+                Of je nu Moqups, Draw.io, Lucidchart of MySQL Workbench gebruikt — de datatypes zijn overal hetzelfde.
+                Alleen de <em>weergave</em> verschilt. Ken je de datatypes, dan kun je in elke tool werken. ✅
+              </div>
+
+              <table style="margin-top:16px;">
+                <thead><tr><th>Tool</th><th>Hoe datatypes tonen</th></tr></thead>
+                <tbody>
+                  <tr><td>🖼️ <strong>Moqups</strong> ✅</td><td>Datatype naast attribuutnaam, instelbaar per veld</td></tr>
+                  <tr><td>🎨 Draw.io</td><td>Tekstveld per attribuut, datatype handmatig typen</td></tr>
+                  <tr><td>📊 Lucidchart</td><td>Kolom naast naam, dropdownmenu met types</td></tr>
+                  <tr><td>🐬 MySQL Workbench</td><td>Directe koppeling aan echte database, dropdown met alle MySQL types</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="step-controls">
+            <button class="btn" onclick="stepReveal('stepReveal2', -1)" id="stepReveal2-prev" style="display:none">← Terug</button>
+            <button class="btn filled" onclick="stepReveal('stepReveal2', 1)" id="stepReveal2-next">Volgende tool →</button>
+            <span class="step-counter" id="stepReveal2-counter">1 / 4</span>
+          </div>
+
+          <div class="mcq" style="margin-top:24px">
+            <div class="mcq-question">❓ Je wilt de aanmaakdatum <strong>én</strong> -tijd van een bericht opslaan. Welk datatype kies je?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq4')">DATE</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq4')">TIME</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq4')">DATETIME</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq4')">VARCHAR(20)</div>
+            </div>
+            <div class="mcq-feedback" id="mcq4"></div>
+          </div>
+
+          <div class="step-controls" style="margin-top:20px">
+            <button class="btn filled" onclick="openNextCard(3)">Volgende: MySQL Workbench →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card3 -->
+
+
+    <!-- ==================== CARD 5 — MYSQL WORKBENCH ==================== -->
+    <div class="sec-card" id="card4">
+      <div class="sec-header" onclick="toggleCard(4)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🖼️</div>
+          <div>
+            <div class="sec-title">Moqups</div>
+            <div class="sec-sub">Account aanmaken en eerste ERD tekenen</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <div class="box-title">🖼️ Waarom Moqups?</div>
+            Moqups is de tool die wij gebruiken om ERD's te tekenen. Het werkt volledig in de browser —
+            geen installatie nodig. Je kunt samenwerken in realtime en ERD's eenvoudig aanmaken met datatypes.
+          </div>
+
+          <h2 class="topic-title">Stap-voor-stap: account & eerste ERD</h2>
+
+          <div class="step-reveal" id="stepReveal3">
+
+            <div class="step-reveal-item visible">
+              <div class="hl-box tip">
+                <div class="box-title">📥 Stap 1 — Account aanmaken</div>
+                Ga naar <code>moqups.com</code> en maak een gratis account aan via je schoole-mailadres.<br><br>
+                <ol style="margin:10px 0 0 16px; line-height:2;">
+                  <li>Klik op <strong>Sign Up</strong></li>
+                  <li>Kies <strong>Sign up with Google</strong> en gebruik je schoolaccount</li>
+                  <li>Je komt direct in je persoonlijke dashboard</li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="hl-box" style="border-color:var(--accent1); background:rgba(192,132,252,.08)">
+                <div class="box-title" style="color:var(--accent1)">📂 Stap 2 — Nieuw project aanmaken</div>
+                In het dashboard maak je een nieuw project aan:<br><br>
+                <ol style="margin:10px 0 0 16px; line-height:2;">
+                  <li>Klik op <strong>+ New Project</strong></li>
+                  <li>Geef je project een naam, bijv. <code>ERD Module 2</code></li>
+                  <li>Kies als template <strong>Blank</strong> — je begint met een leeg canvas</li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="hl-box" style="border-color:var(--accent2); background:rgba(244,114,182,.08)">
+                <div class="box-title" style="color:var(--accent2)">🗂️ Stap 3 — Een entiteit toevoegen</div>
+                In het canvas voeg je een entiteit toe als tabel:<br><br>
+                <ol style="margin:10px 0 0 16px; line-height:2;">
+                  <li>Klik links in de toolbar op <strong>Shapes</strong> (of gebruik de zoekbalk)</li>
+                  <li>Zoek op <strong>ERD Table</strong> of <strong>Entity</strong></li>
+                  <li>Sleep de shape naar het canvas</li>
+                  <li>Dubbelklik op de tabel om de naam te wijzigen</li>
+                </ol>
+                <div class="hl-box warn" style="margin-top:10px; padding:10px 14px;">
+                  <div class="box-title" style="font-size:.75rem;">💡 Naamgeving</div>
+                  Gebruik altijd kleine letters en enkelvoud voor je entiteitnaam — bijv. <code>employee</code>, niet <code>Employees</code>.
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="hl-box" style="border-color:var(--accent3); background:rgba(52,211,153,.08)">
+                <div class="box-title" style="color:var(--accent3)">⚙️ Stap 4 — Attributen & datatypes toevoegen</div>
+                Klik op de tabel om rijen (attributen) toe te voegen:<br><br>
+                <ul style="margin:10px 0 0 16px; line-height:2.2;">
+                  <li>Klik op <strong>+ Add row</strong> om een attribuut toe te voegen</li>
+                  <li>Typ de <strong>naam</strong> van het attribuut, bijv. <code>firstname</code></li>
+                  <li>Voeg het <strong>datatype</strong> toe achter de naam, bijv. <code>VARCHAR(50)</code></li>
+                  <li>Markeer de primaire sleutel met een <strong>🔑</strong> of <strong>PK</strong> label</li>
+                </ul>
+              </div>
+
+              <!-- ERD voorbeeld in Moqups-stijl -->
+              <div class="erd-canvas" style="margin-top:16px;">
+                <div style="font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--text2); margin-bottom:12px;">
+                  // Voorbeeld: entiteit reservation in Moqups
+                </div>
+                <div class="erd-entity" style="min-width:300px; max-width:380px;">
+                  <div class="erd-entity-name" style="background:var(--accent1); color:var(--bg)">reservation</div>
+                  <ul class="erd-attrs">
+                    <li class="erd-attr" style="background:rgba(251,191,36,.1)">
+                      <span class="icon-pk">🔑</span> <strong>id</strong>
+                      <span style="margin-left:auto; font-size:.7rem;">
+                        <span style="color:#fbbf24;">PK</span>
+                        <span style="color:var(--accent3); margin-left:4px;">INT</span>
+                      </span>
+                    </li>
+                    <li class="erd-attr">
+                      <span class="icon-req">◆</span> name
+                      <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">VARCHAR(100)</span>
+                    </li>
+                    <li class="erd-attr">
+                      <span class="icon-req">◆</span> date
+                      <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">DATE</span>
+                    </li>
+                    <li class="erd-attr">
+                      <span class="icon-req">◆</span> starttime
+                      <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">TIME</span>
+                    </li>
+                    <li class="erd-attr">
+                      <span class="icon-opt">◇</span> amount
+                      <span style="margin-left:auto; font-size:.7rem; color:var(--text2);">INT</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="hl-box" style="border-color:var(--accent4); background:rgba(96,165,250,.08)">
+                <div class="box-title" style="color:var(--accent4)">🔗 Stap 5 — Relaties tekenen</div>
+                Verbind twee entiteiten met een relatiepijl:<br><br>
+                <ol style="margin:10px 0 0 16px; line-height:2;">
+                  <li>Hover over de rand van een entiteit — je ziet een verbindingspunt verschijnen</li>
+                  <li>Klik en sleep naar de andere entiteit</li>
+                  <li>Kies het type relatie (1-op-1, 1-op-veel, etc.) in de toolbar</li>
+                  <li>Voeg een <strong>vreemde sleutel</strong> toe aan de juiste entiteit</li>
+                </ol>
+                <div class="hl-box tip" style="margin-top:10px; padding:10px 14px;">
+                  <div class="box-title" style="font-size:.75rem;">💾 Opslaan</div>
+                  Moqups slaat automatisch op in de cloud. Je hoeft niet handmatig op Opslaan te klikken.
+                  Deel je project via <strong>Share</strong> rechtsboven om samen te werken.
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="step-controls">
+            <button class="btn" onclick="stepReveal('stepReveal3', -1)" id="stepReveal3-prev" style="display:none">← Terug</button>
+            <button class="btn filled" onclick="stepReveal('stepReveal3', 1)" id="stepReveal3-next">Volgende stap →</button>
+            <span class="step-counter" id="stepReveal3-counter">1 / 5</span>
+          </div>
+
+          <!-- Typer oefening: koppel attribuut aan datatype -->
+          <h2 class="topic-title" style="margin-top:28px">⌨️ Typ het juiste datatype</h2>
+          <div class="typer-box">
+            <h3>Vul het correcte datatype in voor elk attribuut</h3>
+            <p style="color:var(--text2); font-size:.85rem; margin-bottom:16px;">Gebruik hoofdletters, exact zoals in MySQL. Bijv. <code>INT</code>, <code>DATE</code>, <code>VARCHAR(50)</code></p>
+
+            <div class="typer-row">
+              <label>Geboortedatum</label>
+              <input class="typer-input" id="t1" placeholder="datatype..."
+                     oninput="checkTyper('t1','DATE','h1')" onblur="checkTyper('t1','DATE','h1')">
+              <span class="typer-hint" id="h1">💡 Alleen een datum, geen tijd</span>
+            </div>
+            <div class="typer-row">
+              <label>Landcode (altijd 2 tekens)</label>
+              <input class="typer-input" id="t2" placeholder="datatype..."
+                     oninput="checkTyper('t2','CHAR(2)','h2')" onblur="checkTyper('t2','CHAR(2)','h2')">
+              <span class="typer-hint" id="h2">💡 Vaste lengte van 2</span>
+            </div>
+            <div class="typer-row">
+              <label>Salaris (bijv. 2500.50)</label>
+              <input class="typer-input" id="t3" placeholder="datatype..."
+                     oninput="checkTyper('t3','DECIMAL(10,2)','h3')" onblur="checkTyper('t3','DECIMAL(10,2)','h3')">
+              <span class="typer-hint" id="h3">💡 10 cijfers totaal, 2 na de komma</span>
+            </div>
+            <div class="typer-row">
+              <label>Achternaam (max 50 tekens)</label>
+              <input class="typer-input" id="t4" placeholder="datatype..."
+                     oninput="checkTyper('t4','VARCHAR(50)','h4')" onblur="checkTyper('t4','VARCHAR(50)','h4')">
+              <span class="typer-hint" id="h4">💡 Variabele lengte, maximaal 50</span>
+            </div>
+            <div class="typer-row">
+              <label>Aanmaakdatum + tijd</label>
+              <input class="typer-input" id="t5" placeholder="datatype..."
+                     oninput="checkTyper('t5','DATETIME','h5')" onblur="checkTyper('t5','DATETIME','h5')">
+              <span class="typer-hint" id="h5">💡 Datum én tijd samen</span>
+            </div>
+          </div>
+
+          <!-- Leeruitkomsten checklist -->
+          <h2 class="topic-title" style="margin-top:30px">✅ Leeruitkomsten — Check jezelf</h2>
+          <p style="color:var(--text2)">Klik op een leeruitkomst als jij dit nu snapt!</p>
+          <div class="checklist">
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik begrijp waarom datatypes belangrijk zijn bij het ontwerpen van een database.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik ken de meest gebruikte datatypes: CHAR, VARCHAR, TEXT, INT, DECIMAL, DATE, TIME en DATETIME.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan datatypes correct toewijzen aan attributen in een ERD.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik weet hoe ik datatypes weergeef in Moqups.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan in Moqups een entiteit aanmaken met attributen en de juiste datatypes.</div>
+            </div>
+          </div>
+
+          <div class="hl-box tip" style="margin-top:20px; text-align:center;">
+            <div class="box-title">🎉 Module 2 klaar!</div>
+            Je weet nu welke datatypes er zijn en hoe je ze toepast.
+            Volgende stap: in Moqups je eigen ERD bouwen met de juiste datatypes. 💪
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card4 -->
+
+  </div><!-- end sections -->
+</div>
+
+<footer>
+  <div class="big">ERD — Module 2</div>
+  MBO Software Development · Datatypes &amp; Tool
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

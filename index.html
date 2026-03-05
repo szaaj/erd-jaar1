@@ -25,8 +25,8 @@
     <a class="module-pill active" href="index.html">
       <span class="pill-num">1</span> ERD Basis
     </a>
-    <a class="module-pill locked" href="#">
-      <span class="pill-num">2</span> Module 2 <span class="pill-lock">🔒</span>
+    <a class="module-pill" href="module2.html">
+      <span class="pill-num">2</span> Datatypes &amp; Tool
     </a>
     <a class="module-pill locked" href="#">
       <span class="pill-num">3</span> Module 3 <span class="pill-lock">🔒</span>
@@ -75,6 +75,7 @@
     <div class="prog-step" onclick="scrollToCard(3)"><span class="num">4</span>Relaties</div>
     <div class="prog-step" onclick="scrollToCard(4)"><span class="num">5</span>Naamgeving</div>
     <div class="prog-step" onclick="scrollToCard(5)"><span class="num">6</span>Alles samen</div>
+    <div class="prog-step" onclick="scrollToCard(6)"><span class="num">7</span>🧩 ERD Puzzel</div>
   </div>
 
   <!-- ======================== SECTIONS ======================== -->
@@ -423,13 +424,13 @@
               </div>
               <div class="drag-col">
                 <h4>📦 Entiteiten</h4>
-                <div class="drop-zone" id="entityDrop1"
+                <div class="drop-zone" id="entityDrop1" data-accepts="entity"
                      ondragover="allowDrop(event)"
                      ondrop="drop(event,'entity','entityDrop1','attribDrop1','dragSource1')"></div>
               </div>
               <div class="drag-col">
                 <h4>🏷️ Attributen</h4>
-                <div class="drop-zone" id="attribDrop1"
+                <div class="drop-zone" id="attribDrop1" data-accepts="attrib"
                      ondragover="allowDrop(event)"
                      ondrop="drop(event,'attrib','entityDrop1','attribDrop1','dragSource1')"></div>
               </div>
@@ -911,6 +912,128 @@
         </div>
       </div>
     </div><!-- end card5 -->
+
+    <!-- ==================== CARD 7 — ERD PUZZEL ==================== -->
+    <div class="sec-card" id="card6">
+      <div class="sec-header" onclick="toggleCard(6)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🧩</div>
+          <div>
+            <div class="sec-title">ERD Puzzel</div>
+            <div class="sec-sub">Bouw het school-ERD op uit losse stukken</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box quiz">
+            <div class="box-title">🎯 De uitdaging</div>
+            Hieronder zie je alle bouwstenen van het school-ERD door elkaar.
+            Sleep elk stuk naar de juiste positie in het diagram. 
+            Entiteiten, attributen én relatielabels — alles moet kloppen!
+          </div>
+
+          <!-- PUZZEL SPEELVELD -->
+          <div id="erdPuzzle" style="margin: 20px 0;">
+
+            <!-- Stukken bank -->
+            <div style="margin-bottom: 16px;">
+              <div style="font-size:.8rem; font-weight:700; color:var(--text2); letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px;">📦 Beschikbare stukken — sleep naar het diagram</div>
+              <div id="puzzlePieces" style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                min-height: 60px;
+                padding: 14px;
+                border: 2px dashed var(--border);
+                border-radius: 14px;
+                background: var(--code-bg);
+              "></div>
+            </div>
+
+            <!-- Diagram canvas -->
+            <div style="font-size:.8rem; font-weight:700; color:var(--text2); letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px;">🗺️ Jouw ERD — sleep de stukken hiernaartoe</div>
+            <div id="puzzleCanvas" style="
+              position: relative;
+              width: 100%;
+              min-height: 420px;
+              background: var(--code-bg);
+              border: 2px solid var(--border);
+              border-radius: 16px;
+              overflow: hidden;
+            ">
+              <!-- Drop zones voor de 3 entiteiten -->
+              <div class="puzzle-zone" id="pz-student"
+                   style="left:3%; top:5%; width:29%;"
+                   data-label="student entiteit">
+                <div class="pz-header">student</div>
+                <div class="pz-slots">
+                  <div class="pz-slot" data-accepts="attr-student-id">🔑 id</div>
+                  <div class="pz-slot" data-accepts="attr-student-firstname">◆ firstname</div>
+                  <div class="pz-slot" data-accepts="attr-student-lastname">◆ lastname</div>
+                  <div class="pz-slot" data-accepts="attr-student-birthday">◇ birthday</div>
+                  <div class="pz-slot" data-accepts="attr-student-phonenr">◇ phonenr</div>
+                </div>
+              </div>
+
+              <div class="puzzle-zone" id="pz-klas"
+                   style="left:35%; top:15%; width:29%;"
+                   data-label="klas entiteit">
+                <div class="pz-header">klas</div>
+                <div class="pz-slots">
+                  <div class="pz-slot" data-accepts="attr-klas-id">🔑 id</div>
+                  <div class="pz-slot" data-accepts="attr-klas-name">◆ name</div>
+                  <div class="pz-slot" data-accepts="attr-klas-year">◆ year</div>
+                </div>
+              </div>
+
+              <div class="puzzle-zone" id="pz-leraar"
+                   style="left:67%; top:5%; width:29%;"
+                   data-label="leraar entiteit">
+                <div class="pz-header">leraar</div>
+                <div class="pz-slots">
+                  <div class="pz-slot" data-accepts="attr-leraar-id">🔑 id</div>
+                  <div class="pz-slot" data-accepts="attr-leraar-firstname">◆ firstname</div>
+                  <div class="pz-slot" data-accepts="attr-leraar-lastname">◆ lastname</div>
+                </div>
+              </div>
+
+              <!-- Drop zones voor relatie-labels -->
+              <div style="position:absolute; bottom: 30px; left:16%; display:flex; flex-direction:column; gap:6px; align-items:center;">
+                <div style="font-size:.65rem; color:var(--text2); font-family:'JetBrains Mono',monospace;">student → klas</div>
+                <div style="display:flex; gap:8px;">
+                  <div class="pz-rel-slot" data-accepts="rel-student-side" title="multipliciteit student-kant">?</div>
+                  <div style="width:40px; height:2px; background:var(--accent4); align-self:center;"></div>
+                  <div class="pz-rel-slot" data-accepts="rel-klas-left-side" title="multipliciteit klas-kant">?</div>
+                </div>
+              </div>
+
+              <div style="position:absolute; bottom: 30px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; gap:6px; align-items:center;">
+                <div style="font-size:.65rem; color:var(--text2); font-family:'JetBrains Mono',monospace;">klas → leraar</div>
+                <div style="display:flex; gap:8px;">
+                  <div class="pz-rel-slot" data-accepts="rel-klas-right-side" title="multipliciteit klas-kant">?</div>
+                  <div style="width:40px; height:2px; background:var(--accent5); align-self:center;"></div>
+                  <div class="pz-rel-slot" data-accepts="rel-leraar-side" title="multipliciteit leraar-kant">?</div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Controls -->
+            <div style="display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap;">
+              <button class="drag-btn" onclick="checkPuzzle()">✅ Controleer ERD</button>
+              <button class="btn" onclick="resetPuzzle()">🔄 Opnieuw</button>
+              <button class="btn" onclick="puzzleHint()">💡 Hint</button>
+              <span id="puzzleStatus" style="font-size:.9rem; color:var(--text2);"></span>
+            </div>
+            <div id="puzzleScore" style="margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:.85rem;"></div>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card6 -->
 
   </div><!-- end sections -->
 </div>

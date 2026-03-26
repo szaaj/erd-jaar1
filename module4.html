@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Veel-op-veel Relaties | SOD Module 4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="pastel">
+
+<!-- ======================== THEME BAR ======================== -->
+<div class="theme-bar">
+  <button class="theme-btn active" onclick="setTheme('pastel', this)">🌸 Pastel</button>
+  <button class="theme-btn" onclick="setTheme('dark', this)">🌑 Dark</button>
+  <button class="theme-btn" onclick="setTheme('light', this)">☀️ Light</button>
+  <button class="theme-btn" onclick="setTheme('neon', this)">⚡ Neon</button>
+</div>
+
+<!-- ======================== MODULE NAVIGATIE ======================== -->
+<nav class="module-nav">
+  <div class="module-nav-title">📚 SOD — Alle modules</div>
+  <div class="module-nav-grid">
+    <a class="module-pill" href="index.html"><span class="pill-num">1</span> ERD Basis</a>
+    <a class="module-pill" href="module2.html"><span class="pill-num">2</span> Datatypes &amp; Tool</a>
+    <a class="module-pill" href="module3.html"><span class="pill-num">3</span> Relaties</a>
+    <a class="module-pill active" href="module4.html"><span class="pill-num">4</span> Veel-op-veel</a>
+    <a class="module-pill locked" href="#"><span class="pill-num">5</span> Module 5 <span class="pill-lock">🔒</span></a>
+    <a class="module-pill locked" href="#"><span class="pill-num">6</span> Module 6 <span class="pill-lock">🔒</span></a>
+    <a class="module-pill locked" href="#"><span class="pill-num">7</span> Module 7 <span class="pill-lock">🔒</span></a>
+  </div>
+</nav>
+
+<!-- ======================== SCORE BAR ======================== -->
+<div class="score-bar">
+  <span class="score-label">Voortgang Module 4</span>
+  <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
+  <span class="score-num" id="scoreNum">0 / 20 ⭐</span>
+</div>
+
+<!-- ======================== HERO ======================== -->
+<div class="container">
+  <div class="hero">
+    <div class="hero-label">SOD · Module 4 · MBO</div>
+    <h1>Veel-op-veel<br>Relaties</h1>
+    <p>Soms wil iedereen alles — en dat is een M:N relatie.
+       Leer hoe je dit netjes oplost met een <strong>tussentabel</strong>. 🔀</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Onderdelen</div></div>
+      <div class="stat"><div class="stat-num">~40</div><div class="stat-label">Minuten</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-label">Oefeningen</div></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS STRIP -->
+  <div class="progress-strip" id="progressStrip">
+    <div class="prog-step active" onclick="scrollToCard(0)"><span class="num">1</span>Herhaling</div>
+    <div class="prog-step" onclick="scrollToCard(1)"><span class="num">2</span>Wat is M:N?</div>
+    <div class="prog-step" onclick="scrollToCard(2)"><span class="num">3</span>Waarom oplossen?</div>
+    <div class="prog-step" onclick="scrollToCard(3)"><span class="num">4</span>Tussentabel</div>
+    <div class="prog-step" onclick="scrollToCard(4)"><span class="num">5</span>Alternatieve PK</div>
+    <div class="prog-step" onclick="scrollToCard(5)"><span class="num">6</span>🎮 Bouw het ERD</div>
+  </div>
+
+  <div class="sections" id="allCards">
+
+    <!-- ==================== CARD 1 — HERHALING ==================== -->
+    <div class="sec-card open" id="card0">
+      <div class="sec-header" onclick="toggleCard(0)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🔙</div>
+          <div>
+            <div class="sec-title">Herhaling — Module 3</div>
+            <div class="sec-sub">Relaties, ERD'ish en kardinaliteit</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body"><div class="sec-inner">
+
+        <p>We starten met een snelle herhaling van module 3. Klik de kaartjes om de begrippen op te frissen!</p>
+
+        <div class="flip-grid">
+          <div class="flip-card" onclick="flip(this)">
+            <div class="flip-inner">
+              <div class="flip-front"><span class="flip-front-icon">↔️</span><span class="flip-front-label">1:1 relatie</span><span class="flip-front-hint">weet jij het nog?</span></div>
+              <div class="flip-back">Elk record in A hoort bij <strong>precies één</strong> record in B en andersom. Bijv. employee ↔ car.</div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="flip(this)">
+            <div class="flip-inner">
+              <div class="flip-front"><span class="flip-front-icon">🌿</span><span class="flip-front-label">1:N relatie</span><span class="flip-front-hint">weet jij het nog?</span></div>
+              <div class="flip-back">Één record in A hoort bij <strong>meerdere</strong> records in B. Bijv. house → resident. FK staat aan de N-kant.</div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="flip(this)">
+            <div class="flip-inner">
+              <div class="flip-front"><span class="flip-front-icon">🔀</span><span class="flip-front-label">M:N relatie</span><span class="flip-front-hint">weet jij het nog?</span></div>
+              <div class="flip-back">Meerdere records in A horen bij meerdere records in B. Moet worden <strong>opgelost</strong> met een tussentabel.</div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="flip(this)">
+            <div class="flip-inner">
+              <div class="flip-front"><span class="flip-front-icon">✍️</span><span class="flip-front-label">ERD'ish</span><span class="flip-front-hint">weet jij het nog?</span></div>
+              <div class="flip-back"><em>"Each Entity1 <strong>may/must</strong> verb <strong>1 and only 1 / 1 or more</strong> Entity2."</em> — Standaardzin om relaties te beschrijven.</div>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="topic-title">⚡ Herhaling quiz</h2>
+
+        <div class="mcq">
+          <div class="mcq-question">❓ Waar staat de vreemde sleutel in een 1:N relatie?</div>
+          <div class="mcq-options">
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'r1')">Aan de 1-kant</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,true,'r1')">Aan de N-kant (de veel-kant)</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'r1')">In beide entiteiten</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'r1')">Er is geen FK nodig</div>
+          </div>
+          <div class="mcq-feedback" id="r1"></div>
+        </div>
+
+        <div class="mcq">
+          <div class="mcq-question">❓ Welk symbool staat voor <em>may</em> (optioneel) in een ERD?</div>
+          <div class="mcq-options">
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'r2')">|| (twee streepjes)</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,true,'r2')">○ (open cirkel)</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'r2')">&lt; (kraaienpoot)</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'r2')">| (één streepje)</div>
+          </div>
+          <div class="mcq-feedback" id="r2"></div>
+        </div>
+
+        <div class="mcq">
+          <div class="mcq-question">❓ Je ziet deze ERD'ish zin: <em>"Each student must belong to 1 and only 1 class."</em> Wat betekent dit?</div>
+          <div class="mcq-options">
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'r3')">Een student mag in meerdere klassen zitten</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,true,'r3')">Een student zit verplicht in precies één klas</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'r3')">Een student hoeft niet in een klas te zitten</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'r3')">Een klas heeft precies één student</div>
+          </div>
+          <div class="mcq-feedback" id="r3"></div>
+        </div>
+
+        <div class="step-controls">
+          <button class="btn filled" onclick="openNextCard(0)">Verder: Wat is M:N? →</button>
+        </div>
+
+      </div></div>
+    </div><!-- end card0 -->
+
+
+    <!-- ==================== CARD 2 — WAT IS M:N ==================== -->
+    <div class="sec-card" id="card1">
+      <div class="sec-header" onclick="toggleCard(1)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🔀</div>
+          <div>
+            <div class="sec-title">Wat is een M:N relatie?</div>
+            <div class="sec-sub">Veel-op-veel — alles hangt met alles samen</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body"><div class="sec-inner">
+
+        <p>Je hebt al geleerd hoe 1:1 en 1:N relaties werken. Nu de derde — en lastste — categorie: de <strong>veel-op-veel-relatie (M:N)</strong>.</p>
+
+        <div class="hl-box info">
+          <div class="box-title">📌 Definitie M:N relatie</div>
+          Een <strong>veel-op-veel-relatie</strong> betekent dat <em>meerdere</em> records van entiteit A gekoppeld kunnen zijn aan <em>meerdere</em> records van entiteit B — en andersom.
+        </div>
+
+        <!-- Real-world voorbeeld visueel -->
+        <h2 class="topic-title">💻 Voorbeeld: computer ↔ software</h2>
+        <p>Een computer kan meerdere softwareprogramma's hebben. Dezelfde software kan op meerdere computers staan. Dat is M:N.</p>
+
+        <!-- Visuele matrix -->
+        <div class="erd-canvas" style="overflow-x:auto;">
+          <div style="font-size:.8rem; color:var(--text2); font-family:'JetBrains Mono',monospace; margin-bottom:12px;">// Welke software staat op welke computer?</div>
+          <div style="overflow-x:auto;">
+            <table style="min-width:360px;">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>🖥️ Computer 1</th>
+                  <th>🖥️ Computer 2</th>
+                  <th>🖥️ Computer 3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>📦 Word</strong></td>
+                  <td style="text-align:center; color:var(--accent3); font-size:1.1rem;">✓</td>
+                  <td style="text-align:center; color:var(--accent3); font-size:1.1rem;">✓</td>
+                  <td style="text-align:center; color:var(--text2);">—</td>
+                </tr>
+                <tr>
+                  <td><strong>📦 Chrome</strong></td>
+                  <td style="text-align:center; color:var(--accent3); font-size:1.1rem;">✓</td>
+                  <td style="text-align:center; color:var(--accent3); font-size:1.1rem;">✓</td>
+                  <td style="text-align:center; color:var(--accent3); font-size:1.1rem;">✓</td>
+                </tr>
+                <tr>
+                  <td><strong>📦 Photoshop</strong></td>
+                  <td style="text-align:center; color:var(--text2);">—</td>
+                  <td style="text-align:center; color:var(--text2);">—</td>
+                  <td style="text-align:center; color:var(--accent3); font-size:1.1rem;">✓</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:.8rem; color:var(--text2); margin-top:10px;">Computer 1 heeft Word én Chrome. Chrome staat op álle drie computers. Dit is een M:N relatie.</p>
+        </div>
+
+        <!-- ERD'ish zinnen -->
+        <h2 class="topic-title">De ERD'ish zinnen herkennen als M:N</h2>
+        <div style="display:flex; flex-direction:column; gap:10px; margin:14px 0;">
+          <div style="padding:14px 18px; border-radius:10px; border:2px solid var(--accent1); background:var(--code-bg); font-family:'JetBrains Mono',monospace; font-size:.9rem;">
+            Each <span style="color:var(--accent1); font-weight:700;">computer</span>
+            <span style="color:var(--accent2); font-weight:700;">may</span> have
+            <span style="color:var(--accent4); font-weight:700;">1 or more</span>
+            <span style="color:var(--accent1); font-weight:700;">software</span>.
+            <span style="float:right; font-size:.7rem; background:rgba(96,165,250,.15); color:var(--accent4); padding:2px 8px; border-radius:6px;">1 or more →</span>
+          </div>
+          <div style="padding:14px 18px; border-radius:10px; border:2px solid var(--accent2); background:var(--code-bg); font-family:'JetBrains Mono',monospace; font-size:.9rem;">
+            Each <span style="color:var(--accent2); font-weight:700;">software</span>
+            <span style="color:var(--accent2); font-weight:700;">may</span> be on
+            <span style="color:var(--accent4); font-weight:700;">1 or more</span>
+            <span style="color:var(--accent2); font-weight:700;">computer</span>.
+            <span style="float:right; font-size:.7rem; background:rgba(96,165,250,.15); color:var(--accent4); padding:2px 8px; border-radius:6px;">1 or more →</span>
+          </div>
+        </div>
+
+        <div class="hl-box warn">
+          <div class="box-title">🚨 Signaal: twee keer "1 or more" = M:N!</div>
+          Als <strong>beide</strong> ERD'ish zinnen eindigen op <em>"1 or more"</em>, heb je een veel-op-veel-relatie.
+          Dit kan <strong>niet direct</strong> in een database worden opgeslagen — je moet het oplossen met een tussentabel.
+        </div>
+
+        <!-- SVG M:N diagram -->
+        <h2 class="topic-title">Het M:N diagram — nog niet opgelost</h2>
+        <div style="display:flex; justify-content:center; overflow-x:auto; margin:16px 0;">
+          <svg width="500" height="120" viewBox="0 0 500 120" style="max-width:100%; height:auto;">
+            <!-- computer -->
+            <rect x="20" y="20" width="160" height="80" rx="6" fill="var(--card-bg)" stroke="var(--accent1)" stroke-width="2"/>
+            <rect x="20" y="20" width="160" height="30" rx="6" fill="var(--accent1)"/>
+            <rect x="20" y="36" width="160" height="14" fill="var(--accent1)"/>
+            <text x="100" y="40" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="var(--bg)">computer</text>
+            <text x="34" y="68" font-family="JetBrains Mono,monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+            <text x="34" y="86" font-family="JetBrains Mono,monospace" font-size="11" fill="var(--text2)">◆ computername</text>
+            <!-- software -->
+            <rect x="320" y="20" width="160" height="80" rx="6" fill="var(--card-bg)" stroke="var(--accent2)" stroke-width="2"/>
+            <rect x="320" y="20" width="160" height="30" rx="6" fill="var(--accent2)"/>
+            <rect x="320" y="36" width="160" height="14" fill="var(--accent2)"/>
+            <text x="400" y="40" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="white">software</text>
+            <text x="334" y="68" font-family="JetBrains Mono,monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+            <text x="334" y="86" font-family="JetBrains Mono,monospace" font-size="11" fill="var(--text2)">◆ softwarename</text>
+            <!-- lijn met dubbel kraaienpoot = M:N -->
+            <line x1="180" y1="60" x2="320" y2="60" stroke="var(--text2)" stroke-width="2.5" stroke-dasharray="6,3"/>
+            <!-- links kraaienpoot -->
+            <line x1="194" y1="52" x2="182" y2="60" stroke="var(--accent1)" stroke-width="2.5"/>
+            <line x1="194" y1="68" x2="182" y2="60" stroke="var(--accent1)" stroke-width="2.5"/>
+            <line x1="194" y1="60" x2="182" y2="60" stroke="var(--accent1)" stroke-width="2.5"/>
+            <circle cx="204" cy="60" r="6" fill="none" stroke="var(--accent1)" stroke-width="2.5"/>
+            <!-- rechts kraaienpoot -->
+            <line x1="306" y1="52" x2="318" y2="60" stroke="var(--accent2)" stroke-width="2.5"/>
+            <line x1="306" y1="68" x2="318" y2="60" stroke="var(--accent2)" stroke-width="2.5"/>
+            <line x1="306" y1="60" x2="318" y2="60" stroke="var(--accent2)" stroke-width="2.5"/>
+            <circle cx="296" cy="60" r="6" fill="none" stroke="var(--accent2)" stroke-width="2.5"/>
+            <!-- label -->
+            <text x="250" y="48" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#f87171" font-weight="700">M : N ⚠️</text>
+          </svg>
+        </div>
+        <p style="text-align:center; font-size:.85rem; color:#f87171;">⚠️ Dit ERD klopt nog niet — een M:N relatie moet opgelost worden!</p>
+
+        <!-- Spot de M:N oefening -->
+        <h2 class="topic-title">🎮 Spot de M:N relatie</h2>
+        <p style="color:var(--text2); font-size:.9rem;">Welk van de volgende scenario's is een M:N relatie?</p>
+
+        <div id="spotGame" style="display:flex; flex-direction:column; gap:10px; margin:14px 0;">
+          <div class="scenario-card" style="cursor:pointer;" onclick="spotMN(this, true)">
+            📚 Een <strong>student</strong> kan meerdere <strong>cursussen</strong> volgen. Een cursus kan meerdere studenten hebben.
+          </div>
+          <div class="scenario-card" style="cursor:pointer;" onclick="spotMN(this, false)">
+            🏠 Een <strong>huis</strong> kan meerdere <strong>bewoners</strong> hebben. Een bewoner woont in precies één huis.
+          </div>
+          <div class="scenario-card" style="cursor:pointer;" onclick="spotMN(this, true)">
+            🎬 Een <strong>acteur</strong> kan in meerdere <strong>films</strong> spelen. Een film heeft meerdere acteurs.
+          </div>
+          <div class="scenario-card" style="cursor:pointer;" onclick="spotMN(this, false)">
+            🚗 Een <strong>werknemer</strong> heeft maximaal één <strong>bedrijfswagen</strong>.
+          </div>
+        </div>
+        <div id="spotFeedback" style="font-size:.85rem; margin-top:8px; min-height:24px;"></div>
+
+        <div class="step-controls">
+          <button class="btn filled" onclick="openNextCard(1)">Volgende: Waarom oplossen? →</button>
+        </div>
+
+      </div></div>
+    </div><!-- end card1 -->
+
+
+    <!-- ==================== CARD 3 — WAAROM OPLOSSEN ==================== -->
+    <div class="sec-card" id="card2">
+      <div class="sec-header" onclick="toggleCard(2)">
+        <div class="sec-title-group">
+          <div class="sec-icon">⚠️</div>
+          <div>
+            <div class="sec-title">Waarom moet je M:N oplossen?</div>
+            <div class="sec-sub">Drie problemen zonder tussentabel</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body"><div class="sec-inner">
+
+        <p>Je <em>kunt</em> een M:N relatie proberen op te slaan in één tabel — maar dat geeft drie grote problemen. Ontdek ze stap voor stap.</p>
+
+        <div class="step-reveal" id="stepReveal1">
+
+          <div class="step-reveal-item visible">
+            <h2 class="topic-title">❌ Probleem 1 — Inconsistentie & fouten</h2>
+            <div class="hl-box" style="border-color:#f87171; background:rgba(248,113,113,.06);">
+              <div class="box-title" style="color:#f87171;">Typefouten en inconsistente namen</div>
+              <p style="margin:8px 0;">Als je namen gebruikt in plaats van ID's, kan dezelfde software op twee manieren gespeld worden:</p>
+              <div style="overflow-x:auto;">
+                <table>
+                  <thead><tr><th>computername</th><th>softwarename</th></tr></thead>
+                  <tbody>
+                    <tr><td>Computer1</td><td>Microsoft Word</td></tr>
+                    <tr><td>Computer2</td><td style="color:#f87171;">MS Word ← ⚠️ typefout!</td></tr>
+                    <tr><td>Computer3</td><td>Microsoft Word</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style="margin-top:10px; font-size:.85rem; color:#f87171;">De database ziet "Microsoft Word" en "MS Word" als <strong>twee verschillende programma's</strong> — terwijl het hetzelfde is.</p>
+            </div>
+          </div>
+
+          <div class="step-reveal-item">
+            <h2 class="topic-title">❌ Probleem 2 — Beheerlast bij wijzigingen</h2>
+            <div class="hl-box" style="border-color:#f87171; background:rgba(248,113,113,.06);">
+              <div class="box-title" style="color:#f87171;">Naam wijzigen = overal aanpassen</div>
+              <p style="margin:8px 0;">Stel: "Computer1" wordt hernoemd naar "Werkplek-A". Dan moet je <strong>elke rij</strong> in de tabel handmatig aanpassen:</p>
+              <div style="overflow-x:auto;">
+                <table>
+                  <thead><tr><th>computername</th><th>softwarename</th></tr></thead>
+                  <tbody>
+                    <tr><td style="color:#f87171; text-decoration:line-through;">Computer1</td><td>Microsoft Word</td></tr>
+                    <tr><td style="color:#f87171; text-decoration:line-through;">Computer1</td><td>Google Chrome</td></tr>
+                    <tr><td style="color:#f87171; text-decoration:line-through;">Computer1</td><td>Photoshop</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style="margin-top:10px; font-size:.85rem; color:#f87171;">Met ID's hoef je maar <strong>één rij</strong> te wijzigen in de <code>computer</code> tabel.</p>
+            </div>
+          </div>
+
+          <div class="step-reveal-item">
+            <h2 class="topic-title">❌ Probleem 3 — Extra opslag</h2>
+            <div class="hl-box" style="border-color:#f87171; background:rgba(248,113,113,.06);">
+              <div class="box-title" style="color:#f87171;">Volledige namen kosten veel ruimte</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:10px 0;">
+                <div>
+                  <div style="font-size:.8rem; color:#f87171; font-weight:700; margin-bottom:6px;">❌ Met namen (inefficiënt)</div>
+                  <div style="font-family:'JetBrains Mono',monospace; font-size:.75rem; line-height:2; background:var(--code-bg); padding:10px; border-radius:8px;">
+                    "Computer1" · "Microsoft Word"<br>
+                    "Computer1" · "Google Chrome"<br>
+                    "Computer2" · "Microsoft Word"<br>
+                    "Computer2" · "Google Chrome"<br>
+                    <span style="color:#f87171;">→ ~40 bytes per rij</span>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:.8rem; color:var(--accent3); font-weight:700; margin-bottom:6px;">✅ Met ID's (efficiënt)</div>
+                  <div style="font-family:'JetBrains Mono',monospace; font-size:.75rem; line-height:2; background:var(--code-bg); padding:10px; border-radius:8px;">
+                    1 · 101<br>
+                    1 · 102<br>
+                    2 · 101<br>
+                    2 · 102<br>
+                    <span style="color:var(--accent3);">→ ~4 bytes per rij</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-reveal-item">
+            <div class="hl-box tip">
+              <div class="box-title">✅ Conclusie — Gebruik altijd een tussentabel</div>
+              Een tussentabel (ook wel <strong>intersection entity</strong> of <strong>koppeltabel</strong> genoemd) lost alle drie de problemen op:
+              <ul style="margin:10px 0 0 16px; line-height:2.2;">
+                <li>Geen typefouten — namen staan maar op <strong>één plek</strong></li>
+                <li>Naam wijzigen = maar <strong>één rij</strong> aanpassen</li>
+                <li>Opslag met <strong>ID's</strong> is compact en snel</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+        <div class="step-controls">
+          <button class="btn" onclick="stepReveal('stepReveal1',-1)" id="stepReveal1-prev" style="display:none">← Terug</button>
+          <button class="btn filled" onclick="stepReveal('stepReveal1',1)" id="stepReveal1-next">Volgend probleem →</button>
+          <span class="step-counter" id="stepReveal1-counter">1 / 4</span>
+        </div>
+
+        <div class="mcq" style="margin-top:20px">
+          <div class="mcq-question">❓ Wat is het grootste risico van namen opslaan in plaats van ID's?</div>
+          <div class="mcq-options">
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'mcq1')">De database wordt te groot</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,true,'mcq1')">Typefouten leiden tot inconsistente data</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'mcq1')">Je kunt geen relaties meer leggen</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'mcq1')">Het maakt niet uit</div>
+          </div>
+          <div class="mcq-feedback" id="mcq1"></div>
+        </div>
+
+        <div class="step-controls">
+          <button class="btn filled" onclick="openNextCard(2)">Volgende: Tussentabel maken →</button>
+        </div>
+
+      </div></div>
+    </div><!-- end card2 -->
+
+
+    <!-- ==================== CARD 4 — TUSSENTABEL ==================== -->
+    <div class="sec-card" id="card3">
+      <div class="sec-header" onclick="toggleCard(3)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🔗</div>
+          <div>
+            <div class="sec-title">De tussentabel</div>
+            <div class="sec-sub">Hoe los je een M:N relatie op?</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body"><div class="sec-inner">
+
+        <p>Een M:N relatie los je op in <strong>4 stappen</strong>. Na deze stappen heb je twee 1:N relaties in plaats van één M:N.</p>
+
+        <div class="step-reveal" id="stepReveal2">
+
+          <div class="step-reveal-item visible">
+            <div class="hl-box" style="border-color:var(--accent1); background:rgba(192,132,252,.08);">
+              <div class="box-title" style="color:var(--accent1);">📋 Stap 1 — Identificeer de twee entiteiten</div>
+              <p>Stel vast dat er een M:N relatie bestaat door de ERD'ish zinnen te schrijven. Als beide zinnen eindigen op <strong>"1 or more"</strong> → M:N!</p>
+              <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+                <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.8rem; flex:1; min-width:200px;">
+                  Each <span style="color:var(--accent1);">computer</span> may have <span style="color:var(--accent4);">1 or more</span> <span style="color:var(--accent2);">software</span>.
+                </div>
+                <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.8rem; flex:1; min-width:200px;">
+                  Each <span style="color:var(--accent2);">software</span> may be on <span style="color:var(--accent4);">1 or more</span> <span style="color:var(--accent1);">computer</span>.
+                </div>
+              </div>
+              <p style="color:var(--accent4); font-weight:700; margin-top:10px; font-size:.85rem;">→ Twee keer "1 or more" = M:N relatie ✓</p>
+            </div>
+          </div>
+
+          <div class="step-reveal-item">
+            <div class="hl-box" style="border-color:var(--accent2); background:rgba(244,114,182,.08);">
+              <div class="box-title" style="color:var(--accent2);">📋 Stap 2 — Maak een tussentabel</div>
+              <p>Voeg een nieuwe entiteit toe tussen de twee. Naam: combineer de twee entiteiten of beschrijf de relatie logisch.</p>
+              <div style="margin:12px 0; display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center;">
+                <!-- computer -->
+                <div class="erd-entity" style="min-width:130px; max-width:160px;">
+                  <div class="erd-entity-name" style="background:var(--accent1); color:var(--bg); font-size:.8rem;">computer</div>
+                  <ul class="erd-attrs" style="font-size:.75rem;">
+                    <li class="erd-attr"><span class="icon-pk">🔑</span> id</li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> computername</li>
+                  </ul>
+                </div>
+                <div style="font-size:1.5rem; color:var(--accent4);">→</div>
+                <!-- softwarerow NIEUW -->
+                <div class="erd-entity" style="min-width:140px; max-width:170px; box-shadow:0 0 20px var(--glow);">
+                  <div class="erd-entity-name" style="background:var(--accent4); color:var(--bg); font-size:.8rem;">softwarerow ✨</div>
+                  <ul class="erd-attrs" style="font-size:.75rem;">
+                    <li class="erd-attr"><span class="icon-pk">🔑</span> id</li>
+                    <li class="erd-attr"><span style="color:#f87171;">🔷</span> computer_id</li>
+                    <li class="erd-attr"><span style="color:#f87171;">🔷</span> software_id</li>
+                    <li class="erd-attr"><span class="icon-opt">◇</span> installdate</li>
+                  </ul>
+                </div>
+                <div style="font-size:1.5rem; color:var(--accent4);">←</div>
+                <!-- software -->
+                <div class="erd-entity" style="min-width:130px; max-width:160px;">
+                  <div class="erd-entity-name" style="background:var(--accent2); color:white; font-size:.8rem;">software</div>
+                  <ul class="erd-attrs" style="font-size:.75rem;">
+                    <li class="erd-attr"><span class="icon-pk">🔑</span> id</li>
+                    <li class="erd-attr"><span class="icon-req">◆</span> softwarename</li>
+                  </ul>
+                </div>
+              </div>
+              <p style="font-size:.85rem; color:var(--text2);">De tussentabel <code>softwarerow</code> bevat de FK's van beide entiteiten en optionele extra attributen.</p>
+            </div>
+          </div>
+
+          <div class="step-reveal-item">
+            <div class="hl-box" style="border-color:var(--accent3); background:rgba(52,211,153,.08);">
+              <div class="box-title" style="color:var(--accent3);">📋 Stap 3 — Schrijf de nieuwe ERD'ish zinnen</div>
+              <p style="margin-bottom:10px;">De M:N is nu opgesplitst in <strong>twee 1:N relaties</strong>:</p>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.8rem;">
+                  Each <span style="color:var(--accent1);">computer</span> <span style="color:var(--accent2);">may</span> have <span style="color:var(--accent4);">1 or more</span> <span style="color:var(--accent4);">softwarerow</span>.
+                </div>
+                <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.8rem;">
+                  Each <span style="color:var(--accent4);">softwarerow</span> <span style="color:var(--accent3);">must</span> belong to <span style="color:var(--accent3);">1 and only 1</span> <span style="color:var(--accent1);">computer</span>.
+                </div>
+                <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.8rem;">
+                  Each <span style="color:var(--accent2);">software</span> <span style="color:var(--accent2);">may</span> have <span style="color:var(--accent4);">1 or more</span> <span style="color:var(--accent4);">softwarerow</span>.
+                </div>
+                <div style="background:var(--code-bg); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:.8rem;">
+                  Each <span style="color:var(--accent4);">softwarerow</span> <span style="color:var(--accent3);">must</span> belong to <span style="color:var(--accent3);">1 and only 1</span> <span style="color:var(--accent2);">software</span>.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-reveal-item">
+            <div class="hl-box" style="border-color:var(--accent4); background:rgba(96,165,250,.08);">
+              <div class="box-title" style="color:var(--accent4);">📋 Stap 4 — Het opgeloste ERD</div>
+              <p>Het resultaat: twee 1:N relaties met de tussentabel in het midden.</p>
+            </div>
+            <!-- SVG opgelost ERD -->
+            <div style="display:flex; justify-content:center; overflow-x:auto; margin:16px 0;">
+              <svg width="600" height="160" viewBox="0 0 600 160" style="max-width:100%; height:auto;">
+                <!-- computer -->
+                <rect x="10" y="20" width="150" height="90" rx="6" fill="var(--card-bg)" stroke="var(--accent1)" stroke-width="2"/>
+                <rect x="10" y="20" width="150" height="28" rx="6" fill="var(--accent1)"/>
+                <rect x="10" y="34" width="150" height="14" fill="var(--accent1)"/>
+                <text x="85" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="var(--bg)">computer</text>
+                <text x="22" y="62" font-family="JetBrains Mono,monospace" font-size="10" fill="#fbbf24">🔑 id</text>
+                <text x="22" y="78" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◆ computername</text>
+                <text x="22" y="94" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◆ location</text>
+                <!-- softwarerow -->
+                <rect x="210" y="10" width="170" height="130" rx="6" fill="var(--card-bg)" stroke="var(--accent4)" stroke-width="2.5"/>
+                <rect x="210" y="10" width="170" height="28" rx="6" fill="var(--accent4)"/>
+                <rect x="210" y="24" width="170" height="14" fill="var(--accent4)"/>
+                <text x="295" y="27" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="var(--bg)">softwarerow</text>
+                <text x="222" y="55" font-family="JetBrains Mono,monospace" font-size="10" fill="#fbbf24">🔑 id</text>
+                <text x="222" y="72" font-family="JetBrains Mono,monospace" font-size="10" fill="#f87171">🔷 computer_id</text>
+                <text x="222" y="89" font-family="JetBrains Mono,monospace" font-size="10" fill="#f87171">🔷 software_id</text>
+                <text x="222" y="106" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◇ installdate</text>
+                <!-- software -->
+                <rect x="440" y="20" width="150" height="90" rx="6" fill="var(--card-bg)" stroke="var(--accent2)" stroke-width="2"/>
+                <rect x="440" y="20" width="150" height="28" rx="6" fill="var(--accent2)"/>
+                <rect x="440" y="34" width="150" height="14" fill="var(--accent2)"/>
+                <text x="515" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="white">software</text>
+                <text x="452" y="62" font-family="JetBrains Mono,monospace" font-size="10" fill="#fbbf24">🔑 id</text>
+                <text x="452" y="78" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◆ softwarename</text>
+                <text x="452" y="94" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◆ version</text>
+                <!-- lijn computer → softwarerow -->
+                <line x1="160" y1="65" x2="210" y2="65" stroke="var(--text2)" stroke-width="2" stroke-dasharray="5,3"/>
+                <circle cx="172" cy="65" r="5" fill="none" stroke="var(--accent1)" stroke-width="2"/>
+                <line x1="182" y1="57" x2="170" y2="65" stroke="var(--accent1)" stroke-width="2"/>
+                <line x1="182" y1="73" x2="170" y2="65" stroke="var(--accent1)" stroke-width="2"/>
+                <line x1="182" y1="65" x2="170" y2="65" stroke="var(--accent1)" stroke-width="2"/>
+                <line x1="206" y1="57" x2="206" y2="73" stroke="var(--accent3)" stroke-width="2"/>
+                <line x1="200" y1="57" x2="200" y2="73" stroke="var(--accent3)" stroke-width="2"/>
+                <!-- lijn software → softwarerow -->
+                <line x1="440" y1="65" x2="380" y2="65" stroke="var(--text2)" stroke-width="2" stroke-dasharray="5,3"/>
+                <circle cx="428" cy="65" r="5" fill="none" stroke="var(--accent2)" stroke-width="2"/>
+                <line x1="418" y1="57" x2="430" y2="65" stroke="var(--accent2)" stroke-width="2"/>
+                <line x1="418" y1="73" x2="430" y2="65" stroke="var(--accent2)" stroke-width="2"/>
+                <line x1="418" y1="65" x2="430" y2="65" stroke="var(--accent2)" stroke-width="2"/>
+                <line x1="384" y1="57" x2="384" y2="73" stroke="var(--accent3)" stroke-width="2"/>
+                <line x1="390" y1="57" x2="390" y2="73" stroke="var(--accent3)" stroke-width="2"/>
+                <!-- labels -->
+                <text x="185" y="52" font-family="JetBrains Mono,monospace" font-size="9" fill="var(--accent1)">may·N</text>
+                <text x="185" y="85" font-family="JetBrains Mono,monospace" font-size="9" fill="var(--accent3)">must·1</text>
+                <text x="392" y="52" font-family="JetBrains Mono,monospace" font-size="9" fill="var(--accent2)">may·N</text>
+                <text x="392" y="85" font-family="JetBrains Mono,monospace" font-size="9" fill="var(--accent3)">must·1</text>
+                <text x="295" y="152" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="var(--accent3)">✅ M:N opgelost — twee 1:N relaties</text>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+        <div class="step-controls">
+          <button class="btn" onclick="stepReveal('stepReveal2',-1)" id="stepReveal2-prev" style="display:none">← Terug</button>
+          <button class="btn filled" onclick="stepReveal('stepReveal2',1)" id="stepReveal2-next">Volgende stap →</button>
+          <span class="step-counter" id="stepReveal2-counter">1 / 4</span>
+        </div>
+
+        <!-- Order/product voorbeeld -->
+        <h2 class="topic-title" style="margin-top:28px;">🛒 Nog een voorbeeld: order ↔ product</h2>
+        <p>Denk aan een supermarktbonnetje: één order heeft meerdere producten, één product kan in meerdere orders voorkomen.</p>
+
+        <div style="display:flex; justify-content:center; overflow-x:auto; margin:16px 0;">
+          <svg width="600" height="160" viewBox="0 0 600 160" style="max-width:100%; height:auto;">
+            <!-- order -->
+            <rect x="10" y="20" width="140" height="90" rx="6" fill="var(--card-bg)" stroke="var(--accent1)" stroke-width="2"/>
+            <rect x="10" y="20" width="140" height="28" rx="6" fill="var(--accent1)"/>
+            <rect x="10" y="34" width="140" height="14" fill="var(--accent1)"/>
+            <text x="80" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="var(--bg)">order</text>
+            <text x="22" y="62" font-family="JetBrains Mono,monospace" font-size="10" fill="#fbbf24">🔑 id</text>
+            <text x="22" y="78" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◆ orderdate</text>
+            <text x="22" y="94" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◆ status</text>
+            <!-- orderrow -->
+            <rect x="210" y="10" width="175" height="130" rx="6" fill="var(--card-bg)" stroke="var(--accent3)" stroke-width="2.5"/>
+            <rect x="210" y="10" width="175" height="28" rx="6" fill="var(--accent3)"/>
+            <rect x="210" y="24" width="175" height="14" fill="var(--accent3)"/>
+            <text x="297" y="27" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="var(--bg)">orderrow</text>
+            <text x="222" y="55" font-family="JetBrains Mono,monospace" font-size="10" fill="#fbbf24">🔑 id</text>
+            <text x="222" y="72" font-family="JetBrains Mono,monospace" font-size="10" fill="#f87171">🔷 order_id</text>
+            <text x="222" y="89" font-family="JetBrains Mono,monospace" font-size="10" fill="#f87171">🔷 product_id</text>
+            <text x="222" y="106" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◆ quantity</text>
+            <text x="222" y="122" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◆ price</text>
+            <!-- product -->
+            <rect x="445" y="20" width="145" height="90" rx="6" fill="var(--card-bg)" stroke="var(--accent2)" stroke-width="2"/>
+            <rect x="445" y="20" width="145" height="28" rx="6" fill="var(--accent2)"/>
+            <rect x="445" y="34" width="145" height="14" fill="var(--accent2)"/>
+            <text x="517" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="white">product</text>
+            <text x="457" y="62" font-family="JetBrains Mono,monospace" font-size="10" fill="#fbbf24">🔑 id</text>
+            <text x="457" y="78" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◆ productname</text>
+            <text x="457" y="94" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">◆ price</text>
+            <!-- lijnen -->
+            <line x1="150" y1="65" x2="210" y2="65" stroke="var(--text2)" stroke-width="2" stroke-dasharray="5,3"/>
+            <circle cx="162" cy="65" r="5" fill="none" stroke="var(--accent1)" stroke-width="2"/>
+            <line x1="172" y1="57" x2="160" y2="65" stroke="var(--accent1)" stroke-width="2"/>
+            <line x1="172" y1="73" x2="160" y2="65" stroke="var(--accent1)" stroke-width="2"/>
+            <line x1="172" y1="65" x2="160" y2="65" stroke="var(--accent1)" stroke-width="2"/>
+            <line x1="206" y1="57" x2="206" y2="73" stroke="var(--accent3)" stroke-width="2"/>
+            <line x1="200" y1="57" x2="200" y2="73" stroke="var(--accent3)" stroke-width="2"/>
+            <line x1="445" y1="65" x2="385" y2="65" stroke="var(--text2)" stroke-width="2" stroke-dasharray="5,3"/>
+            <circle cx="433" cy="65" r="5" fill="none" stroke="var(--accent2)" stroke-width="2"/>
+            <line x1="423" y1="57" x2="435" y2="65" stroke="var(--accent2)" stroke-width="2"/>
+            <line x1="423" y1="73" x2="435" y2="65" stroke="var(--accent2)" stroke-width="2"/>
+            <line x1="423" y1="65" x2="435" y2="65" stroke="var(--accent2)" stroke-width="2"/>
+            <line x1="389" y1="57" x2="389" y2="73" stroke="var(--accent3)" stroke-width="2"/>
+            <line x1="395" y1="57" x2="395" y2="73" stroke="var(--accent3)" stroke-width="2"/>
+            <text x="297" y="152" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="var(--accent3)">✅ order ↔ orderrow ↔ product</text>
+          </svg>
+        </div>
+
+        <div class="mcq">
+          <div class="mcq-question">❓ Wat bevat de tussentabel <code>orderrow</code> minimaal?</div>
+          <div class="mcq-options">
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'mcq2')">De namen van order en product</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,true,'mcq2')">De primaire sleutels van order en product als FK's</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'mcq2')">Alleen een eigen id</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'mcq2')">Alle attributen van beide entiteiten</div>
+          </div>
+          <div class="mcq-feedback" id="mcq2"></div>
+        </div>
+
+        <div class="step-controls">
+          <button class="btn filled" onclick="openNextCard(3)">Volgende: Alternatieve PK →</button>
+        </div>
+
+      </div></div>
+    </div><!-- end card3 -->
+
+
+    <!-- ==================== CARD 5 — ALTERNATIEVE PK ==================== -->
+    <div class="sec-card" id="card4">
+      <div class="sec-header" onclick="toggleCard(4)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🗝️</div>
+          <div>
+            <div class="sec-title">Alternatieve primaire sleutel</div>
+            <div class="sec-sub">Waarom een eigen id in de tussentabel?</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body"><div class="sec-inner">
+
+        <p>Een tussentabel heeft altijd minstens twee FK's. Maar je kunt ook een <strong>eigen primaire sleutel</strong> (id) toevoegen. Dit noem je een <em>alternatieve primaire sleutel</em>.</p>
+
+        <h2 class="topic-title">Zonder vs met alternatieve PK</h2>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0;">
+
+          <div style="padding:16px; border-radius:12px; border:2px solid var(--text2); background:var(--card-bg);">
+            <div style="font-weight:700; margin-bottom:10px; color:var(--text2);">Zonder alternatieve PK</div>
+            <div style="overflow-x:auto;">
+              <table style="font-size:.8rem;">
+                <thead><tr><th>computer_id (PK)</th><th>software_id (PK)</th><th>installdate</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>101</td><td>2024-06-01</td></tr>
+                  <tr><td>1</td><td>102</td><td>2024-06-03</td></tr>
+                  <tr><td>2</td><td>101</td><td>2024-06-05</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:.8rem; color:var(--text2); margin-top:10px;">PK = samengesteld uit twee kolommen. Moeilijker te gebruiken als andere tabellen naar deze tabel willen verwijzen.</p>
+          </div>
+
+          <div style="padding:16px; border-radius:12px; border:2px solid var(--accent3); background:rgba(52,211,153,.06);">
+            <div style="font-weight:700; margin-bottom:10px; color:var(--accent3);">✅ Met alternatieve PK</div>
+            <div style="overflow-x:auto;">
+              <table style="font-size:.8rem;">
+                <thead><tr><th>id (PK)</th><th>computer_id (FK)</th><th>software_id (FK)</th><th>installdate</th></tr></thead>
+                <tbody>
+                  <tr><td style="color:var(--accent3);">1</td><td>1</td><td>101</td><td>2024-06-01</td></tr>
+                  <tr><td style="color:var(--accent3);">2</td><td>1</td><td>102</td><td>2024-06-03</td></tr>
+                  <tr><td style="color:var(--accent3);">3</td><td>2</td><td>101</td><td>2024-06-05</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:.8rem; color:var(--accent3); margin-top:10px;">PK = enkelvoudig <code>id</code>. Eenvoudig te verwijzen vanuit andere tabellen, makkelijker te querien.</p>
+          </div>
+
+        </div>
+
+        <div class="hl-box tip">
+          <div class="box-title">💡 Stappen: alternatieve PK toevoegen</div>
+          <ol style="margin:10px 0 0 16px; line-height:2.4;">
+            <li>Voeg attribuut <code>id</code> toe aan de tussentabel</li>
+            <li>Stel <code>id</code> in als <strong>primaire sleutel (PK)</strong></li>
+            <li>Maak van <code>computer_id</code> en <code>software_id</code> <strong>vreemde sleutels (FK)</strong></li>
+          </ol>
+        </div>
+
+        <!-- Typer oefening -->
+        <h2 class="topic-title">⌨️ Vul de tussentabel in</h2>
+        <p style="color:var(--text2); font-size:.85rem; margin-bottom:16px;">Entiteiten: <code>student</code> en <code>course</code>. Tussentabel: <code>enrollment</code>. Vul de juiste attributen in.</p>
+
+        <div class="typer-box">
+          <div class="typer-row">
+            <label>Eigen sleutel van enrollment</label>
+            <input class="typer-input" id="t1" placeholder="attribuutnaam..."
+                   oninput="checkTyper('t1','id','h1')" onblur="checkTyper('t1','id','h1')">
+            <span class="typer-hint" id="h1">💡 Elk record heeft een unieke identificatie</span>
+          </div>
+          <div class="typer-row">
+            <label>Verwijzing naar student</label>
+            <input class="typer-input" id="t2" placeholder="attribuutnaam..."
+                   oninput="checkTyper('t2','student_id','h2')" onblur="checkTyper('t2','student_id','h2')">
+            <span class="typer-hint" id="h2">💡 Naamgeving: naamvantabel_id</span>
+          </div>
+          <div class="typer-row">
+            <label>Verwijzing naar course</label>
+            <input class="typer-input" id="t3" placeholder="attribuutnaam..."
+                   oninput="checkTyper('t3','course_id','h3')" onblur="checkTyper('t3','course_id','h3')">
+            <span class="typer-hint" id="h3">💡 Naamgeving: naamvantabel_id</span>
+          </div>
+          <div class="typer-row">
+            <label>Datum van inschrijving</label>
+            <input class="typer-input" id="t4" placeholder="attribuutnaam..."
+                   oninput="checkTyper('t4','enrolldate','h4')" onblur="checkTyper('t4','enrolldate','h4')">
+            <span class="typer-hint" id="h4">💡 Denk aan een datum-attribuut</span>
+          </div>
+        </div>
+
+        <div class="mcq" style="margin-top:20px">
+          <div class="mcq-question">❓ Wat is het voordeel van een alternatieve PK in een tussentabel?</div>
+          <div class="mcq-options">
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'mcq3')">De tussentabel hoeft geen FK's meer te bevatten</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,true,'mcq3')">Verwijzingen vanuit andere tabellen worden eenvoudiger</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'mcq3')">Je hoeft geen tussentabel meer te maken</div>
+            <div class="mcq-opt" onclick="checkMCQ(this,false,'mcq3')">De M:N relatie wordt automatisch opgelost</div>
+          </div>
+          <div class="mcq-feedback" id="mcq3"></div>
+        </div>
+
+        <div class="step-controls">
+          <button class="btn filled" onclick="openNextCard(4)">Volgende: 🎮 Bouw het ERD →</button>
+        </div>
+
+      </div></div>
+    </div><!-- end card4 -->
+
+
+    <!-- ==================== CARD 6 — SPEL: BOUW HET ERD ==================== -->
+    <div class="sec-card" id="card5">
+      <div class="sec-header" onclick="toggleCard(5)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🎮</div>
+          <div>
+            <div class="sec-title">Bouw het ERD — Tussentabel Challenge</div>
+            <div class="sec-sub">Los drie M:N relaties op door de juiste tussentabel te bouwen</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body"><div class="sec-inner">
+
+        <div class="hl-box quiz">
+          <div class="box-title">🎯 De uitdaging</div>
+          Hieronder zie je drie M:N scenario's. Voor elk scenario moet je de tussentabel correct samenstellen:
+          de juiste naam kiezen, de juiste FK's selecteren en eventuele extra attributen toevoegen.
+        </div>
+
+        <div id="mnGame">
+          <!-- Ronde indicator -->
+          <div style="display:flex; align-items:center; gap:12px; margin:16px 0; flex-wrap:wrap;">
+            <div id="mnRoundLabel" style="font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; color:var(--accent1);">Scenario 1 van 3</div>
+            <div style="display:flex; gap:8px;">
+              <div class="mn-dot active" id="dot0"></div>
+              <div class="mn-dot" id="dot1"></div>
+              <div class="mn-dot" id="dot2"></div>
+            </div>
+            <div id="mnScore" style="margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--accent1);"></div>
+          </div>
+
+          <div id="mnScenarioBox"></div>
+
+          <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+            <button class="drag-btn" id="mnCheckBtn" onclick="checkMNRound()">✅ Controleer</button>
+            <button class="btn" id="mnNextBtn" onclick="nextMNRound()" style="display:none">Volgend scenario →</button>
+          </div>
+          <div id="mnFeedback" style="margin-top:12px; font-size:.9rem; min-height:24px;"></div>
+        </div>
+
+        <!-- Leeruitkomsten checklist -->
+        <h2 class="topic-title" style="margin-top:32px;">✅ Leeruitkomsten — Check jezelf</h2>
+        <p style="color:var(--text2);">Klik op een leeruitkomst als jij dit nu snapt!</p>
+        <div class="checklist">
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <div class="check-text">Ik kan uitleggen wat een veel-op-veel-relatie is en wanneer deze voorkomt.</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <div class="check-text">Ik kan uitleggen waarom een M:N relatie opgelost moet worden met een tussentabel.</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <div class="check-text">Ik kan een tussentabel aanmaken met de juiste FK's en eventuele extra attributen.</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <div class="check-text">Ik kan de relaties, optionaliteit en kardinaliteit correct weergeven in Moqups.</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <div class="check-text">Ik kan uitleggen waarom een alternatieve primaire sleutel handig is in een tussentabel.</div>
+          </div>
+        </div>
+
+        <div class="hl-box tip" style="margin-top:20px; text-align:center;">
+          <div class="box-title">🎉 Module 4 klaar!</div>
+          Je beheerst nu M:N relaties en tussentabellen. Volgende module: normalisatie! 💪
+        </div>
+
+      </div></div>
+    </div><!-- end card5 -->
+
+  </div><!-- end sections -->
+</div>
+
+<footer>
+  <div class="big">ERD — Module 4</div>
+  MBO Software Development · Veel-op-veel Relaties
+</footer>
+
+<script src="script.js"></script>
+<script>
+/* ====== SPOT DE M:N GAME ====== */
+const spotAnswered = new Set();
+function spotMN(el, isMN) {
+  if (spotAnswered.has(el)) return;
+  spotAnswered.add(el);
+  const fb = document.getElementById('spotFeedback');
+  if (isMN) {
+    el.style.borderColor = 'var(--accent3)';
+    el.style.background  = 'rgba(52,211,153,.12)';
+    fb.style.color = 'var(--accent3)';
+    fb.textContent = '✅ Correct! Dit is inderdaad een M:N relatie. +0.5 punt';
+    addPoint(0.5);
+  } else {
+    el.style.borderColor = '#f87171';
+    el.style.background  = 'rgba(248,113,113,.08)';
+    fb.style.color = '#f87171';
+    fb.textContent = '❌ Dit is geen M:N — kijk naar de kardinaliteit aan beide kanten.';
+  }
+}
+
+/* ====== M:N TUSSENTABEL CHALLENGE ====== */
+const MN_SCENARIOS = [
+  {
+    title: '📚 Student ↔ Course',
+    desc: 'Een student kan meerdere cursussen volgen. Een cursus kan meerdere studenten hebben.',
+    entityA: 'student', entityB: 'course',
+    correctName: 'enrollment',
+    nameOptions: ['enrollment', 'studentcourse', 'courselist', 'studentrow'],
+    correctFKs: ['student_id', 'course_id'],
+    fkOptions: ['student_id', 'course_id', 'student_name', 'course_name', 'id'],
+    correctExtra: 'enrolldate',
+    extraOptions: ['enrolldate', 'studentname', 'coursename', 'price'],
+    extraLabel: 'Datum van inschrijving',
+  },
+  {
+    title: '🎬 Actor ↔ Film',
+    desc: 'Een acteur kan in meerdere films spelen. Een film heeft meerdere acteurs.',
+    entityA: 'actor', entityB: 'film',
+    correctName: 'filmrole',
+    nameOptions: ['filmrole', 'actorfilm', 'cast', 'filmactor'],
+    correctFKs: ['actor_id', 'film_id'],
+    fkOptions: ['actor_id', 'film_id', 'actor_name', 'film_title', 'role_name'],
+    correctExtra: 'rolename',
+    extraOptions: ['rolename', 'actorname', 'filmtitle', 'castdate'],
+    extraLabel: 'Naam van de rol (bijv. "Iron Man")',
+  },
+  {
+    title: '🛒 Order ↔ Product',
+    desc: 'Een order bevat meerdere producten. Een product kan in meerdere orders voorkomen.',
+    entityA: 'order', entityB: 'product',
+    correctName: 'orderrow',
+    nameOptions: ['orderrow', 'orderproduct', 'cart', 'orderitem'],
+    correctFKs: ['order_id', 'product_id'],
+    fkOptions: ['order_id', 'product_id', 'order_date', 'product_name', 'customer_id'],
+    correctExtra: 'quantity',
+    extraOptions: ['quantity', 'ordername', 'productname', 'orderdate'],
+    extraLabel: 'Aantal bestelde producten',
+  },
+];
+
+let mnRound = 0;
+let mnCorrect = 0;
+let mnRoundDone = false;
+
+function renderMNScenario() {
+  const s = MN_SCENARIOS[mnRound];
+  mnRoundDone = false;
+  document.getElementById('mnRoundLabel').textContent = `Scenario ${mnRound + 1} van ${MN_SCENARIOS.length}`;
+  document.getElementById('mnFeedback').textContent = '';
+  document.getElementById('mnFeedback').innerHTML = '';
+  document.getElementById('mnNextBtn').style.display = 'none';
+  document.getElementById('mnCheckBtn').style.display = '';
+
+  // Dots bijwerken
+  MN_SCENARIOS.forEach((_, i) => {
+    const d = document.getElementById('dot' + i);
+    if (!d) return;
+    d.className = 'mn-dot' + (i === mnRound ? ' active' : i < mnRound ? ' done' : '');
+  });
+
+  // Scenario HTML renderen
+  document.getElementById('mnScenarioBox').innerHTML = `
+    <div style="padding:16px; border-radius:12px; border:2px solid var(--accent1); background:rgba(192,132,252,.06); margin-bottom:16px;">
+      <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; margin-bottom:6px;">${s.title}</div>
+      <p style="font-size:.9rem; margin-bottom:12px; color:var(--text2);">${s.desc}</p>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:.85rem;">
+        <span style="color:var(--accent1); font-weight:700;">${s.entityA}</span>
+        <span style="color:var(--text2);">——— M:N ———</span>
+        <span style="color:var(--accent2); font-weight:700;">${s.entityB}</span>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <div>
+        <div style="font-size:.85rem; font-weight:600; margin-bottom:8px;">1️⃣ Naam van de tussentabel:</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;" id="nameOpts">
+          ${s.nameOptions.map(n => `<button class="scenario-btn" data-val="${n}" onclick="selectMNOpt(this,'nameOpts')">${n}</button>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.85rem; font-weight:600; margin-bottom:8px;">2️⃣ Welke twee FK's bevat de tussentabel? <span style="font-weight:400; color:var(--text2);">(kies er 2)</span></div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;" id="fkOpts">
+          ${s.fkOptions.map(f => `<button class="scenario-btn" data-val="${f}" onclick="toggleMNFK(this)">${f}</button>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.85rem; font-weight:600; margin-bottom:8px;">3️⃣ ${s.extraLabel}:</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;" id="extraOpts">
+          ${s.extraOptions.map(e => `<button class="scenario-btn" data-val="${e}" onclick="selectMNOpt(this,'extraOpts')">${e}</button>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function selectMNOpt(btn, groupId) {
+  if (mnRoundDone) return;
+  document.querySelectorAll('#' + groupId + ' .scenario-btn').forEach(b => {
+    b.classList.remove('active-sel');
+  });
+  btn.classList.add('active-sel');
+}
+
+function toggleMNFK(btn) {
+  if (mnRoundDone) return;
+  if (btn.classList.contains('active-sel')) {
+    btn.classList.remove('active-sel');
+  } else {
+    const selected = document.querySelectorAll('#fkOpts .active-sel');
+    if (selected.length < 2) btn.classList.add('active-sel');
+  }
+}
+
+function checkMNRound() {
+  if (mnRoundDone) return;
+  const s   = MN_SCENARIOS[mnRound];
+  const fb  = document.getElementById('mnFeedback');
+
+  const nameBtn  = document.querySelector('#nameOpts .active-sel');
+  const fkBtns   = [...document.querySelectorAll('#fkOpts .active-sel')];
+  const extraBtn = document.querySelector('#extraOpts .active-sel');
+
+  if (!nameBtn || fkBtns.length < 2 || !extraBtn) {
+    fb.style.color = '#f87171';
+    fb.textContent = '⚠️ Maak eerst alle keuzes! (naam + 2 FK\'s + extra attribuut)';
+    return;
+  }
+
+  mnRoundDone = true;
+  document.getElementById('mnCheckBtn').style.display = 'none';
+
+  const nameOk  = nameBtn.dataset.val === s.correctName;
+  const fkVals  = fkBtns.map(b => b.dataset.val).sort().join(',');
+  const fkOk    = fkVals === [...s.correctFKs].sort().join(',');
+  const extraOk = extraBtn.dataset.val === s.correctExtra;
+
+  // Kleur naam-knop
+  nameBtn.classList.remove('active-sel');
+  nameBtn.classList.add(nameOk ? 'correct-ans' : 'wrong-ans');
+  if (!nameOk) {
+    // Toon het juiste antwoord ook groen
+    document.querySelectorAll('#nameOpts .scenario-btn').forEach(b => {
+      if (b.dataset.val === s.correctName) b.classList.add('correct-ans');
+    });
+  }
+
+  // Kleur FK-knoppen
+  fkBtns.forEach(b => {
+    b.classList.remove('active-sel');
+    b.classList.add(s.correctFKs.includes(b.dataset.val) ? 'correct-ans' : 'wrong-ans');
+  });
+  // Toon niet-geselecteerde correcte FK's ook groen
+  document.querySelectorAll('#fkOpts .scenario-btn:not(.correct-ans):not(.wrong-ans)').forEach(b => {
+    if (s.correctFKs.includes(b.dataset.val)) b.classList.add('correct-ans');
+  });
+
+  // Kleur extra-knop
+  extraBtn.classList.remove('active-sel');
+  extraBtn.classList.add(extraOk ? 'correct-ans' : 'wrong-ans');
+  if (!extraOk) {
+    document.querySelectorAll('#extraOpts .scenario-btn').forEach(b => {
+      if (b.dataset.val === s.correctExtra) b.classList.add('correct-ans');
+    });
+  }
+
+  const allOk = nameOk && fkOk && extraOk;
+
+  if (allOk) {
+    mnCorrect++;
+    addPoint(2);
+    fb.style.color = 'var(--accent3)';
+    fb.innerHTML = `🎉 Perfect! <strong>${s.correctName}</strong> met de juiste FK's en extra attribuut. +2 punten!`;
+  } else {
+    fb.style.color = '#f87171';
+    let msg = '❌ Niet helemaal — de juiste antwoorden zijn groen gemarkeerd.';
+    fb.innerHTML = msg;
+  }
+
+  if (mnRound < MN_SCENARIOS.length - 1) {
+    document.getElementById('mnNextBtn').style.display = '';
+  } else {
+    fb.innerHTML += `<br><br>🏆 Klaar! ${mnCorrect} / ${MN_SCENARIOS.length} scenario's helemaal goed.`;
+    document.getElementById('mnScore').textContent = `${mnCorrect}/${MN_SCENARIOS.length} ✅`;
+  }
+}
+
+function nextMNRound() {
+  mnRound++;
+  renderMNScenario();
+}
+
+// Init spel zodra DOM klaar is
+window.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('mnScenarioBox')) renderMNScenario();
+});
+</script>
+</body>
+</html>

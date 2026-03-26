@@ -1274,6 +1274,137 @@ footer .big {
 }
 
 /* ================================================================
+   MODULE 4 — M:N GAME ELEMENTEN
+================================================================ */
+.mn-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 2px solid var(--border);
+  transition: all .3s;
+}
+.mn-dot.active { background: var(--accent1); border-color: var(--accent1); box-shadow: 0 0 8px var(--glow); }
+.mn-dot.done   { background: var(--accent3); border-color: var(--accent3); }
+
+.scenario-btn.active-sel {
+  background: rgba(192,132,252,.15);
+  border-color: var(--accent1);
+  color: var(--accent1);
+}
+
+/* ================================================================
+   MODULE 3 — ERD'ISH & RELATIES
+================================================================ */
+.erdish-builder {
+  background: var(--code-bg);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 16px 0;
+}
+.erdish-sentence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .9rem;
+  margin: 10px 0;
+  padding: 14px;
+  background: var(--card-bg);
+  border-radius: 10px;
+  border: 2px solid var(--border);
+}
+.erdish-word   { color: var(--text2); font-style: italic; }
+.erdish-entity { color: var(--accent1); font-weight: 700; }
+.erdish-select {
+  background: var(--card-bg);
+  border: 2px solid var(--accent1);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem;
+  padding: 4px 8px;
+  cursor: pointer;
+  outline: none;
+}
+.erdish-select:focus { border-color: var(--accent3); }
+.erdish-result {
+  margin-top: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: .85rem;
+  display: none;
+}
+.erdish-result.show    { display: block; }
+.erdish-result.correct { background: rgba(52,211,153,.15); border: 2px solid var(--accent3); color: var(--accent3); }
+.erdish-result.wrong   { background: rgba(248,113,113,.12); border: 2px solid #f87171; color: #f87171; }
+
+/* Relatie SVG wrapper */
+.rel-svg-wrap {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+/* Identifying vs non-identifying vergelijk */
+.id-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+.id-box {
+  border-radius: 14px;
+  padding: 16px;
+  border: 2px solid var(--border);
+}
+.id-box.non   { border-color: var(--accent3); background: rgba(52,211,153,.06); }
+.id-box.ident { border-color: #f87171;        background: rgba(248,113,113,.06); }
+.id-box-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: .95rem;
+  margin-bottom: 10px;
+}
+.id-box.non .id-box-title   { color: var(--accent3); }
+.id-box.ident .id-box-title { color: #f87171; }
+
+/* Scenario game */
+.scenario-card {
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 12px 0;
+  transition: border-color .2s;
+}
+.scenario-q    { font-weight: 600; margin-bottom: 12px; }
+.scenario-opts { display: flex; gap: 10px; flex-wrap: wrap; }
+.scenario-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 2px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+}
+.scenario-btn:hover       { border-color: var(--accent1); color: var(--accent1); }
+.scenario-btn.correct-ans { background: rgba(52,211,153,.15); border-color: var(--accent3); color: var(--accent3); }
+.scenario-btn.wrong-ans   { background: rgba(248,113,113,.12); border-color: #f87171; color: #f87171; }
+.scenario-feedback        { margin-top: 10px; font-size: .85rem; min-height: 20px; }
+
+@media(max-width:600px) {
+  .id-compare { grid-template-columns: 1fr; }
+}
+
+/* ================================================================
    RESPONSIVE
 ================================================================ */
 @media (max-width: 700px) {

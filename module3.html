@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ERD Relaties | SOD Module 3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="pastel">
+
+<!-- ======================== THEME BAR ======================== -->
+<div class="theme-bar">
+  <button class="theme-btn active" onclick="setTheme('pastel', this)">🌸 Pastel</button>
+  <button class="theme-btn" onclick="setTheme('dark', this)">🌑 Dark</button>
+  <button class="theme-btn" onclick="setTheme('light', this)">☀️ Light</button>
+  <button class="theme-btn" onclick="setTheme('neon', this)">⚡ Neon</button>
+</div>
+
+<!-- ======================== MODULE NAVIGATIE ======================== -->
+<nav class="module-nav">
+  <div class="module-nav-title">📚 SOD — Alle modules</div>
+  <div class="module-nav-grid">
+    <a class="module-pill" href="index.html"><span class="pill-num">1</span> ERD Basis</a>
+    <a class="module-pill" href="module2.html"><span class="pill-num">2</span> Datatypes &amp; Tool</a>
+    <a class="module-pill active" href="module3.html"><span class="pill-num">3</span> Relaties</a>
+    <a class="module-pill" href="module4.html"><span class="pill-num">4</span> Veel-op-veel</a>
+    <a class="module-pill locked" href="#"><span class="pill-num">5</span> Module 5 <span class="pill-lock">🔒</span></a>
+    <a class="module-pill locked" href="#"><span class="pill-num">6</span> Module 6 <span class="pill-lock">🔒</span></a>
+    <a class="module-pill locked" href="#"><span class="pill-num">7</span> Module 7 <span class="pill-lock">🔒</span></a>
+  </div>
+</nav>
+
+<!-- ======================== SCORE BAR ======================== -->
+<div class="score-bar">
+  <span class="score-label">Voortgang Module 3</span>
+  <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
+  <span class="score-num" id="scoreNum">0 / 20 ⭐</span>
+</div>
+
+<!-- ======================== HERO ======================== -->
+<div class="container">
+  <div class="hero">
+    <div class="hero-label">SOD · Module 3 · MBO</div>
+    <h1>ERD<br>Relaties</h1>
+    <p>Hoe hangen entiteiten samen? In deze module leer je relaties correct
+       <strong>beschrijven, lezen én tekenen</strong> in Moqups. 🔗</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Onderdelen</div></div>
+      <div class="stat"><div class="stat-num">~40</div><div class="stat-label">Minuten</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Oefeningen</div></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS STRIP -->
+  <div class="progress-strip" id="progressStrip">
+    <div class="prog-step active" onclick="scrollToCard(0)"><span class="num">1</span>Herhaling</div>
+    <div class="prog-step" onclick="scrollToCard(1)"><span class="num">2</span>Wat zijn relaties?</div>
+    <div class="prog-step" onclick="scrollToCard(2)"><span class="num">3</span>ERD'ish</div>
+    <div class="prog-step" onclick="scrollToCard(3)"><span class="num">4</span>1:1 relatie</div>
+    <div class="prog-step" onclick="scrollToCard(4)"><span class="num">5</span>1:N relatie</div>
+    <div class="prog-step" onclick="scrollToCard(5)"><span class="num">6</span>Identifying</div>
+  </div>
+
+  <!-- ======================== SECTIONS ======================== -->
+  <div class="sections" id="allCards">
+
+    <!-- ==================== CARD 1 — HERHALING ==================== -->
+    <div class="sec-card open" id="card0">
+      <div class="sec-header" onclick="toggleCard(0)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🔙</div>
+          <div>
+            <div class="sec-title">Herhaling — Modules 1 &amp; 2</div>
+            <div class="sec-sub">Weet jij het nog? Test jezelf snel!</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <p>Voordat we relaties induiken, frissen we de basisconcepten even op. Klik de kaartjes om te checken of je het nog weet!</p>
+
+          <div class="flip-grid">
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">📦</span>
+                  <span class="flip-front-label">Entiteit</span>
+                  <span class="flip-front-hint">weet jij het nog?</span>
+                </div>
+                <div class="flip-back">Een object of concept dat je wilt opslaan in de database. Bijv. <strong>student</strong>, <strong>product</strong> of <strong>order</strong>.</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">🏷️</span>
+                  <span class="flip-front-label">Attribuut</span>
+                  <span class="flip-front-hint">weet jij het nog?</span>
+                </div>
+                <div class="flip-back">Een eigenschap van een entiteit. Bijv. <strong>firstname</strong>, <strong>email</strong> of <strong>birthday</strong>.</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">🔑</span>
+                  <span class="flip-front-label">Primaire sleutel</span>
+                  <span class="flip-front-hint">weet jij het nog?</span>
+                </div>
+                <div class="flip-back">Een unieke identificatie per record in een entiteit. Altijd het attribuut <strong>id</strong> — nooit twee keer hetzelfde.</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <span class="flip-front-icon">🔷</span>
+                  <span class="flip-front-label">Vreemde sleutel</span>
+                  <span class="flip-front-hint">weet jij het nog?</span>
+                </div>
+                <div class="flip-back">Een attribuut dat verwijst naar de primaire sleutel van een andere entiteit. Bijv. <strong>house_id</strong> in de entiteit <strong>resident</strong>.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Snelle quiz herhaling -->
+          <h2 class="topic-title">⚡ Snelle herhaling — 3 vragen</h2>
+
+          <div class="mcq">
+            <div class="mcq-question">❓ Welk datatype gebruik je voor een achternaam (max 50 tekens, variabele lengte)?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'r1')">CHAR(50)</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'r1')">VARCHAR(50)</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'r1')">TEXT</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'r1')">INT</div>
+            </div>
+            <div class="mcq-feedback" id="r1"></div>
+          </div>
+
+          <div class="mcq">
+            <div class="mcq-question">❓ Een attribuut <code>house_id</code> in de entiteit <code>resident</code> is een...</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'r2')">Primaire sleutel</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'r2')">Vreemde sleutel</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'r2')">Optioneel attribuut</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'r2')">Datatype</div>
+            </div>
+            <div class="mcq-feedback" id="r2"></div>
+          </div>
+
+          <div class="mcq">
+            <div class="mcq-question">❓ Hoe noem je een object dat je wilt opslaan in de database, bijv. <em>klant</em> of <em>product</em>?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'r3')">Attribuut</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'r3')">Relatie</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'r3')">Entiteit</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'r3')">Sleutel</div>
+            </div>
+            <div class="mcq-feedback" id="r3"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(0)">Verder: Wat zijn relaties? →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card0 -->
+
+
+    <!-- ==================== CARD 2 — WAT ZIJN RELATIES ==================== -->
+    <div class="sec-card" id="card1">
+      <div class="sec-header" onclick="toggleCard(1)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🔗</div>
+          <div>
+            <div class="sec-title">Wat zijn relaties?</div>
+            <div class="sec-sub">Hoe entiteiten aan elkaar gekoppeld zijn</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <p>Een ERD laat niet alleen zien <em>wát</em> je opslaat, maar ook <em>hoe</em> de gegevens samenhangen.
+             Die verbindingen tussen entiteiten noemen we <strong>relaties</strong>.</p>
+
+          <div class="hl-box info">
+            <div class="box-title">📌 Definitie</div>
+            Een <strong>relatie</strong> beschrijft hoe één entiteit verbonden is met een andere entiteit.
+            In een ERD tekenen we relaties als lijnen tussen entiteiten, met symbolen die aangeven
+            <em>hoe veel</em> records aan elkaar gekoppeld kunnen zijn.
+          </div>
+
+          <!-- Visueel: drie type relaties overzicht -->
+          <h2 class="topic-title">De drie relatietypen</h2>
+
+          <div style="display:flex; flex-direction:column; gap:14px; margin:16px 0;">
+
+            <div style="display:flex; gap:14px; align-items:center; padding:16px; border-radius:12px; border:2px solid var(--accent1); background:rgba(192,132,252,.06);">
+              <div style="flex-shrink:0;">
+                <svg width="140" height="50" viewBox="0 0 140 50">
+                  <rect x="4" y="14" width="44" height="22" rx="4" fill="none" stroke="var(--accent1)" stroke-width="2"/>
+                  <text x="26" y="29" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--accent1)">A</text>
+                  <line x1="48" y1="25" x2="92" y2="25" stroke="var(--text2)" stroke-width="2"/>
+                  <line x1="48" y1="25" x2="56" y2="25" stroke="var(--accent1)" stroke-width="2.5"/>
+                  <line x1="84" y1="25" x2="92" y2="25" stroke="var(--accent1)" stroke-width="2.5"/>
+                  <!-- left: must+1 = || -->
+                  <line x1="54" y1="18" x2="54" y2="32" stroke="var(--accent1)" stroke-width="2"/>
+                  <line x1="58" y1="18" x2="58" y2="32" stroke="var(--accent1)" stroke-width="2"/>
+                  <!-- right: must+1 = || -->
+                  <line x1="82" y1="18" x2="82" y2="32" stroke="var(--accent1)" stroke-width="2"/>
+                  <line x1="86" y1="18" x2="86" y2="32" stroke="var(--accent1)" stroke-width="2"/>
+                  <rect x="92" y="14" width="44" height="22" rx="4" fill="none" stroke="var(--accent1)" stroke-width="2"/>
+                  <text x="114" y="29" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--accent1)">B</text>
+                </svg>
+              </div>
+              <div>
+                <strong style="color:var(--accent1);">1:1 — Een-op-een</strong>
+                <p style="font-size:.85rem; margin:4px 0 0;">Elk record in A hoort bij precies één record in B en andersom.<br>
+                <span style="color:var(--text2);">Bijv. <em>employee</em> ↔ <em>car</em> (elke werknemer heeft max. 1 bedrijfswagen)</span></p>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:14px; align-items:center; padding:16px; border-radius:12px; border:2px solid var(--accent2); background:rgba(244,114,182,.06);">
+              <div style="flex-shrink:0;">
+                <svg width="140" height="50" viewBox="0 0 140 50">
+                  <rect x="4" y="14" width="44" height="22" rx="4" fill="none" stroke="var(--accent2)" stroke-width="2"/>
+                  <text x="26" y="29" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--accent2)">A</text>
+                  <line x1="48" y1="25" x2="92" y2="25" stroke="var(--text2)" stroke-width="2"/>
+                  <!-- left: must+1 = || -->
+                  <line x1="54" y1="18" x2="54" y2="32" stroke="var(--accent2)" stroke-width="2"/>
+                  <line x1="58" y1="18" x2="58" y2="32" stroke="var(--accent2)" stroke-width="2"/>
+                  <!-- right: may+N = O< kraaienpoot -->
+                  <circle cx="86" cy="25" r="5" fill="none" stroke="var(--accent2)" stroke-width="2"/>
+                  <line x1="92" y1="19" x2="84" y2="25" stroke="var(--accent2)" stroke-width="2"/>
+                  <line x1="92" y1="31" x2="84" y2="25" stroke="var(--accent2)" stroke-width="2"/>
+                  <line x1="92" y1="25" x2="84" y2="25" stroke="var(--accent2)" stroke-width="2"/>
+                  <rect x="92" y="14" width="44" height="22" rx="4" fill="none" stroke="var(--accent2)" stroke-width="2"/>
+                  <text x="114" y="29" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--accent2)">B</text>
+                </svg>
+              </div>
+              <div>
+                <strong style="color:var(--accent2);">1:N — Een-op-veel</strong>
+                <p style="font-size:.85rem; margin:4px 0 0;">Één record in A hoort bij meerdere records in B.<br>
+                <span style="color:var(--text2);">Bijv. <em>house</em> → <em>resident</em> (één huis, meerdere bewoners)</span></p>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:14px; align-items:center; padding:16px; border-radius:12px; border:2px solid var(--border); background:var(--card-bg); opacity:.65;">
+              <div style="flex-shrink:0;">
+                <svg width="140" height="50" viewBox="0 0 140 50">
+                  <rect x="4" y="14" width="44" height="22" rx="4" fill="none" stroke="var(--text2)" stroke-width="2"/>
+                  <text x="26" y="29" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">A</text>
+                  <line x1="48" y1="25" x2="92" y2="25" stroke="var(--text2)" stroke-width="2"/>
+                  <!-- left kraaienpoot -->
+                  <line x1="56" y1="19" x2="48" y2="25" stroke="var(--text2)" stroke-width="2"/>
+                  <line x1="56" y1="31" x2="48" y2="25" stroke="var(--text2)" stroke-width="2"/>
+                  <line x1="56" y1="25" x2="48" y2="25" stroke="var(--text2)" stroke-width="2"/>
+                  <!-- right kraaienpoot -->
+                  <line x1="92" y1="19" x2="84" y2="25" stroke="var(--text2)" stroke-width="2"/>
+                  <line x1="92" y1="31" x2="84" y2="25" stroke="var(--text2)" stroke-width="2"/>
+                  <line x1="92" y1="25" x2="84" y2="25" stroke="var(--text2)" stroke-width="2"/>
+                  <rect x="92" y="14" width="44" height="22" rx="4" fill="none" stroke="var(--text2)" stroke-width="2"/>
+                  <text x="114" y="29" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--text2)">B</text>
+                </svg>
+              </div>
+              <div>
+                <strong style="color:var(--text2);">M:N — Veel-op-veel</strong>
+                <p style="font-size:.85rem; margin:4px 0 0; color:var(--text2);">Meerdere records in A horen bij meerdere records in B.<br>
+                <span style="font-style:italic;">🔒 Wordt behandeld in een latere module.</span></p>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="hl-box tip">
+            <div class="box-title">💡 Vreemde sleutel = de brug</div>
+            Een relatie in een ERD wordt in de database uitgewerkt met een <strong>vreemde sleutel (foreign key)</strong>.
+            Die staat altijd aan de <em>veel-kant</em> van de relatie.<br><br>
+            Naamgeving: <code>naamvantabel_id</code> → bijv. <code>house_id</code> in de tabel <code>resident</code>.
+          </div>
+
+          <div class="mcq">
+            <div class="mcq-question">❓ Waar staat de vreemde sleutel in een 1:N relatie?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1')">Aan de één-kant</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq1')">Aan de veel-kant</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1')">In beide entiteiten</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq1')">In geen van beide</div>
+            </div>
+            <div class="mcq-feedback" id="mcq1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(1)">Volgende: ERD'ish techniek →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card1 -->
+
+
+    <!-- ==================== CARD 3 — ERD'ISH ==================== -->
+    <div class="sec-card" id="card2">
+      <div class="sec-header" onclick="toggleCard(2)">
+        <div class="sec-title-group">
+          <div class="sec-icon">✍️</div>
+          <div>
+            <div class="sec-title">ERD'ish — relaties beschrijven</div>
+            <div class="sec-sub">De standaardtechniek om relaties in woorden te zetten</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <p>Voordat je een relatie tekent, beschrijf je hem eerst in woorden. Daarvoor gebruik je de <strong>ERD'ish</strong> techniek — een vaste zinstructuur in het Engels.</p>
+
+          <!-- De standaardzin visueel uitgelegd -->
+          <div class="hl-box" style="border-color:var(--accent1); background:rgba(192,132,252,.08);">
+            <div class="box-title" style="color:var(--accent1);">📐 De ERD'ish standaardzin</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:.95rem; line-height:2.4; margin:10px 0; text-align:center;">
+              Each
+              <span style="color:var(--accent1); font-weight:700; background:rgba(192,132,252,.2); padding:2px 8px; border-radius:6px;">Entity1</span>
+              <span style="color:var(--accent2); font-weight:700; background:rgba(244,114,182,.2); padding:2px 8px; border-radius:6px;">may / must</span>
+              <span style="color:var(--text2); font-style:italic;">relationname</span>
+              <span style="color:var(--accent3); font-weight:700; background:rgba(52,211,153,.2); padding:2px 8px; border-radius:6px;">1 and only 1 / 1 or more</span>
+              <span style="color:var(--accent1); font-weight:700; background:rgba(192,132,252,.2); padding:2px 8px; border-radius:6px;">Entity2</span>.
+            </div>
+          </div>
+
+          <!-- Stap voor stap de keuzes uitleggen -->
+          <div class="step-reveal" id="stepReveal1">
+
+            <div class="step-reveal-item visible">
+              <h2 class="topic-title">Keuze 1 — Optionaliteit: <code>may</code> of <code>must</code>?</h2>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:12px 0;">
+                <div style="padding:16px; border-radius:12px; border:2px solid var(--accent2); background:rgba(244,114,182,.08); text-align:center;">
+                  <div style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.1rem; color:var(--accent2); margin-bottom:8px;">may</div>
+                  <p style="font-size:.85rem;">De relatie is <strong>optioneel</strong>.<br>Minimaal <strong>0</strong> — het hoeft niet.</p>
+                  <div style="margin-top:10px; display:flex; justify-content:center;">
+                    <svg width="60" height="36" viewBox="0 0 60 36">
+                      <line x1="0" y1="18" x2="60" y2="18" stroke="var(--text2)" stroke-width="2"/>
+                      <circle cx="12" cy="18" r="6" fill="none" stroke="var(--accent2)" stroke-width="2.5"/>
+                      <line x1="22" y1="10" x2="22" y2="26" stroke="var(--accent2)" stroke-width="2.5"/>
+                    </svg>
+                  </div>
+                  <div style="font-size:.7rem; color:var(--text2); margin-top:4px;">symbool: ○|</div>
+                </div>
+                <div style="padding:16px; border-radius:12px; border:2px solid var(--accent3); background:rgba(52,211,153,.08); text-align:center;">
+                  <div style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.1rem; color:var(--accent3); margin-bottom:8px;">must</div>
+                  <p style="font-size:.85rem;">De relatie is <strong>verplicht</strong>.<br>Minimaal <strong>1</strong> — het moet altijd.</p>
+                  <div style="margin-top:10px; display:flex; justify-content:center;">
+                    <svg width="60" height="36" viewBox="0 0 60 36">
+                      <line x1="0" y1="18" x2="60" y2="18" stroke="var(--text2)" stroke-width="2"/>
+                      <line x1="10" y1="10" x2="10" y2="26" stroke="var(--accent3)" stroke-width="2.5"/>
+                      <line x1="18" y1="10" x2="18" y2="26" stroke="var(--accent3)" stroke-width="2.5"/>
+                    </svg>
+                  </div>
+                  <div style="font-size:.7rem; color:var(--text2); margin-top:4px;">symbool: ||</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <h2 class="topic-title">Keuze 2 — Kardinaliteit: <code>1 and only 1</code> of <code>1 or more</code>?</h2>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:12px 0;">
+                <div style="padding:16px; border-radius:12px; border:2px solid var(--accent1); background:rgba(192,132,252,.08); text-align:center;">
+                  <div style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem; color:var(--accent1); margin-bottom:8px;">1 and only 1</div>
+                  <p style="font-size:.85rem;">Maximaal <strong>1</strong> — nooit meer dan één record.</p>
+                  <div style="margin-top:10px; display:flex; justify-content:center;">
+                    <svg width="40" height="36" viewBox="0 0 40 36">
+                      <line x1="0" y1="18" x2="40" y2="18" stroke="var(--text2)" stroke-width="2"/>
+                      <line x1="28" y1="10" x2="28" y2="26" stroke="var(--accent1)" stroke-width="2.5"/>
+                    </svg>
+                  </div>
+                  <div style="font-size:.7rem; color:var(--text2); margin-top:4px;">symbool: |</div>
+                </div>
+                <div style="padding:16px; border-radius:12px; border:2px solid var(--accent4); background:rgba(96,165,250,.08); text-align:center;">
+                  <div style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem; color:var(--accent4); margin-bottom:8px;">1 or more</div>
+                  <p style="font-size:.85rem;">Maximaal <strong>meerdere</strong> — het kraaienpootje.</p>
+                  <div style="margin-top:10px; display:flex; justify-content:center;">
+                    <svg width="40" height="36" viewBox="0 0 40 36">
+                      <line x1="0" y1="18" x2="40" y2="18" stroke="var(--text2)" stroke-width="2"/>
+                      <line x1="32" y1="10" x2="20" y2="18" stroke="var(--accent4)" stroke-width="2.5"/>
+                      <line x1="32" y1="26" x2="20" y2="18" stroke="var(--accent4)" stroke-width="2.5"/>
+                      <line x1="32" y1="18" x2="20" y2="18" stroke="var(--accent4)" stroke-width="2.5"/>
+                    </svg>
+                  </div>
+                  <div style="font-size:.7rem; color:var(--text2); margin-top:4px;">symbool: &lt; (kraaienpoot)</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <h2 class="topic-title">De vier combinaties</h2>
+              <table>
+                <thead>
+                  <tr><th>Optionaliteit</th><th>Kardinaliteit</th><th>Symbool</th><th>Betekenis</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>may</code></td><td><code>1 and only 1</code></td>
+                    <td><span style="font-family:'JetBrains Mono',monospace;">○|</span></td>
+                    <td>0 of 1 — optioneel, max 1</td>
+                  </tr>
+                  <tr>
+                    <td><code>must</code></td><td><code>1 and only 1</code></td>
+                    <td><span style="font-family:'JetBrains Mono',monospace;">||</span></td>
+                    <td>Exact 1 — altijd verplicht</td>
+                  </tr>
+                  <tr>
+                    <td><code>may</code></td><td><code>1 or more</code></td>
+                    <td><span style="font-family:'JetBrains Mono',monospace;">○&lt;</span></td>
+                    <td>0 of meer — optioneel, meerdere mogelijk</td>
+                  </tr>
+                  <tr>
+                    <td><code>must</code></td><td><code>1 or more</code></td>
+                    <td><span style="font-family:'JetBrains Mono',monospace;">|&lt;</span></td>
+                    <td>1 of meer — verplicht, meerdere mogelijk</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="step-controls">
+            <button class="btn" onclick="stepReveal('stepReveal1', -1)" id="stepReveal1-prev" style="display:none">← Terug</button>
+            <button class="btn filled" onclick="stepReveal('stepReveal1', 1)" id="stepReveal1-next">Volgende →</button>
+            <span class="step-counter" id="stepReveal1-counter">1 / 3</span>
+          </div>
+
+          <!-- ERD'ish BOUWER — interactieve zin samenstellen -->
+          <h2 class="topic-title" style="margin-top:28px;">🔨 ERD'ish bouwer — bouw zelf de zin</h2>
+          <p>Kies de juiste woorden en bouw de twee ERD'ish zinnen voor het voorbeeld: <strong>house → resident</strong>.</p>
+
+          <div class="erdish-builder">
+            <p style="font-size:.8rem; color:var(--text2); margin-bottom:14px;">Zinnen voor de 1:N relatie tussen <code>house</code> en <code>resident</code>:</p>
+
+            <!-- Zin 1 -->
+            <div class="erdish-sentence">
+              <span>Each</span>
+              <span class="erdish-entity">house</span>
+              <select class="erdish-select" id="es1a">
+                <option value="">-- kies --</option>
+                <option value="may">may</option>
+                <option value="must">must</option>
+              </select>
+              <span class="erdish-word">have</span>
+              <select class="erdish-select" id="es1b">
+                <option value="">-- kies --</option>
+                <option value="1">1 and only 1</option>
+                <option value="N">1 or more</option>
+              </select>
+              <span class="erdish-entity">resident</span>
+              <span>.</span>
+            </div>
+
+            <!-- Zin 2 -->
+            <div class="erdish-sentence">
+              <span>Each</span>
+              <span class="erdish-entity">resident</span>
+              <select class="erdish-select" id="es2a">
+                <option value="">-- kies --</option>
+                <option value="may">may</option>
+                <option value="must">must</option>
+              </select>
+              <span class="erdish-word">live in</span>
+              <select class="erdish-select" id="es2b">
+                <option value="">-- kies --</option>
+                <option value="1">1 and only 1</option>
+                <option value="N">1 or more</option>
+              </select>
+              <span class="erdish-entity">house</span>
+              <span>.</span>
+            </div>
+
+            <button class="drag-btn" style="margin-top:14px;" onclick="checkErdish()">✅ Controleer</button>
+            <div class="erdish-result" id="erdishResult"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(2)">Volgende: 1:1 relatie →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card2 -->
+
+
+    <!-- ==================== CARD 4 — 1:1 RELATIE ==================== -->
+    <div class="sec-card" id="card3">
+      <div class="sec-header" onclick="toggleCard(3)">
+        <div class="sec-title-group">
+          <div class="sec-icon">↔️</div>
+          <div>
+            <div class="sec-title">Een-op-een-relatie (1:1)</div>
+            <div class="sec-sub">employee ↔ car</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <p>Bij een <strong>1:1 relatie</strong> hoort elk record uit entiteit A bij precies één record uit entiteit B — en andersom.</p>
+
+          <div class="hl-box quiz">
+            <div class="box-title">🚗 Voorbeeld: employee ↔ car</div>
+            Een werknemer kan maximaal <strong>één</strong> bedrijfswagen hebben, en elke bedrijfswagen hoort bij
+            <strong>precies één</strong> werknemer.
+          </div>
+
+          <!-- ERD'ish zinnen -->
+          <h2 class="topic-title">Stap 1 — De ERD'ish zinnen</h2>
+          <div style="display:flex; flex-direction:column; gap:10px; margin:14px 0;">
+            <div style="padding:14px 18px; border-radius:10px; border:2px solid var(--accent1); background:var(--code-bg); font-family:'JetBrains Mono',monospace; font-size:.9rem;">
+              <span style="color:var(--text2)">1.</span>
+              Each <span style="color:var(--accent1); font-weight:700;">employee</span>
+              <span style="color:var(--accent2); font-weight:700;">may</span> have
+              <span style="color:var(--accent3); font-weight:700;">1 and only 1</span>
+              <span style="color:var(--accent1); font-weight:700;">car</span>.
+              <span style="float:right; font-size:.7rem; color:var(--text2);">optioneel · max 1</span>
+            </div>
+            <div style="padding:14px 18px; border-radius:10px; border:2px solid var(--accent4); background:var(--code-bg); font-family:'JetBrains Mono',monospace; font-size:.9rem;">
+              <span style="color:var(--text2)">2.</span>
+              Each <span style="color:var(--accent4); font-weight:700;">car</span>
+              <span style="color:var(--accent3); font-weight:700;">must</span> belong to
+              <span style="color:var(--accent3); font-weight:700;">1 and only 1</span>
+              <span style="color:var(--accent4); font-weight:700;">employee</span>.
+              <span style="float:right; font-size:.7rem; color:var(--text2);">verplicht · max 1</span>
+            </div>
+          </div>
+
+          <!-- Symbolen uitgelegd -->
+          <h2 class="topic-title">Stap 2 — De symbolen lezen</h2>
+          <div class="hl-box info">
+            <div class="box-title">📖 Volgorde van lezen</div>
+            Je leest de symbolen van <strong>buiten naar binnen</strong> — het eerste symbool is de optionaliteit, het tweede de kardinaliteit.<br><br>
+            <div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:.85rem;">
+              <div><span style="color:var(--accent2);">○</span> = may (optioneel)</div>
+              <div><span style="color:var(--accent3);">|</span> = must (verplicht)</div>
+              <div><span style="color:var(--accent1);">|</span> = 1 and only 1</div>
+              <div><span style="color:var(--accent4);">&lt;</span> = 1 or more (kraaienpoot)</div>
+            </div>
+          </div>
+
+          <!-- SVG visualisatie 1:1 -->
+          <h2 class="topic-title">Stap 3 — Het ERD in Moqups</h2>
+          <div class="rel-svg-wrap">
+            <svg width="580" height="160" viewBox="0 0 580 160" style="max-width:100%; height:auto;">
+              <!-- employee entiteit -->
+              <rect x="20" y="20" width="180" height="120" rx="6" fill="var(--card-bg)" stroke="var(--accent1)" stroke-width="2"/>
+              <rect x="20" y="20" width="180" height="32" rx="6" fill="var(--accent1)"/>
+              <rect x="20" y="38" width="180" height="14" fill="var(--accent1)"/>
+              <text x="110" y="42" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="var(--bg)">employee</text>
+              <text x="34" y="72"  font-family="JetBrains Mono,monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+              <text x="34" y="92"  font-family="JetBrains Mono,monospace" font-size="11" fill="var(--text2)">◆ firstname</text>
+              <text x="34" y="112" font-family="JetBrains Mono,monospace" font-size="11" fill="var(--text2)">◆ lastname</text>
+
+              <!-- car entiteit -->
+              <rect x="380" y="20" width="180" height="120" rx="6" fill="var(--card-bg)" stroke="var(--accent4)" stroke-width="2"/>
+              <rect x="380" y="20" width="180" height="32" rx="6" fill="var(--accent4)"/>
+              <rect x="380" y="38" width="180" height="14" fill="var(--accent4)"/>
+              <text x="470" y="42" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="var(--bg)">car</text>
+              <text x="394" y="72"  font-family="JetBrains Mono,monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+              <text x="394" y="92"  font-family="JetBrains Mono,monospace" font-size="11" fill="var(--text2)">◆ licensplate</text>
+              <text x="394" y="112" font-family="JetBrains Mono,monospace" font-size="11" fill="#f87171">🔷 employee_id</text>
+
+              <!-- relatie lijn -->
+              <line x1="200" y1="80" x2="380" y2="80" stroke="var(--text2)" stroke-width="2.5" stroke-dasharray="6,3"/>
+
+              <!-- employee-kant: may + 1 = ○| -->
+              <circle cx="218" cy="80" r="7" fill="none" stroke="var(--accent2)" stroke-width="2.5"/>
+              <line x1="228" y1="70" x2="228" y2="90" stroke="var(--accent1)" stroke-width="2.5"/>
+
+              <!-- car-kant: must + 1 = || -->
+              <line x1="352" y1="70" x2="352" y2="90" stroke="var(--accent3)" stroke-width="2.5"/>
+              <line x1="362" y1="70" x2="362" y2="90" stroke="var(--accent3)" stroke-width="2.5"/>
+
+              <!-- labels -->
+              <text x="235" y="68" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--accent2)">may · 1</text>
+              <text x="320" y="68" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--accent3)">must · 1</text>
+
+              <!-- annotatie FK -->
+              <text x="394" y="130" font-family="DM Sans,sans-serif" font-size="10" fill="var(--text2)" font-style="italic">FK verwijst naar employee.id</text>
+            </svg>
+          </div>
+
+          <div class="hl-box tip">
+            <div class="box-title">📌 FK staat bij car, niet bij employee</div>
+            De vreemde sleutel <code>employee_id</code> staat in de tabel <strong>car</strong> — want een auto <em>hoort bij</em> een werknemer.
+            In Moqups zie je dit als een extra rij met een 🔷 symbool ervoor.
+          </div>
+
+          <!-- Scenario opdracht -->
+          <h2 class="topic-title">🎮 Scenario opdracht</h2>
+          <div class="scenario-card" id="sc1">
+            <div class="scenario-q">🧠 Een <strong>persoon</strong> heeft maximaal één <strong>paspoort</strong>. Elk paspoort hoort bij precies één persoon. Welk relatietype is dit?</div>
+            <div class="scenario-opts">
+              <button class="scenario-btn" onclick="checkScenario('sc1', this, true)">1:1</button>
+              <button class="scenario-btn" onclick="checkScenario('sc1', this, false)">1:N</button>
+              <button class="scenario-btn" onclick="checkScenario('sc1', this, false)">M:N</button>
+            </div>
+            <div class="scenario-feedback" id="sc1-fb"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(3)">Volgende: 1:N relatie →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card3 -->
+
+
+    <!-- ==================== CARD 5 — 1:N RELATIE ==================== -->
+    <div class="sec-card" id="card4">
+      <div class="sec-header" onclick="toggleCard(4)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🌿</div>
+          <div>
+            <div class="sec-title">Een-op-veel-relatie (1:N)</div>
+            <div class="sec-sub">house → resident</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <p>Bij een <strong>1:N relatie</strong> hoort één record in entiteit A bij <em>meerdere</em> records in entiteit B. Dit is de meest voorkomende relatie in databases.</p>
+
+          <div class="hl-box quiz">
+            <div class="box-title">🏠 Voorbeeld: house → resident</div>
+            Één huis kan meerdere bewoners hebben. Maar elke bewoner woont in
+            <strong>precies één</strong> huis — nooit in twee tegelijk.
+          </div>
+
+          <!-- ERD'ish zinnen -->
+          <h2 class="topic-title">Stap 1 — De ERD'ish zinnen</h2>
+          <div style="display:flex; flex-direction:column; gap:10px; margin:14px 0;">
+            <div style="padding:14px 18px; border-radius:10px; border:2px solid var(--accent1); background:var(--code-bg); font-family:'JetBrains Mono',monospace; font-size:.9rem;">
+              <span style="color:var(--text2)">1.</span>
+              Each <span style="color:var(--accent1); font-weight:700;">house</span>
+              <span style="color:var(--accent2); font-weight:700;">may</span> have
+              <span style="color:var(--accent4); font-weight:700;">1 or more</span>
+              <span style="color:var(--accent1); font-weight:700;">residents</span>.
+              <span style="float:right; font-size:.7rem; color:var(--text2);">optioneel · meerdere</span>
+            </div>
+            <div style="padding:14px 18px; border-radius:10px; border:2px solid var(--accent2); background:var(--code-bg); font-family:'JetBrains Mono',monospace; font-size:.9rem;">
+              <span style="color:var(--text2)">2.</span>
+              Each <span style="color:var(--accent2); font-weight:700;">resident</span>
+              <span style="color:var(--accent3); font-weight:700;">must</span> live in
+              <span style="color:var(--accent3); font-weight:700;">1 and only 1</span>
+              <span style="color:var(--accent1); font-weight:700;">house</span>.
+              <span style="float:right; font-size:.7rem; color:var(--text2);">verplicht · max 1</span>
+            </div>
+          </div>
+
+          <!-- SVG visualisatie 1:N -->
+          <h2 class="topic-title">Stap 2 — Het ERD in Moqups</h2>
+          <div class="rel-svg-wrap">
+            <svg width="580" height="170" viewBox="0 0 580 170" style="max-width:100%; height:auto;">
+              <!-- house entiteit -->
+              <rect x="20" y="20" width="180" height="110" rx="6" fill="var(--card-bg)" stroke="var(--accent1)" stroke-width="2"/>
+              <rect x="20" y="20" width="180" height="32" rx="6" fill="var(--accent1)"/>
+              <rect x="20" y="38" width="180" height="14" fill="var(--accent1)"/>
+              <text x="110" y="42" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="var(--bg)">house</text>
+              <text x="34" y="72"  font-family="JetBrains Mono,monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+              <text x="34" y="92"  font-family="JetBrains Mono,monospace" font-size="11" fill="var(--text2)">◆ street</text>
+              <text x="34" y="112" font-family="JetBrains Mono,monospace" font-size="11" fill="var(--text2)">◆ city</text>
+
+              <!-- resident entiteit -->
+              <rect x="380" y="20" width="180" height="130" rx="6" fill="var(--card-bg)" stroke="var(--accent2)" stroke-width="2"/>
+              <rect x="380" y="20" width="180" height="32" rx="6" fill="var(--accent2)"/>
+              <rect x="380" y="38" width="180" height="14" fill="var(--accent2)"/>
+              <text x="470" y="42" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="white">resident</text>
+              <text x="394" y="72"  font-family="JetBrains Mono,monospace" font-size="11" fill="#fbbf24">🔑 id</text>
+              <text x="394" y="92"  font-family="JetBrains Mono,monospace" font-size="11" fill="var(--text2)">◆ firstname</text>
+              <text x="394" y="112" font-family="JetBrains Mono,monospace" font-size="11" fill="var(--text2)">◆ lastname</text>
+              <text x="394" y="132" font-family="JetBrains Mono,monospace" font-size="11" fill="#f87171">🔷 house_id</text>
+
+              <!-- relatie lijn (gestippeld = non-identifying) -->
+              <line x1="200" y1="82" x2="380" y2="82" stroke="var(--text2)" stroke-width="2.5" stroke-dasharray="6,3"/>
+
+              <!-- house-kant: may + N = ○< -->
+              <circle cx="218" cy="82" r="7" fill="none" stroke="var(--accent2)" stroke-width="2.5"/>
+              <!-- kraaienpoot -->
+              <line x1="232" y1="72" x2="220" y2="82" stroke="var(--accent4)" stroke-width="2.5"/>
+              <line x1="232" y1="92" x2="220" y2="82" stroke="var(--accent4)" stroke-width="2.5"/>
+              <line x1="232" y1="82" x2="220" y2="82" stroke="var(--accent4)" stroke-width="2.5"/>
+
+              <!-- resident-kant: must + 1 = || -->
+              <line x1="350" y1="72" x2="350" y2="92" stroke="var(--accent3)" stroke-width="2.5"/>
+              <line x1="360" y1="72" x2="360" y2="92" stroke="var(--accent3)" stroke-width="2.5"/>
+
+              <!-- labels -->
+              <text x="238" y="68" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--accent2)">may · N ○&lt;</text>
+              <text x="308" y="68" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--accent3)">must · 1 ||</text>
+
+              <!-- annotatie FK -->
+              <text x="394" y="155" font-family="DM Sans,sans-serif" font-size="10" fill="var(--text2)" font-style="italic">FK verwijst naar house.id</text>
+            </svg>
+          </div>
+
+          <!-- Volgorde lezen uitgelegd -->
+          <div class="hl-box info">
+            <div class="box-title">📖 Symbolen lezen — van buiten naar binnen</div>
+            <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:8px;">
+              <div>
+                <strong>Van <code>house</code> naar <code>resident</code>:</strong><br>
+                <code style="color:var(--accent2);">○</code> = may → optioneel<br>
+                <code style="color:var(--accent4);">&lt;</code> = 1 or more → kraaienpoot
+              </div>
+              <div>
+                <strong>Van <code>resident</code> naar <code>house</code>:</strong><br>
+                <code style="color:var(--accent3);">|</code> = must → verplicht<br>
+                <code style="color:var(--accent3);">|</code> = 1 and only 1 → max 1
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario opdrachten -->
+          <h2 class="topic-title">🎮 Scenario opdrachten</h2>
+
+          <div class="scenario-card" id="sc2">
+            <div class="scenario-q">🧠 Een <strong>leraar</strong> geeft les aan meerdere <strong>studenten</strong>. Elke student heeft precies één mentor-leraar. Welk relatietype?</div>
+            <div class="scenario-opts">
+              <button class="scenario-btn" onclick="checkScenario('sc2', this, false)">1:1</button>
+              <button class="scenario-btn" onclick="checkScenario('sc2', this, true)">1:N</button>
+              <button class="scenario-btn" onclick="checkScenario('sc2', this, false)">M:N</button>
+            </div>
+            <div class="scenario-feedback" id="sc2-fb"></div>
+          </div>
+
+          <div class="scenario-card" id="sc3">
+            <div class="scenario-q">🧠 Een <strong>afdeling</strong> heeft meerdere <strong>werknemers</strong>. Elke werknemer werkt bij precies één afdeling. Wat is de ERD'ish zin voor de <em>werknemer → afdeling kant</em>?</div>
+            <div class="scenario-opts">
+              <button class="scenario-btn" onclick="checkScenario('sc3', this, false)">Each employee may have 1 or more department.</button>
+              <button class="scenario-btn" onclick="checkScenario('sc3', this, true)">Each employee must belong to 1 and only 1 department.</button>
+              <button class="scenario-btn" onclick="checkScenario('sc3', this, false)">Each employee may belong to 1 and only 1 department.</button>
+            </div>
+            <div class="scenario-feedback" id="sc3-fb"></div>
+          </div>
+
+          <div class="mcq">
+            <div class="mcq-question">❓ Waar staat de vreemde sleutel <code>house_id</code> in het bovenstaande ERD?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq2')">In de entiteit <code>house</code></div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq2')">In de entiteit <code>resident</code></div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq2')">In beide entiteiten</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq2')">Nergens — FK's bestaan niet in een ERD</div>
+            </div>
+            <div class="mcq-feedback" id="mcq2"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(4)">Volgende: Identifying relaties →</button>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card4 -->
+
+
+    <!-- ==================== CARD 6 — IDENTIFYING VS NON-IDENTIFYING ==================== -->
+    <div class="sec-card" id="card5">
+      <div class="sec-header" onclick="toggleCard(5)">
+        <div class="sec-title-group">
+          <div class="sec-icon">🔍</div>
+          <div>
+            <div class="sec-title">Identifying vs Non-identifying</div>
+            <div class="sec-sub">Welk type relatie gebruik je — en waarom?</div>
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <p>In tools zoals Moqups en MySQL Workbench kun je kiezen tussen twee soorten relatielijnen.
+             Het verschil zit in hoe de <strong>vreemde sleutel</strong> zich verhoudt tot de <strong>primaire sleutel</strong>.</p>
+
+          <!-- Visueel vergelijk -->
+          <div class="id-compare">
+            <div class="id-box non">
+              <div class="id-box-title">✅ Non-identifying (aanbevolen)</div>
+              <p style="font-size:.85rem; margin-bottom:10px;">De FK is <strong>geen deel</strong> van de PK. Elke tabel heeft zijn eigen <code>id</code>.</p>
+              <div style="background:var(--code-bg); border-radius:8px; padding:10px; font-family:'JetBrains Mono',monospace; font-size:.75rem; line-height:1.8;">
+                <div style="color:#fbbf24;">section: <span style="color:var(--accent3);">PK = id</span></div>
+                <div style="color:var(--text2);">FK = library_id</div>
+                <div style="margin-top:6px; color:#fbbf24;">shelf: <span style="color:var(--accent3);">PK = id</span></div>
+                <div style="color:var(--text2);">FK = section_id</div>
+                <div style="margin-top:6px; color:#fbbf24;">book: <span style="color:var(--accent3);">PK = id</span></div>
+                <div style="color:var(--text2);">FK = shelf_id</div>
+              </div>
+              <div style="margin-top:10px; font-size:.8rem; color:var(--accent3);">✔ Eenvoudig · overzichtelijk · makkelijk te querien</div>
+            </div>
+            <div class="id-box ident">
+              <div class="id-box-title">⚠️ Identifying (vermijden)</div>
+              <p style="font-size:.85rem; margin-bottom:10px;">De FK <strong>maakt deel uit</strong> van de samengestelde PK. Wordt steeds complexer.</p>
+              <div style="background:var(--code-bg); border-radius:8px; padding:10px; font-family:'JetBrains Mono',monospace; font-size:.75rem; line-height:1.8;">
+                <div style="color:#fbbf24;">section: <span style="color:#f87171;">PK = id + library_id</span></div>
+                <div style="margin-top:6px; color:#fbbf24;">shelf: <span style="color:#f87171;">PK = id + section_id + section_library_id</span></div>
+                <div style="margin-top:6px; color:#fbbf24;">book: <span style="color:#f87171;">PK = id + shelf_id + shelf_section_id + shelf_section_library_id</span></div>
+              </div>
+              <div style="margin-top:10px; font-size:.8rem; color:#f87171;">✘ Groeit snel · moeilijk te querien · foutgevoelig</div>
+            </div>
+          </div>
+
+          <!-- Stap voor stap: visueel in Moqups -->
+          <div class="step-reveal" id="stepReveal2">
+            <div class="step-reveal-item visible">
+              <h2 class="topic-title">Hoe maak je een relatie in Moqups?</h2>
+              <div class="hl-box tip">
+                <div class="box-title">🖱️ Stap 1 — Verbinding tekenen</div>
+                <ol style="margin:10px 0 0 16px; line-height:2.2;">
+                  <li>Hover over de rand van een entiteit — je ziet een verbindingspunt verschijnen</li>
+                  <li>Klik en sleep naar de andere entiteit</li>
+                  <li>Er verschijnt automatisch een relatie-lijn</li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="hl-box" style="border-color:var(--accent2); background:rgba(244,114,182,.08)">
+                <div class="box-title" style="color:var(--accent2)">⚙️ Stap 2 — Relatietype instellen</div>
+                <ol style="margin:10px 0 0 16px; line-height:2.2;">
+                  <li>Klik op de relatie-lijn om hem te selecteren</li>
+                  <li>In het rechter paneel zie je de <strong>relatie-eigenschappen</strong></li>
+                  <li>Kies het type: <strong>1:1</strong> of <strong>1:N</strong></li>
+                  <li>Stel per kant in: <strong>mandatory</strong> (must) of <strong>optional</strong> (may)</li>
+                </ol>
+                <div class="hl-box warn" style="margin-top:10px; padding:10px 14px;">
+                  <div class="box-title" style="font-size:.75rem;">💡 Non-identifying in Moqups</div>
+                  Kies altijd voor een <strong>gestippelde lijn</strong> (non-identifying).
+                  Dit is de standaard instelling en de aanbevolen aanpak.
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="hl-box" style="border-color:var(--accent3); background:rgba(52,211,153,.08)">
+                <div class="box-title" style="color:var(--accent3)">🔷 Stap 3 — FK automatisch of handmatig</div>
+                <p style="margin:8px 0;">Moqups voegt soms automatisch een FK-attribuut toe. Controleer altijd:</p>
+                <ul style="margin:8px 0 0 16px; line-height:2.2;">
+                  <li>Staat de FK aan de <strong>veel-kant</strong>? (bij 1:N) ✅</li>
+                  <li>Heet de FK <strong>naamvantabel_id</strong>? (bijv. <code>house_id</code>) ✅</li>
+                  <li>Is de FK gemarkeerd met 🔷? ✅</li>
+                </ul>
+              </div>
+
+              <!-- ERD voorbeeld non-identifying library -->
+              <div class="erd-canvas" style="margin-top:16px; overflow-x:auto;">
+                <div style="font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--text2); margin-bottom:12px;">
+                  // Non-identifying: library → section → shelf → book
+                </div>
+                <svg width="640" height="100" viewBox="0 0 640 100" style="max-width:100%; height:auto;">
+                  <!-- library -->
+                  <rect x="10" y="20" width="110" height="60" rx="4" fill="var(--card-bg)" stroke="var(--accent1)" stroke-width="2"/>
+                  <rect x="10" y="20" width="110" height="24" rx="4" fill="var(--accent1)"/>
+                  <rect x="10" y="32" width="110" height="12" fill="var(--accent1)"/>
+                  <text x="65" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="var(--bg)">library</text>
+                  <text x="18" y="58" font-family="JetBrains Mono,monospace" font-size="9" fill="#fbbf24">🔑 id</text>
+
+                  <!-- section -->
+                  <rect x="170" y="20" width="130" height="60" rx="4" fill="var(--card-bg)" stroke="var(--accent2)" stroke-width="2"/>
+                  <rect x="170" y="20" width="130" height="24" rx="4" fill="var(--accent2)"/>
+                  <rect x="170" y="32" width="130" height="12" fill="var(--accent2)"/>
+                  <text x="235" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="white">section</text>
+                  <text x="178" y="58" font-family="JetBrains Mono,monospace" font-size="9" fill="#fbbf24">🔑 id</text>
+                  <text x="178" y="72" font-family="JetBrains Mono,monospace" font-size="9" fill="#f87171">🔷 library_id</text>
+
+                  <!-- shelf -->
+                  <rect x="360" y="20" width="120" height="60" rx="4" fill="var(--card-bg)" stroke="var(--accent3)" stroke-width="2"/>
+                  <rect x="360" y="20" width="120" height="24" rx="4" fill="var(--accent3)"/>
+                  <rect x="360" y="32" width="120" height="12" fill="var(--accent3)"/>
+                  <text x="420" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="var(--bg)">shelf</text>
+                  <text x="368" y="58" font-family="JetBrains Mono,monospace" font-size="9" fill="#fbbf24">🔑 id</text>
+                  <text x="368" y="72" font-family="JetBrains Mono,monospace" font-size="9" fill="#f87171">🔷 section_id</text>
+
+                  <!-- book -->
+                  <rect x="530" y="20" width="100" height="60" rx="4" fill="var(--card-bg)" stroke="var(--accent4)" stroke-width="2"/>
+                  <rect x="530" y="20" width="100" height="24" rx="4" fill="var(--accent4)"/>
+                  <rect x="530" y="32" width="100" height="12" fill="var(--accent4)"/>
+                  <text x="580" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="var(--bg)">book</text>
+                  <text x="538" y="58" font-family="JetBrains Mono,monospace" font-size="9" fill="#fbbf24">🔑 id</text>
+                  <text x="538" y="72" font-family="JetBrains Mono,monospace" font-size="9" fill="#f87171">🔷 shelf_id</text>
+
+                  <!-- lijnen -->
+                  <line x1="120" y1="50" x2="170" y2="50" stroke="var(--text2)" stroke-width="2" stroke-dasharray="5,3"/>
+                  <line x1="300" y1="50" x2="360" y2="50" stroke="var(--text2)" stroke-width="2" stroke-dasharray="5,3"/>
+                  <line x1="480" y1="50" x2="530" y2="50" stroke="var(--text2)" stroke-width="2" stroke-dasharray="5,3"/>
+
+                  <!-- kraaienpoten rechts -->
+                  <line x1="170" y1="44" x2="158" y2="50" stroke="var(--accent4)" stroke-width="2"/>
+                  <line x1="170" y1="56" x2="158" y2="50" stroke="var(--accent4)" stroke-width="2"/>
+                  <line x1="170" y1="50" x2="158" y2="50" stroke="var(--accent4)" stroke-width="2"/>
+                  <line x1="360" y1="44" x2="348" y2="50" stroke="var(--accent4)" stroke-width="2"/>
+                  <line x1="360" y1="56" x2="348" y2="50" stroke="var(--accent4)" stroke-width="2"/>
+                  <line x1="360" y1="50" x2="348" y2="50" stroke="var(--accent4)" stroke-width="2"/>
+                  <line x1="530" y1="44" x2="518" y2="50" stroke="var(--accent4)" stroke-width="2"/>
+                  <line x1="530" y1="56" x2="518" y2="50" stroke="var(--accent4)" stroke-width="2"/>
+                  <line x1="530" y1="50" x2="518" y2="50" stroke="var(--accent4)" stroke-width="2"/>
+                  <!-- streepjes links -->
+                  <line x1="124" y1="44" x2="124" y2="56" stroke="var(--accent3)" stroke-width="2"/>
+                  <line x1="130" y1="44" x2="130" y2="56" stroke="var(--accent3)" stroke-width="2"/>
+                  <line x1="304" y1="44" x2="304" y2="56" stroke="var(--accent3)" stroke-width="2"/>
+                  <line x1="310" y1="44" x2="310" y2="56" stroke="var(--accent3)" stroke-width="2"/>
+                  <line x1="484" y1="44" x2="484" y2="56" stroke="var(--accent3)" stroke-width="2"/>
+                  <line x1="490" y1="44" x2="490" y2="56" stroke="var(--accent3)" stroke-width="2"/>
+                </svg>
+                <div style="font-size:.75rem; color:var(--accent3); margin-top:8px;">✅ Elke tabel heeft zijn eigen PK (id) — simpel en overzichtelijk</div>
+              </div>
+            </div>
+          </div>
+          <div class="step-controls">
+            <button class="btn" onclick="stepReveal('stepReveal2', -1)" id="stepReveal2-prev" style="display:none">← Terug</button>
+            <button class="btn filled" onclick="stepReveal('stepReveal2', 1)" id="stepReveal2-next">Volgende stap →</button>
+            <span class="step-counter" id="stepReveal2-counter">1 / 3</span>
+          </div>
+
+          <!-- Laatste MCQ -->
+          <div class="mcq" style="margin-top:24px">
+            <div class="mcq-question">❓ Wat is het verschil tussen een identifying en non-identifying relatie?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq3')">Bij identifying gebruik je een gestippelde lijn, bij non-identifying een vaste lijn</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'mcq3')">Bij identifying maakt de FK deel uit van de samengestelde PK, bij non-identifying niet</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq3')">Bij non-identifying heb je geen vreemde sleutel nodig</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'mcq3')">Er is geen verschil — het is puur visueel</div>
+            </div>
+            <div class="mcq-feedback" id="mcq3"></div>
+          </div>
+
+          <!-- Leeruitkomsten checklist -->
+          <h2 class="topic-title" style="margin-top:30px">✅ Leeruitkomsten — Check jezelf</h2>
+          <p style="color:var(--text2)">Klik op een leeruitkomst als jij dit nu snapt!</p>
+          <div class="checklist">
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan uitleggen wat een relatie is tussen twee entiteiten in een database.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan de ERD'ish techniek gebruiken om relaties correct te beschrijven.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan een 1:1 relatie correct tekenen en toepassen in Moqups.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan een 1:N relatie correct tekenen en toepassen in Moqups.</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik begrijp het verschil tussen optionaliteit (may/must) en kardinaliteit (1 / 1 or more).</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik begrijp het verschil tussen identifying en non-identifying relaties en kies altijd non-identifying.</div>
+            </div>
+          </div>
+
+          <div class="hl-box tip" style="margin-top:20px; text-align:center;">
+            <div class="box-title">🎉 Module 3 klaar!</div>
+            Je weet nu hoe je relaties beschrijft, tekent en toepast in Moqups.
+            Volgende stap: de veel-op-veel relatie (M:N) in module 4. 💪
+          </div>
+
+        </div>
+      </div>
+    </div><!-- end card5 -->
+
+  </div><!-- end sections -->
+</div>
+
+<footer>
+  <div class="big">ERD — Module 3</div>
+  MBO Software Development · Relaties
+</footer>
+
+<script src="script.js"></script>
+<script>
+// ERD'ish bouwer controleren
+function checkErdish() {
+  const a1 = document.getElementById('es1a').value;
+  const b1 = document.getElementById('es1b').value;
+  const a2 = document.getElementById('es2a').value;
+  const b2 = document.getElementById('es2b').value;
+  const result = document.getElementById('erdishResult');
+
+  if (!a1 || !b1 || !a2 || !b2) {
+    result.className = 'erdish-result show wrong';
+    result.textContent = '⚠️ Vul alle velden in!';
+    return;
+  }
+
+  const correct = (a1 === 'may' && b1 === 'N' && a2 === 'must' && b2 === '1');
+  if (correct) {
+    result.className = 'erdish-result show correct';
+    result.innerHTML = '🎉 Correct! <em>house may have 1 or more residents</em> (optioneel, meerdere) en <em>resident must live in 1 and only 1 house</em> (verplicht, max 1). +2 punten!';
+    addPoint(2);
+  } else {
+    result.className = 'erdish-result show wrong';
+    let hint = '❌ Niet helemaal. Tips: ';
+    if (a1 !== 'may')   hint += 'Een huis hoeft niet per se bewoners te hebben (may). ';
+    if (b1 !== 'N')     hint += 'Een huis kan meerdere bewoners hebben (1 or more). ';
+    if (a2 !== 'must')  hint += 'Een bewoner MOET altijd in een huis wonen (must). ';
+    if (b2 !== '1')     hint += 'Een bewoner woont in precies 1 huis (1 and only 1). ';
+    result.innerHTML = hint;
+  }
+}
+
+// Scenario controleren
+const scenarioAnswered = new Set();
+function checkScenario(cardId, btn, isCorrect) {
+  if (scenarioAnswered.has(cardId)) return;
+  scenarioAnswered.add(cardId);
+
+  const fb = document.getElementById(cardId + '-fb');
+  const allBtns = btn.closest('.scenario-opts').querySelectorAll('.scenario-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  if (isCorrect) {
+    btn.classList.add('correct-ans');
+    fb.style.color = 'var(--accent3)';
+    fb.textContent = '✅ Correct! Goed gedaan. +1 punt';
+    addPoint(1);
+  } else {
+    btn.classList.add('wrong-ans');
+    // Highlight het correcte antwoord
+    allBtns.forEach(b => { if (b !== btn) b.style.opacity = '.4'; });
+    fb.style.color = '#f87171';
+    fb.textContent = '❌ Niet helemaal — kijk nog eens naar de definitie hierboven.';
+  }
+}
+</script>
+</body>
+</html>

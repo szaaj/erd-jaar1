@@ -31,7 +31,7 @@ function setTheme(t, btn) {
 /* ================================================================
    ACCORDION KAARTEN
 ================================================================ */
-const cardState = [true, false, false, false, false, false, false];
+const cardState = [true, false, false, false, false, false];
 
 function toggleCard(i) {
   const card = document.getElementById('card' + i);
@@ -183,40 +183,30 @@ function drop(e, zone, entityId, attribId, sourceId) {
 }
 
 // Mobile/touch fallback: klikken verplaatst item
-function tapItem(el, sourceId, zone1Id, zone2Id) {
+function tapItem(el, sourceId, entityId, attribId) {
   if (el.parentElement.id === sourceId) {
-    // Bepaal de juiste zone op basis van data-accepts
-    const zone1 = document.getElementById(zone1Id);
-    const zone2 = document.getElementById(zone2Id);
-    const zone1Accepts = zone1.dataset.accepts || 'entity';
-    const target = el.dataset.correct === zone1Accepts ? zone1Id : zone2Id;
+    const target = el.dataset.correct === 'entity' ? entityId : attribId;
     document.getElementById(target).appendChild(el);
   } else {
     document.getElementById(sourceId).appendChild(el);
   }
 }
 
-function checkDrag(gameId, zone1Id, zone2Id) {
-  const zone1 = document.getElementById(zone1Id);
-  const zone2 = document.getElementById(zone2Id);
-
-  // Haal op welke waarde elke zone accepteert via data-accepts,
-  // val terug op de klassieke 'entity'/'attrib' als fallback
-  const zone1Accepts = zone1.dataset.accepts || 'entity';
-  const zone2Accepts = zone2.dataset.accepts || 'attrib';
-
+function checkDrag(gameId, entityId, attribId) {
+  const entityItems = document.getElementById(entityId).querySelectorAll('.drag-item');
+  const attribItems = document.getElementById(attribId).querySelectorAll('.drag-item');
   let correct = 0;
   let total = 0;
 
-  zone1.querySelectorAll('.drag-item').forEach(item => {
+  entityItems.forEach(item => {
     total++;
-    if (item.dataset.correct === zone1Accepts) { item.classList.add('correct'); correct++; }
+    if (item.dataset.correct === 'entity') { item.classList.add('correct'); correct++; }
     else item.classList.add('wrong');
   });
 
-  zone2.querySelectorAll('.drag-item').forEach(item => {
+  attribItems.forEach(item => {
     total++;
-    if (item.dataset.correct === zone2Accepts) { item.classList.add('correct'); correct++; }
+    if (item.dataset.correct === 'attrib') { item.classList.add('correct'); correct++; }
     else item.classList.add('wrong');
   });
 
@@ -242,7 +232,12 @@ function resetDrag(gameId, entityId, attribId, sourceId) {
   document.getElementById(gameId + '-feedback').textContent = '';
 }
 
-
+// Dragleave listener voor alle drop zones
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.drop-zone').forEach(z => {
+    z.addEventListener('dragleave', () => z.classList.remove('drag-over'));
+  });
+});
 
 /* ================================================================
    TYPER OEFENING
@@ -287,310 +282,6 @@ function toggleCheck(el) {
 }
 
 /* ================================================================
-   ERD PUZZEL — school-database (student → klas ← leraar)
-================================================================ */
-const PUZZLE_PIECES = [
-  // Attributen student
-  { id:'attr-student-id',        label:'🔑 id',        type:'attr', hint:'Primaire sleutel van student' },
-  { id:'attr-student-firstname', label:'◆ firstname',  type:'attr', hint:'Voornaam — verplicht attribuut' },
-  { id:'attr-student-lastname',  label:'◆ lastname',   type:'attr', hint:'Achternaam — verplicht attribuut' },
-  { id:'attr-student-birthday',  label:'◇ birthday',   type:'attr', hint:'Optioneel attribuut van student' },
-  { id:'attr-student-phonenr',   label:'◇ phonenr',    type:'attr', hint:'Optioneel attribuut van student' },
-  // Attributen klas
-  { id:'attr-klas-id',           label:'🔑 id',        type:'attr', hint:'Primaire sleutel van klas' },
-  { id:'attr-klas-name',         label:'◆ name',       type:'attr', hint:'Naam van de klas — verplicht' },
-  { id:'attr-klas-year',         label:'◆ year',       type:'attr', hint:'Leerjaar — verplicht attribuut' },
-  // Attributen leraar
-  { id:'attr-leraar-id',         label:'🔑 id',        type:'attr', hint:'Primaire sleutel van leraar' },
-  { id:'attr-leraar-firstname',  label:'◆ firstname',  type:'attr', hint:'Voornaam — verplicht attribuut' },
-  { id:'attr-leraar-lastname',   label:'◆ lastname',   type:'attr', hint:'Achternaam — verplicht attribuut' },
-  // Relatie multipliciteiten
-  { id:'rel-student-side',       label:'1..*',  type:'rel', hint:'Een klas heeft meerdere studenten' },
-  { id:'rel-klas-left-side',     label:'1',     type:'rel', hint:'Een student zit in precies 1 klas' },
-  { id:'rel-klas-right-side',    label:'1',     type:'rel', hint:'Een leraar geeft les aan 1 klas (of meer)' },
-  { id:'rel-leraar-side',        label:'1..*',  type:'rel', hint:'Een klas heeft 1 of meer leraren' },
-];
-
-let puzzleScored = false;
-let hintIndex = 0;
-
-function initPuzzle() {
-  const bank = document.getElementById('puzzlePieces');
-  if (!bank) return;
-
-  puzzleScored = false;
-  hintIndex = 0;
-
-  // Reset alle slots
-  document.querySelectorAll('.pz-slot, .pz-rel-slot').forEach(slot => {
-    slot.classList.remove('filled','correct','wrong','drag-over');
-    slot.dataset.placedId = '';
-    // Toon oorspronkelijke placeholder tekst
-    slot.innerHTML = slot.dataset.accepts.startsWith('rel-')
-      ? '?'
-      : slot.textContent.trim() || '—';
-  });
-
-  document.getElementById('puzzleStatus').textContent = '';
-  document.getElementById('puzzleScore').textContent  = '';
-
-  // Schud stukken en render
-  const shuffled = [...PUZZLE_PIECES].sort(() => Math.random() - .5);
-  bank.innerHTML = '';
-  shuffled.forEach(p => {
-    const el = document.createElement('div');
-    el.className   = 'puzzle-piece';
-    el.draggable   = true;
-    el.dataset.id  = p.id;
-    el.dataset.type = p.type;
-    el.textContent = p.label;
-    if (p.type === 'rel') el.setAttribute('data-type','rel');
-    el.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('text/plain', p.id);
-      setTimeout(() => el.classList.add('dragging'), 0);
-    });
-    el.addEventListener('dragend', () => el.classList.remove('dragging'));
-    // Tap/klik voor mobiel
-    el.addEventListener('click', () => puzzleTap(el));
-    bank.appendChild(el);
-  });
-
-  // Drop listeners op alle slots
-  document.querySelectorAll('.pz-slot, .pz-rel-slot').forEach(slot => {
-    slot.addEventListener('dragover',  e => { e.preventDefault(); slot.classList.add('drag-over'); });
-    slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
-    slot.addEventListener('drop',      e => {
-      e.preventDefault();
-      slot.classList.remove('drag-over');
-      const pieceId = e.dataTransfer.getData('text/plain');
-      placePiece(pieceId, slot);
-    });
-    slot.addEventListener('click', () => puzzleSlotClick(slot));
-  });
-}
-
-let selectedPiece = null;
-
-function puzzleTap(el) {
-  // Selecteer stuk voor mobiele klik-flow
-  document.querySelectorAll('.puzzle-piece.selected').forEach(p => p.classList.remove('selected'));
-  if (selectedPiece === el) { selectedPiece = null; return; }
-  selectedPiece = el;
-  el.classList.add('selected');
-}
-
-function puzzleSlotClick(slot) {
-  if (!selectedPiece) return;
-  placePiece(selectedPiece.dataset.id, slot);
-  selectedPiece.classList.remove('selected');
-  selectedPiece = null;
-}
-
-function placePiece(pieceId, slot) {
-  const piece = PUZZLE_PIECES.find(p => p.id === pieceId);
-  if (!piece) return;
-
-  // Als slot al gevuld is, stuur het vorige stuk terug
-  if (slot.dataset.placedId) returnPieceToBank(slot.dataset.placedId);
-
-  // Verwijder stuk uit bank (of andere slot)
-  const inBank = document.querySelector(`#puzzlePieces [data-id="${pieceId}"]`);
-  if (inBank) inBank.remove();
-  else {
-    // Zit in ander slot — maak dat slot leeg
-    document.querySelectorAll('.pz-slot, .pz-rel-slot').forEach(s => {
-      if (s.dataset.placedId === pieceId) {
-        s.dataset.placedId = '';
-        s.classList.remove('filled','correct','wrong');
-        s.innerHTML = s.dataset.accepts.startsWith('rel-') ? '?' : s.textContent || '—';
-      }
-    });
-  }
-
-  // Plaats in slot
-  slot.dataset.placedId = pieceId;
-  slot.classList.add('filled');
-  slot.classList.remove('correct','wrong');
-  slot.textContent = piece.label;
-}
-
-function returnPieceToBank(pieceId) {
-  const piece = PUZZLE_PIECES.find(p => p.id === pieceId);
-  if (!piece) return;
-  const bank = document.getElementById('puzzlePieces');
-  const el = document.createElement('div');
-  el.className    = 'puzzle-piece';
-  el.draggable    = true;
-  el.dataset.id   = piece.id;
-  el.dataset.type = piece.type;
-  el.textContent  = piece.label;
-  if (piece.type === 'rel') el.setAttribute('data-type','rel');
-  el.addEventListener('dragstart', e => {
-    e.dataTransfer.setData('text/plain', piece.id);
-    setTimeout(() => el.classList.add('dragging'), 0);
-  });
-  el.addEventListener('dragend', () => el.classList.remove('dragging'));
-  el.addEventListener('click', () => puzzleTap(el));
-  bank.appendChild(el);
-}
-
-function checkPuzzle() {
-  const slots = document.querySelectorAll('.pz-slot, .pz-rel-slot');
-  let correct = 0;
-  let total   = slots.length;
-
-  slots.forEach(slot => {
-    const expected = slot.dataset.accepts;
-    const placed   = slot.dataset.placedId || '';
-    slot.classList.remove('correct','wrong');
-    if (!placed) return;
-    if (placed === expected) { slot.classList.add('correct'); correct++; }
-    else                     { slot.classList.add('wrong'); }
-  });
-
-  const status = document.getElementById('puzzleStatus');
-  const score  = document.getElementById('puzzleScore');
-
-  if (correct === total) {
-    status.textContent = '🎉 Perfect! Alle stukken op de juiste plek!';
-    status.style.color = 'var(--accent3)';
-    score.textContent  = `+5 punten verdiend! 🏆`;
-    if (!puzzleScored) { addPoint(5); puzzleScored = true; }
-  } else {
-    status.textContent = `${correct} / ${total} correct — de rode stukken staan verkeerd.`;
-    status.style.color = '#f87171';
-    score.textContent  = '';
-  }
-}
-
-function resetPuzzle() {
-  puzzleScored = false;
-  initPuzzle();
-}
-
-function puzzleHint() {
-  const hints = PUZZLE_PIECES.map(p => `💡 <strong>${p.label}</strong>: ${p.hint}`);
-  const status = document.getElementById('puzzleStatus');
-  status.innerHTML = hints[hintIndex % hints.length];
-  status.style.color = 'var(--accent4)';
-  hintIndex++;
-}
-
-/* ================================================================
-   MEMORY GAME
-================================================================ */
-const MEMORY_PAIRS = [
-  { type: 'CHAR(2)',       example: '"NL" — landcode, altijd 2 tekens' },
-  { type: 'VARCHAR(50)',   example: '"Jansen" — achternaam, variabele lengte' },
-  { type: 'TEXT',          example: '"Lange productbeschrijving..." — onbeperkte tekst' },
-  { type: 'INT',           example: '42 — heel getal, bijv. leeftijd of ID' },
-  { type: 'DECIMAL(10,2)', example: '2500.50 — bedrag met decimalen' },
-  { type: 'DATE',          example: '1990-05-23 — alleen een datum' },
-  { type: 'TIME',          example: '14:30:00 — alleen een tijdstip' },
-  { type: 'DATETIME',      example: '2023-01-18 10:45:32 — datum én tijd' },
-];
-
-let memoryState = {
-  flipped: [], matched: 0, moves: 0, locked: false, scored: false,
-};
-
-function initMemory() {
-  const grid = document.getElementById('memoryGrid');
-  if (!grid) return;
-
-  // Maak kaartparen: type-kaart + voorbeeld-kaart
-  const pairs = MEMORY_PAIRS.map((p, i) => ([
-    { pairId: i, kind: 'type',    text: p.type    },
-    { pairId: i, kind: 'example', text: p.example },
-  ])).flat();
-
-  // Schudden
-  const shuffled = pairs.sort(() => Math.random() - .5);
-  memoryState = { flipped: [], matched: 0, moves: 0, locked: false, scored: false };
-
-  grid.innerHTML = '';
-  shuffled.forEach((card, idx) => {
-    const el = document.createElement('div');
-    el.className = 'memory-card';
-    el.dataset.idx   = idx;
-    el.dataset.pairId = card.pairId;
-    el.dataset.kind   = card.kind;
-    el.innerHTML = `
-      <div class="memory-inner">
-        <div class="memory-front">🃏</div>
-        <div class="memory-back">${card.text}</div>
-      </div>`;
-    el.addEventListener('click', () => flipMemoryCard(el));
-    grid.appendChild(el);
-  });
-
-  document.getElementById('memoryStatus').textContent = 'Vind alle 8 paren! 🔍';
-  document.getElementById('memoryMoves').textContent  = '';
-  document.getElementById('memoryStatus').style.color = '';
-}
-
-function flipMemoryCard(el) {
-  if (memoryState.locked) return;
-  if (el.classList.contains('flipped') || el.classList.contains('matched')) return;
-
-  el.classList.add('flipped');
-  memoryState.flipped.push(el);
-
-  if (memoryState.flipped.length === 2) {
-    memoryState.locked = true;
-    memoryState.moves++;
-    checkMemoryMatch();
-  }
-}
-
-function checkMemoryMatch() {
-  const [a, b] = memoryState.flipped;
-  const isMatch = a.dataset.pairId === b.dataset.pairId
-               && a.dataset.kind   !== b.dataset.kind;
-
-  if (isMatch) {
-    a.classList.add('matched');
-    b.classList.add('matched');
-    memoryState.matched++;
-    memoryState.flipped = [];
-    memoryState.locked  = false;
-    updateMemoryStatus();
-
-    if (memoryState.matched === MEMORY_PAIRS.length && !memoryState.scored) {
-      memoryState.scored = true;
-      addPoint(3);
-      const status = document.getElementById('memoryStatus');
-      status.textContent = `🎉 Alle paren gevonden in ${memoryState.moves} beurten! +3 punten!`;
-      status.style.color = 'var(--accent3)';
-      document.getElementById('memoryMoves').textContent = '';
-    }
-  } else {
-    // Schud-animatie + terugdraaien na korte pauze
-    a.classList.add('wrong-flash');
-    b.classList.add('wrong-flash');
-    setTimeout(() => {
-      a.classList.remove('flipped', 'wrong-flash');
-      b.classList.remove('flipped', 'wrong-flash');
-      memoryState.flipped = [];
-      memoryState.locked  = false;
-    }, 900);
-  }
-}
-
-function updateMemoryStatus() {
-  const remaining = MEMORY_PAIRS.length - memoryState.matched;
-  document.getElementById('memoryStatus').textContent =
-    remaining > 0 ? `${memoryState.matched} / ${MEMORY_PAIRS.length} paren gevonden` : '';
-  document.getElementById('memoryMoves').textContent =
-    `${memoryState.moves} beurt${memoryState.moves !== 1 ? 'en' : ''}`;
-}
-
-function resetMemory() {
-  memoryState.scored = false;
-  initMemory();
-}
-
-/* ================================================================
    INITIALISATIE
 ================================================================ */
 window.addEventListener('DOMContentLoaded', () => {
@@ -610,15 +301,4 @@ window.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[id$="-next"]').forEach(btn => {
     btn.dataset.label = btn.textContent;
   });
-
-  // Dragleave voor drop zones
-  document.querySelectorAll('.drop-zone').forEach(z => {
-    z.addEventListener('dragleave', () => z.classList.remove('drag-over'));
-  });
-
-  // Start memory game als het grid aanwezig is (module 2)
-  if (document.getElementById('memoryGrid')) initMemory();
-
-  // Start ERD puzzel als die aanwezig is (module 1)
-  if (document.getElementById('puzzlePieces')) initPuzzle();
 });

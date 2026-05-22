@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Normaalvormen | SOD Module 5</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="pastel">
+
+<!-- ======================== THEME BAR ======================== -->
+<div class="theme-bar">
+  <button class="theme-btn active" onclick="setTheme('pastel', this)">🌸 Pastel</button>
+  <button class="theme-btn" onclick="setTheme('dark', this)">🌑 Dark</button>
+  <button class="theme-btn" onclick="setTheme('light', this)">☀️ Light</button>
+  <button class="theme-btn" onclick="setTheme('neon', this)">⚡ Neon</button>
+</div>
+
+<!-- ======================== MODULE NAVIGATIE ======================== -->
+<nav class="module-nav">
+  <div class="module-nav-title">📚 SOD — Alle modules</div>
+  <div class="module-nav-grid">
+    <a class="module-pill" href="index.html"><span class="pill-num">1</span> ERD Basis</a>
+    <a class="module-pill" href="module2.html"><span class="pill-num">2</span> Datatypes &amp; Tool</a>
+    <a class="module-pill" href="module3.html"><span class="pill-num">3</span> Relaties</a>
+    <a class="module-pill" href="module4.html"><span class="pill-num">4</span> Veel-op-veel</a>
+    <a class="module-pill active" href="module5.html"><span class="pill-num">5</span> Normaalvormen</a>
+    <a class="module-pill locked" href="#"><span class="pill-num">6</span> Module 6 <span class="pill-lock">🔒</span></a>
+    <a class="module-pill locked" href="#"><span class="pill-num">7</span> Module 7 <span class="pill-lock">🔒</span></a>
+  </div>
+</nav>
+
+<!-- ======================== SCORE BAR ======================== -->
+<div class="score-bar">
+  <span class="score-label">Voortgang Module 5</span>
+  <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
+  <span class="score-num" id="scoreNum">0 / 20 ⭐</span>
+</div>
+
+<!-- ======================== HERO ======================== -->
+<div class="container">
+  <div class="hero">
+    <div class="hero-label">SOD · Module 5 · MBO</div>
+    <h1>Normaal&shy;vormen</h1>
+    <p>Hoe zorg je dat data netjes in je database zit — zonder rommel of herhaling? Met normalisatie! We leren het stap voor stap aan de hand van een echte kassabon. 🧾</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Normaalvormen</div></div>
+      <div class="stat"><div class="stat-num">~45</div><div class="stat-label">Minuten</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Oefeningen</div></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS STRIP -->
+  <div class="progress-strip">
+    <div class="prog-step active" onclick="scrollToCard(0)">Intro</div>
+    <div class="prog-step" onclick="scrollToCard(1)">0NF</div>
+    <div class="prog-step" onclick="scrollToCard(2)">1NF</div>
+    <div class="prog-step" onclick="scrollToCard(3)">2NF</div>
+    <div class="prog-step" onclick="scrollToCard(4)">3NF</div>
+    <div class="prog-step" onclick="scrollToCard(5)">Resultaat</div>
+  </div>
+
+  <div class="sections">
+
+    <!-- ===================================================
+         KAART 0 — INTRO
+    =================================================== -->
+    <div class="sec-card open" id="card0">
+      <div class="sec-header" onclick="toggleCard(0)">
+        <div class="sec-icon">💡</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Wat is normalisatie?</div>
+          <div class="sec-sub">Waarom we data opruimen vóór we een database bouwen</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="flip-grid">
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <div class="flip-front-icon">🔁</div>
+                  <div class="flip-front-label">Minder herhaling</div>
+                  <div class="flip-front-hint">klik om te onthullen</div>
+                </div>
+                <div class="flip-back">Dezelfde data niet 10× opslaan. De naam van een klant staat op <strong>1 plek</strong> — niet in elke bestelling opnieuw.</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <div class="flip-front-icon">✅</div>
+                  <div class="flip-front-label">Betere betrouwbaarheid</div>
+                  <div class="flip-front-hint">klik om te onthullen</div>
+                </div>
+                <div class="flip-back">Als een naam verandert, pas je hem op <strong>1 plek</strong> aan — niet op 47 plekken met het risico dat je er 3 vergeet.</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <div class="flip-front-icon">⚡</div>
+                  <div class="flip-front-label">Efficiënter</div>
+                  <div class="flip-front-hint">klik om te onthullen</div>
+                </div>
+                <div class="flip-back">Een kleinere, nette database is <strong>sneller</strong> en makkelijker te bevragen met SQL.</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <div class="flip-front-icon">🪜</div>
+                  <div class="flip-front-label">Stap voor stap</div>
+                  <div class="flip-front-hint">klik om te onthullen</div>
+                </div>
+                <div class="flip-back">Normalisatie gaat in stappen: <strong>0NF → 1NF → 2NF → 3NF</strong>. Elke stap maakt de database netter.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hl-box tip" style="margin-top:1.5rem">
+            <strong>🧾 Onze casus — WebshopPro</strong><br>
+            WebshopPro noteert bestellingen op een kassabon. Alles staat door elkaar: klantgegevens, producten en kortingen. <strong>We gaan dit stap voor stap omzetten naar een nette database.</strong>
+          </div>
+
+          <!-- Kassabon visueel -->
+          <div style="background:var(--surface);border:2px dashed var(--accent2);border-radius:14px;padding:1.4rem 1.8rem;font-family:var(--mono);font-size:.84rem;line-height:2;margin:1rem 0;box-shadow:var(--shadow-sm)">
+            <div style="font-weight:800;text-align:center;letter-spacing:.08em;margin-bottom:.4rem">⭐ WebshopPro — Kassabon ⭐</div>
+            <div style="border-top:1px dashed var(--border);margin:.6rem 0"></div>
+            <div><span style="color:var(--text2)">Bestelnr:</span> <strong>1024</strong> &nbsp;|&nbsp; <span style="color:var(--text2)">Datum:</span> 15 feb 2025</div>
+            <div><span style="color:var(--text2)">Klant:</span> <strong style="color:var(--accent1)">Jan Jansen</strong> · Kerkstraat 12, Amsterdam · jan@email.com</div>
+            <div style="border-top:1px dashed var(--border);margin:.5rem 0"></div>
+            <div style="color:var(--accent3)">- Laptop ASUS X512 ........... €799 (TechSupply)</div>
+            <div style="color:var(--accent3)">- Draadloze muis Logitech ..... €29 (OfficeGoods)</div>
+            <div style="color:var(--accent2);font-style:italic">Kortingscode: WINTER10</div>
+            <div style="font-weight:700">Totaal: €828</div>
+            <div style="border-top:1px dashed var(--border);margin:.8rem 0"></div>
+            <div><span style="color:var(--text2)">Bestelnr:</span> <strong>1025</strong> &nbsp;|&nbsp; <span style="color:var(--text2)">Datum:</span> 16 feb 2025</div>
+            <div><span style="color:var(--text2)">Klant:</span> <strong>Lisa de Vries</strong> · Dorpsstraat 5, Utrecht · lisa@email.com</div>
+            <div style="border-top:1px dashed var(--border);margin:.5rem 0"></div>
+            <div style="color:var(--accent3)">- iPhone 14 .................. €999 (MobileWorld)</div>
+            <div style="color:var(--accent3)">- Oplader USB-C ............... €19 (MobileWorld)</div>
+            <div style="font-weight:700">Totaal: €1018</div>
+            <div style="border-top:1px dashed var(--border);margin:.8rem 0"></div>
+            <div><span style="color:var(--text2)">Bestelnr:</span> <strong>1026</strong> &nbsp;|&nbsp; <span style="color:var(--text2)">Datum:</span> 16 feb 2025</div>
+            <div><span style="color:var(--text2)">Klant:</span> <strong style="color:var(--accent1)">Jan Jansen</strong> · <strong style="color:var(--accent1)">Kerkstraat 12, Amsterdam</strong> · <strong style="color:var(--accent1)">jan@email.com</strong></div>
+            <div style="border-top:1px dashed var(--border);margin:.5rem 0"></div>
+            <div style="color:var(--accent3)">- Monitor Samsung 24" ........ €199 (ScreenTech)</div>
+            <div style="color:var(--accent3)">- HDMI-kabel .................. €15 (ScreenTech)</div>
+            <div style="color:var(--accent2);font-style:italic">Kortingscode: MAART5</div>
+            <div style="font-weight:700">Totaal: €209</div>
+          </div>
+
+          <div class="hl-box warn">
+            <strong>👀 Let op:</strong> Jan Jansen staat <strong>twee keer</strong> met exact dezelfde gegevens. Dit is precies de rommel die normalisatie oplost!
+          </div>
+
+          <div class="step-controls" style="margin-top:1.5rem">
+            <button class="btn filled" onclick="openNextCard(0)">Verder naar 0NF →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 1 — 0NF
+    =================================================== -->
+    <div class="sec-card" id="card1">
+      <div class="sec-header" onclick="toggleCard(1)">
+        <div class="sec-icon">📋</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Nulde Normaalvorm (0NF)</div>
+          <div class="sec-sub">Alles op een rij zetten — nog niet opgeruimd</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>Wat is 0NF?</strong><br>
+            0NF = de ruwe data, precies zoals hij binnenkomt. Nog geen regels, geen structuur. We gooien alles op een hoop en kijken wat we hebben.
+          </div>
+
+          <!-- Stap-voor-stap 0NF -->
+          <div class="step-reveal" id="steps-0nf">
+            <div class="step-reveal-item visible">
+              <div class="topic-title">Stap 1 — Constanten vs. procesgegevens</div>
+              <p>Welke data blijft altijd hetzelfde? Welke verandert per rij?</p>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:.8rem">
+                <div class="hl-box info"><strong>📌 Constant</strong><br>Naam, adres, e-mail van Jan Jansen — altijd hetzelfde voor deze klant</div>
+                <div class="hl-box tip"><strong>🔄 Procesdata</strong><br>Bestelnummer, datum, producten, prijs, leverancier, kortingscode</div>
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="topic-title">Stap 2 — Inventariseer alle attributen</div>
+              <p>Schrijf alle gegevens op die op de kassabon staan:</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:.7rem">
+                <code>ordernumber</code> <code>orderdate</code> <code>customername</code>
+                <code>address</code> <code>email</code> <code>productname</code>
+                <code>productprice</code> <code>supplier</code> <code>discountcode</code> <code>total</code>
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="topic-title">Stap 3 — Geef de entiteit een naam</div>
+              <p>Alle attributen gaan voorlopig in één grote tabel. De kassabon gaat over <strong>bestellingen</strong> — we noemen de entiteit <code>order</code>.</p>
+              <div class="erd-canvas" style="margin-top:.8rem">
+                <div class="erd-entity">
+                  <div class="erd-entity-name">order</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> ordernumber</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> orderdate</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> customername</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> address</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> email</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> productname</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> productprice</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> supplier</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> discountcode</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="step-reveal-item">
+              <div class="topic-title">Stap 4 — Unieke attributen (PK-kandidaat)</div>
+              <p>Welk attribuut is uniek per rij? <code>ordernumber</code> — elke bestelling heeft een eigen nummer. Dit wordt onze primaire sleutel.</p>
+            </div>
+            <div class="step-reveal-item">
+              <div class="topic-title">Stap 5 — Repeterende groepen</div>
+              <p>Welke gegevens herhalen zich? Jan Jansen staat twee keer. Producten herhalen ook — meerdere producten per bestelling.</p>
+              <div class="hl-box warn" style="margin-top:.7rem">
+                <strong>Herhalende attributen:</strong> customername · address · email &nbsp;(per klant) &nbsp;en&nbsp; productname · productprice · supplier &nbsp;(per product per bestelling)
+                <br><strong>Dit is 0NF</strong> — de data staat er, maar alles is door elkaar.
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.8rem;margin-top:1rem">
+            <button class="btn" id="steps-0nf-prev" style="display:none" onclick="stepReveal('steps-0nf', -1)">← Vorige</button>
+            <span class="step-counter" id="steps-0nf-counter">1 / 5</span>
+            <button class="btn filled" id="steps-0nf-next" onclick="stepReveal('steps-0nf', 1)">Volgende stap →</button>
+          </div>
+
+          <!-- MCQ 0NF -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ Welk attribuut is in 0NF de kandidaat voor de primaire sleutel?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-0nf-1')">customername</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'fb-0nf-1')">ordernumber</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-0nf-1')">productname</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-0nf-1')">orderdate</div>
+            </div>
+            <div class="mcq-feedback" id="fb-0nf-1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(1)">Verder naar 1NF →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 2 — 1NF
+    =================================================== -->
+    <div class="sec-card" id="card2">
+      <div class="sec-header" onclick="toggleCard(2)">
+        <div class="sec-icon">1️⃣</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Eerste Normaalvorm (1NF)</div>
+          <div class="sec-sub">Enkelvoudige waarden · Unieke rijen · Herhalingen splitsen</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>Regels voor 1NF:</strong><br>
+            ✓ Elk attribuut bevat precies <strong>één waarde</strong><br>
+            ✓ Elke rij is uniek identificeerbaar (heeft een <strong>PK</strong>)<br>
+            ✓ Geen herhalende groepen meer in één cel
+          </div>
+
+          <div class="step-reveal" id="steps-1nf">
+
+            <div class="step-reveal-item visible">
+              <div class="topic-title">Stap 1 — Zijn de attributen enkelvoudig?</div>
+              <p><code>address</code> bevat <em>"Kerkstraat 12, Amsterdam"</em> — dat zijn eigenlijk twee dingen. Split in <code>street</code> + <code>city</code>.</p>
+              <p style="margin-top:.5rem">Ook <code>customername</code> is samengesteld → split in <code>firstname</code> + <code>lastname</code>.</p>
+              <div class="hl-box tip" style="margin-top:.7rem"><strong>Meerdere producten per bestelling?</strong> Elke product-bestelling combinatie wordt een eigen rij. Bestelling 1024 met 2 producten wordt dus 2 rijen.</div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Stap 2 — Voeg een unieke PK toe</div>
+              <p>Nu elk product een eigen rij heeft, is <code>ordernumber</code> niet meer uniek. We voegen een eigen <code>id</code> toe.</p>
+              <div style="overflow-x:auto;margin-top:.8rem">
+                <table style="width:100%;border-collapse:collapse;font-size:.78rem;font-family:var(--mono);min-width:700px">
+                  <thead style="background:var(--bg2)">
+                    <tr>
+                      <th style="padding:6px 10px;border:1px solid var(--border);text-align:left">id (PK)</th>
+                      <th style="padding:6px 10px;border:1px solid var(--border)">ordernumber</th>
+                      <th style="padding:6px 10px;border:1px solid var(--border)">orderdate</th>
+                      <th style="padding:6px 10px;border:1px solid var(--border)">firstname</th>
+                      <th style="padding:6px 10px;border:1px solid var(--border)">lastname</th>
+                      <th style="padding:6px 10px;border:1px solid var(--border)">street</th>
+                      <th style="padding:6px 10px;border:1px solid var(--border)">city</th>
+                      <th style="padding:6px 10px;border:1px solid var(--border)">productname</th>
+                      <th style="padding:6px 10px;border:1px solid var(--border)">productprice</th>
+                      <th style="padding:6px 10px;border:1px solid var(--border)">supplier</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:var(--accent5);font-weight:700">1</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">1024</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">15-02-2025</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">Jan</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">Jansen</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">Kerkstraat 12</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">Amsterdam</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">Laptop ASUS</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">€799</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">TechSupply</td>
+                    </tr>
+                    <tr style="background:rgba(248,113,113,.08)">
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:var(--accent5);font-weight:700">2</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">1024</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">15-02-2025</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:#f87171;font-weight:600">Jan</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:#f87171;font-weight:600">Jansen</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:#f87171;font-weight:600">Kerkstraat 12</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:#f87171;font-weight:600">Amsterdam</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">Draadloze muis</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">€29</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">OfficeGoods</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:var(--accent5);font-weight:700">3</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">1025</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">16-02-2025</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">Lisa</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">de Vries</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">Dorpsstraat 5</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">Utrecht</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">iPhone 14</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">€999</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">MobileWorld</td>
+                    </tr>
+                    <tr style="background:rgba(248,113,113,.08)">
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:var(--accent5);font-weight:700">4</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">1024</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">16-02-2025</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:#f87171;font-weight:600">Lisa</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:#f87171;font-weight:600">de Vries</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:#f87171;font-weight:600">Dorpsstraat 5</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border);color:#f87171;font-weight:600">Utrecht</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">Oplader USB-C</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">€19</td>
+                      <td style="padding:5px 10px;border:1px solid var(--border)">MobileWorld</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="hl-box warn" style="margin-top:.6rem">🔴 Rood = herhaalde data. Jan Jansen staat meerdere keren — dit lossen we op in de volgende stap.</div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Stap 3 — Split klantgegevens af</div>
+              <p>Klantgegevens herhalen bij elke bestelling. Die horen bij de <strong>klant</strong>, niet bij de bestelling. We maken een aparte <code>customer</code> tabel.</p>
+              <div class="erd-canvas" style="margin-top:.8rem;display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center">
+                <div class="erd-entity">
+                  <div class="erd-entity-name" style="background:var(--accent1);color:#fff">customer</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> firstname</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> lastname</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> street</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> city</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> email</div>
+                  </div>
+                </div>
+                <div class="erd-entity">
+                  <div class="erd-entity-name">order</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> ordernumber</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> orderdate</div>
+                    <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> customer_id (FK)</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> productname</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> productprice</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> supplier</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> discountcode</div>
+                  </div>
+                </div>
+              </div>
+              <div class="hl-box tip" style="margin-top:.6rem"><strong>✅ Winst:</strong> Jan Jansen staat nu maar 1 keer in de customer tabel. In order staat alleen nog <code>customer_id</code> als verwijzing.</div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Stap 4 — Split producten af</div>
+              <p>Ook producten herhalen — "MobileWorld" staat twee keer in order 1025. Producten horen in een eigen <code>product</code> tabel.</p>
+              <div class="erd-canvas" style="margin-top:.8rem;display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center">
+                <div class="erd-entity">
+                  <div class="erd-entity-name" style="background:var(--accent3);color:#fff">product</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> productname</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> productprice</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> supplier</div>
+                  </div>
+                </div>
+                <div class="erd-entity">
+                  <div class="erd-entity-name">order</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> ordernumber</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> orderdate</div>
+                    <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> customer_id (FK)</div>
+                    <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> product_id (FK)</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> discountcode</div>
+                  </div>
+                </div>
+              </div>
+              <div class="hl-box tip" style="margin-top:.6rem"><strong>✅ 1NF bereikt!</strong> Elke cel heeft één waarde, elke rij heeft een PK, herhalende groepen zijn gesplitst.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.8rem;margin-top:1rem">
+            <button class="btn" id="steps-1nf-prev" style="display:none" onclick="stepReveal('steps-1nf', -1)">← Vorige</button>
+            <span class="step-counter" id="steps-1nf-counter">1 / 4</span>
+            <button class="btn filled" id="steps-1nf-next" onclick="stepReveal('steps-1nf', 1)">Volgende stap →</button>
+          </div>
+
+          <!-- MCQ 1NF -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ <code>address</code> bevat "Kerkstraat 12, Amsterdam". Wat doe je in 1NF?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-1nf-1')">Je laat het zo — het is maar één attribuut</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'fb-1nf-1')">Je splitst het op in <code>street</code> en <code>city</code></div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-1nf-1')">Je verwijdert het attribuut</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-1nf-1')">Je zet het in een aparte tabel</div>
+            </div>
+            <div class="mcq-feedback" id="fb-1nf-1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(2)">Verder naar 2NF →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 3 — 2NF
+    =================================================== -->
+    <div class="sec-card" id="card3">
+      <div class="sec-header" onclick="toggleCard(3)">
+        <div class="sec-icon">2️⃣</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Tweede Normaalvorm (2NF)</div>
+          <div class="sec-sub">Elk attribuut hoort volledig bij zijn PK</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>Regel voor 2NF:</strong><br>
+            ✓ Voldoet aan 1NF<br>
+            ✓ Elk attribuut is <strong>volledig afhankelijk</strong> van de primaire sleutel
+          </div>
+
+          <div class="hl-box quiz" style="margin-top:1rem">
+            <strong>🔑 De kernvraag bij 2NF:</strong><br>
+            <em>"Is dit een eigenschap van de bestelling — of van iets anders?"</em><br><br>
+            <strong>discountcode</strong> in de order-rij staat twee keer voor dezelfde bestelling (1024 heeft twee rijen). De kortingscode hoort bij de <strong>bestelling</strong> als geheel, niet bij de combinatie bestelling + product.<br><br>
+            Ook <strong>orderdate</strong> en <strong>customer_id</strong> herhalen per bestelling — die horen bij de bestelling zelf.
+          </div>
+
+          <!-- Oplossing 2NF -->
+          <div class="topic-title" style="margin-top:1.2rem">Oplossing — splits bestelling van orderregel</div>
+          <p>De order-tabel bevat twee dingen door elkaar: de <strong>bestelling</strong> (wie, wanneer, korting) en de <strong>orderregel</strong> (welk product). Die splitsen we.</p>
+
+          <div class="erd-canvas" style="margin-top:1rem;display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center">
+            <div class="erd-entity">
+              <div class="erd-entity-name">order ✅</div>
+              <div class="erd-attrs">
+                <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                <div class="erd-attr"><span class="icon-req">◆</span> ordernumber</div>
+                <div class="erd-attr"><span class="icon-req">◆</span> orderdate</div>
+                <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> customer_id (FK)</div>
+                <div class="erd-attr"><span class="icon-req">◇</span> discountcode</div>
+              </div>
+            </div>
+            <div class="erd-entity" style="border-color:var(--accent4)">
+              <div class="erd-entity-name" style="background:var(--accent4);color:#fff">orderrow ✨</div>
+              <div class="erd-attrs">
+                <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> order_id (FK)</div>
+                <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> product_id (FK)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hl-box tip" style="margin-top:.8rem">
+            <strong>✅ 2NF bereikt!</strong> Elke tabel bevat alleen attributen die bij zijn PK horen:<br>
+            <code>order</code> = gegevens van de bestelling · <code>orderrow</code> = welk product in welke bestelling · <code>customer</code> = klantgegevens · <code>product</code> = productgegevens
+          </div>
+
+          <!-- Drag & Drop 2NF -->
+          <div class="topic-title" style="margin-top:1.5rem">🎮 Oefening — Welke tabel hoort dit attribuut bij?</div>
+          <p style="margin-bottom:.8rem">Sleep elk attribuut naar de juiste tabel.</p>
+
+          <div id="dd2nf-source" class="drop-zone" style="flex-wrap:wrap;min-height:52px;margin-bottom:.8rem"
+               ondragover="allowDrop(event)" ondrop="drop(event, 'dd2nf-source')">
+            <div class="drag-item" draggable="true" data-correct="entity" ondragstart="dragStart(event)" onclick="tapItem(this,'dd2nf-source','dd2nf-order','dd2nf-customer')">orderdate</div>
+            <div class="drag-item" draggable="true" data-correct="attrib" ondragstart="dragStart(event)" onclick="tapItem(this,'dd2nf-source','dd2nf-order','dd2nf-customer')">email</div>
+            <div class="drag-item" draggable="true" data-correct="entity" ondragstart="dragStart(event)" onclick="tapItem(this,'dd2nf-source','dd2nf-order','dd2nf-customer')">discountcode</div>
+            <div class="drag-item" draggable="true" data-correct="attrib" ondragstart="dragStart(event)" onclick="tapItem(this,'dd2nf-source','dd2nf-order','dd2nf-customer')">city</div>
+            <div class="drag-item" draggable="true" data-correct="entity" ondragstart="dragStart(event)" onclick="tapItem(this,'dd2nf-source','dd2nf-order','dd2nf-customer')">customer_id</div>
+            <div class="drag-item" draggable="true" data-correct="attrib" ondragstart="dragStart(event)" onclick="tapItem(this,'dd2nf-source','dd2nf-order','dd2nf-customer')">firstname</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:.8rem">
+            <div>
+              <div class="topic-title" style="font-size:.8rem;margin-bottom:.4rem">📋 order</div>
+              <div class="drop-zone" id="dd2nf-order" data-zone="order"
+                   ondragover="allowDrop(event)" ondrop="drop(event, 'dd2nf-order')"></div>
+            </div>
+            <div>
+              <div class="topic-title" style="font-size:.8rem;margin-bottom:.4rem">👤 customer</div>
+              <div class="drop-zone" id="dd2nf-customer" data-zone="customer"
+                   ondragover="allowDrop(event)" ondrop="drop(event, 'dd2nf-customer')"></div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="btn filled" onclick="check2NF()">✅ Controleer</button>
+            <button class="btn" onclick="reset2NF()">🔄 Reset</button>
+          </div>
+          <div id="dd2nf-feedback" style="margin-top:.6rem;font-weight:600"></div>
+
+          <!-- MCQ 2NF -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ Waarom hoort <code>discountcode</code> in de <code>order</code> tabel en niet in <code>orderrow</code>?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-2nf-1')">Omdat het een tekstveld is</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'fb-2nf-1')">Omdat de korting bij de bestelling als geheel hoort, niet bij één product</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-2nf-1')">Om opslagruimte te besparen</div>
+            </div>
+            <div class="mcq-feedback" id="fb-2nf-1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(3)">Verder naar 3NF →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 4 — 3NF
+    =================================================== -->
+    <div class="sec-card" id="card4">
+      <div class="sec-header" onclick="toggleCard(4)">
+        <div class="sec-icon">3️⃣</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Derde Normaalvorm (3NF)</div>
+          <div class="sec-sub">Geen indirecte afhankelijkheden meer</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>Regel voor 3NF:</strong><br>
+            ✓ Voldoet aan 2NF<br>
+            ✓ Geen attribuut hangt af van een <strong>ander niet-sleutel attribuut</strong> — alleen van de PK<br>
+            ✓ Geen A → B → C ketens
+          </div>
+
+          <div class="hl-box quiz" style="margin-top:1rem">
+            <strong>Wat is een indirecte afhankelijkheid?</strong><br>
+            <code>product.id</code> → bepaalt → <code>supplier</code> → bepaalt → <em>suppliergegevens?</em><br>
+            Supplier is meer dan een naam — het is een eigen entiteit met eigen eigenschappen. "MobileWorld" staat twee keer in product (bij iPhone 14 en Oplader USB-C) — dat is herhaling!
+          </div>
+
+          <div class="topic-title" style="margin-top:1.2rem">Oplossing — maak een aparte supplier tabel</div>
+          <div class="erd-canvas" style="margin-top:.8rem;display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center">
+            <div class="erd-entity" style="border-color:var(--accent3)">
+              <div class="erd-entity-name" style="background:var(--accent3);color:#fff">supplier</div>
+              <div class="erd-attrs">
+                <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                <div class="erd-attr"><span class="icon-req">◆</span> suppliername</div>
+                <div class="erd-attr"><span class="icon-req">◇</span> email</div>
+              </div>
+            </div>
+            <div class="erd-entity">
+              <div class="erd-entity-name">product ✅</div>
+              <div class="erd-attrs">
+                <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                <div class="erd-attr"><span class="icon-req">◆</span> productname</div>
+                <div class="erd-attr"><span class="icon-req">◆</span> productprice</div>
+                <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> supplier_id (FK)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hl-box tip" style="margin-top:.8rem">
+            <strong>✅ 3NF bereikt!</strong> MobileWorld staat nu maar 1 keer. Als de naam verandert → 1 aanpassing in supplier, nergens anders.
+          </div>
+
+          <!-- Typer oefening -->
+          <div class="typer-box" style="margin-top:1.5rem">
+            <div class="topic-title">✏️ Typer-oefening</div>
+            <p>In 3NF verplaatsen we <code>supplier</code> uit de product-tabel naar een eigen tabel. Hoe noem je de FK die in <code>product</code> overblijft? (twee woorden, geen spaties)</p>
+            <div class="typer-row">
+              <input class="typer-input" id="typer-3nf" type="text" placeholder="typ het attribuut..." oninput="checkTyper('typer-3nf', 'supplier_id', 'hint-3nf')">
+              <span class="typer-hint" id="hint-3nf"></span>
+            </div>
+          </div>
+
+          <!-- MCQ 3NF -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ Wat is een indirecte afhankelijkheid?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-3nf-1')">Een attribuut dat leeg mag zijn (NULL)</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'fb-3nf-1')">Attribuut C hangt af van attribuut B, dat zelf afhangt van de PK</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-3nf-1')">Een attribuut dat verwijst naar een andere tabel (FK)</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-3nf-1')">Een attribuut dat slechts gedeeltelijk afhangt van de PK (2NF)</div>
+            </div>
+            <div class="mcq-feedback" id="fb-3nf-1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(4)">Bekijk het eindresultaat →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 5 — RESULTAAT
+    =================================================== -->
+    <div class="sec-card" id="card5">
+      <div class="sec-header" onclick="toggleCard(5)">
+        <div class="sec-icon">🏁</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Eindresultaat — 3NF</div>
+          <div class="sec-sub">De volledig genormaliseerde WebshopPro database</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box tip">
+            <strong>Van kassabon naar nette database</strong> — we begonnen met één rommelig vel papier en hebben nu 5 tabellen zonder enige herhaling.
+          </div>
+
+          <!-- Overzichtstabel -->
+          <div style="overflow-x:auto;margin:1rem 0">
+            <table style="width:100%;border-collapse:collapse;font-size:.85rem">
+              <thead style="background:var(--bg2)">
+                <tr>
+                  <th style="padding:8px 12px;border:1px solid var(--border);text-align:left">Stap</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border)">Wat gedaan</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border)">Tabellen na deze stap</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="padding:7px 12px;border:1px solid var(--border)"><strong>0NF</strong></td><td style="padding:7px 12px;border:1px solid var(--border)">Alles geïnventariseerd, PK-kandidaat gevonden</td><td style="padding:7px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">order (alles door elkaar)</td></tr>
+                <tr><td style="padding:7px 12px;border:1px solid var(--border)"><strong>1NF</strong></td><td style="padding:7px 12px;border:1px solid var(--border)">Samengestelde attrs gesplitst, klant- en productdata apart</td><td style="padding:7px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">order · customer · product</td></tr>
+                <tr><td style="padding:7px 12px;border:1px solid var(--border)"><strong>2NF</strong></td><td style="padding:7px 12px;border:1px solid var(--border)">Bestelling gesplitst van orderregel</td><td style="padding:7px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">+ orderrow</td></tr>
+                <tr><td style="padding:7px 12px;border:1px solid var(--border)"><strong>3NF</strong></td><td style="padding:7px 12px;border:1px solid var(--border)">Supplier als eigen entiteit</td><td style="padding:7px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">+ supplier</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Volledig ERD -->
+          <div class="topic-title" style="margin-top:1.2rem">Het volledige ERD — 5 tabellen in 3NF</div>
+          <div class="erd-canvas" style="margin-top:.8rem;overflow-x:auto">
+            <div style="display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;min-width:600px">
+              <div class="erd-entity" style="border-color:var(--accent1)">
+                <div class="erd-entity-name" style="background:var(--accent1);color:#fff">customer</div>
+                <div class="erd-attrs">
+                  <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                  <div class="erd-attr"><span class="icon-req">◆</span> firstname</div>
+                  <div class="erd-attr"><span class="icon-req">◆</span> lastname</div>
+                  <div class="erd-attr"><span class="icon-req">◆</span> street</div>
+                  <div class="erd-attr"><span class="icon-req">◆</span> city</div>
+                  <div class="erd-attr"><span class="icon-req">◆</span> email</div>
+                </div>
+              </div>
+              <div class="erd-entity">
+                <div class="erd-entity-name">order</div>
+                <div class="erd-attrs">
+                  <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                  <div class="erd-attr"><span class="icon-req">◆</span> ordernumber</div>
+                  <div class="erd-attr"><span class="icon-req">◆</span> orderdate</div>
+                  <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> customer_id</div>
+                  <div class="erd-attr"><span class="icon-req">◇</span> discountcode</div>
+                </div>
+              </div>
+              <div class="erd-entity" style="border-color:var(--accent4)">
+                <div class="erd-entity-name" style="background:var(--accent4);color:#fff">orderrow ✨</div>
+                <div class="erd-attrs">
+                  <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                  <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> order_id</div>
+                  <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> product_id</div>
+                </div>
+              </div>
+              <div class="erd-entity" style="border-color:var(--accent3)">
+                <div class="erd-entity-name" style="background:var(--accent3);color:#fff">product</div>
+                <div class="erd-attrs">
+                  <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                  <div class="erd-attr"><span class="icon-req">◆</span> productname</div>
+                  <div class="erd-attr"><span class="icon-req">◆</span> productprice</div>
+                  <div class="erd-attr" style="color:var(--accent4)"><span class="icon-req">🔷</span> supplier_id</div>
+                </div>
+              </div>
+              <div class="erd-entity">
+                <div class="erd-entity-name">supplier</div>
+                <div class="erd-attrs">
+                  <div class="erd-attr"><span class="icon-pk">🔑</span> id</div>
+                  <div class="erd-attr"><span class="icon-req">◆</span> suppliername</div>
+                  <div class="erd-attr"><span class="icon-req">◇</span> email</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leeruitkomsten checklist -->
+          <div class="topic-title" style="margin-top:1.5rem">✅ Leeruitkomsten — vink af wat je kunt</div>
+          <div class="checklist" style="margin-top:.6rem">
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik weet wat normalisatie is en waarom het belangrijk is</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan de vier normaalvormen (0NF–3NF) uitleggen</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan samengestelde attributen herkennen en splitsen (1NF)</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan controleren of elk attribuut volledig bij de PK hoort (2NF)</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik herken indirecte afhankelijkheden (A → B → C) en los ze op (3NF)</div>
+            </div>
+          </div>
+
+          <!-- Afsluiting -->
+          <div class="hl-box tip" style="margin-top:1.5rem;text-align:center">
+            <div class="big">🎉</div>
+            <div class="box-title">Module 5 klaar!</div>
+            <p>Van kassabon naar nette 3NF database — goed gedaan!</p>
+            <div style="margin-top:1rem;display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap">
+              <a href="index.html" class="btn">🏠 Terug naar overzicht</a>
+              <a href="module4.html" class="btn">← Module 4</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .sections -->
+</div><!-- .container -->
+
+<div class="big" style="text-align:center;padding:2rem;opacity:.3">ERD — Module 5</div>
+
+<script src="script.js"></script>
+<script>
+// ── Custom drag check voor 2NF oefening ──────────────────────────────────────
+const correct2NF = {
+  orderdate: 'entity',    // → order
+  discountcode: 'entity', // → order
+  customer_id: 'entity',  // → order
+  email: 'attrib',        // → customer
+  city: 'attrib',         // → customer
+  firstname: 'attrib',    // → customer
+};
+
+function check2NF() {
+  const orderItems  = document.getElementById('dd2nf-order').querySelectorAll('.drag-item');
+  const custItems   = document.getElementById('dd2nf-customer').querySelectorAll('.drag-item');
+  const sourceItems = document.getElementById('dd2nf-source').querySelectorAll('.drag-item');
+  let ok = 0, tot = 0;
+
+  orderItems.forEach(item => {
+    tot++;
+    if (correct2NF[item.textContent] === 'entity') { item.classList.add('correct'); item.classList.remove('wrong'); ok++; }
+    else item.classList.add('wrong');
+  });
+  custItems.forEach(item => {
+    tot++;
+    if (correct2NF[item.textContent] === 'attrib') { item.classList.add('correct'); item.classList.remove('wrong'); ok++; }
+    else item.classList.add('wrong');
+  });
+  sourceItems.forEach(item => { tot++; item.classList.add('wrong'); });
+
+  const fb = document.getElementById('dd2nf-feedback');
+  if (ok === tot && tot > 0) {
+    fb.textContent = '🎉 Perfect! Alles op de juiste plek.';
+    fb.style.color = 'var(--accent3)';
+    addPoint(3);
+  } else {
+    fb.textContent = ok + ' van ' + tot + ' correct. Denk: hoort dit bij de bestelling of bij de klant?';
+    fb.style.color = '#f87171';
+  }
+}
+
+function reset2NF() {
+  const source = document.getElementById('dd2nf-source');
+  ['dd2nf-order','dd2nf-customer'].forEach(id => {
+    document.getElementById(id).querySelectorAll('.drag-item').forEach(item => {
+      item.classList.remove('correct','wrong'); source.appendChild(item);
+    });
+  });
+  document.getElementById('dd2nf-feedback').textContent = '';
+}
+</script>
+</body>
+</html>

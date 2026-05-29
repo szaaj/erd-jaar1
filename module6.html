@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ERD Analyseren & Verbeteren | SOD Module 6</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="pastel">
+
+<!-- ======================== THEME BAR ======================== -->
+<div class="theme-bar">
+  <button class="theme-btn active" onclick="setTheme('pastel', this)">🌸 Pastel</button>
+  <button class="theme-btn" onclick="setTheme('dark', this)">🌑 Dark</button>
+  <button class="theme-btn" onclick="setTheme('light', this)">☀️ Light</button>
+  <button class="theme-btn" onclick="setTheme('neon', this)">⚡ Neon</button>
+</div>
+
+<!-- ======================== MODULE NAVIGATIE ======================== -->
+<nav class="module-nav">
+  <div class="module-nav-title">📚 SOD — Alle modules</div>
+  <div class="module-nav-grid">
+    <a class="module-pill" href="index.html"><span class="pill-num">1</span> ERD Basis</a>
+    <a class="module-pill" href="module2.html"><span class="pill-num">2</span> Datatypes &amp; Tool</a>
+    <a class="module-pill" href="module3.html"><span class="pill-num">3</span> Relaties</a>
+    <a class="module-pill" href="module4.html"><span class="pill-num">4</span> Veel-op-veel</a>
+    <a class="module-pill" href="module5.html"><span class="pill-num">5</span> Normaalvormen</a>
+    <a class="module-pill active" href="module6.html"><span class="pill-num">6</span> ERD Analyseren</a>
+    <a class="module-pill" href="module7.html"><span class="pill-num">7</span> ERD van Scratch</a>
+  </div>
+</nav>
+
+<!-- ======================== SCORE BAR ======================== -->
+<div class="score-bar">
+  <span class="score-label">Voortgang Module 6</span>
+  <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
+  <span class="score-num" id="scoreNum">0 / 20 ⭐</span>
+</div>
+
+<!-- ======================== HERO ======================== -->
+<div class="container">
+  <div class="hero">
+    <div class="hero-label">SOD · Module 6 · MBO</div>
+    <h1>ERD Analyseren<br>&amp; Verbeteren</h1>
+    <p>Iemand heeft al een ERD gemaakt — maar klopt die wel? Jij gaat het controleren, de fouten vinden en de database verbeteren naar 3NF. 🔍</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Onderdelen</div></div>
+      <div class="stat"><div class="stat-num">~45</div><div class="stat-label">Minuten</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Oefeningen</div></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS STRIP -->
+  <div class="progress-strip">
+    <div class="prog-step active" onclick="scrollToCard(0)">Intro</div>
+    <div class="prog-step" onclick="scrollToCard(1)">0NF</div>
+    <div class="prog-step" onclick="scrollToCard(2)">1NF</div>
+    <div class="prog-step" onclick="scrollToCard(3)">2NF &amp; 3NF</div>
+    <div class="prog-step" onclick="scrollToCard(4)">Verbeterd ERD</div>
+    <div class="prog-step" onclick="scrollToCard(5)">Resultaat</div>
+  </div>
+
+  <div class="sections">
+
+    <!-- ===================================================
+         KAART 0 — INTRO & CASUS
+    =================================================== -->
+    <div class="sec-card open" id="card0">
+      <div class="sec-header" onclick="toggleCard(0)">
+        <div class="sec-icon">🏢</div>
+        <div class="sec-title-group">
+          <div class="sec-title">De casus — TechRent</div>
+          <div class="sec-sub">Lees de situatie en bekijk de bestaande ERD</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>Wat ga je doen?</strong><br>
+            TechRent heeft al een ERD laten maken, maar er zitten fouten in. Jij gaat:<br>
+            1. De ERD analyseren op normalisatiefouten<br>
+            2. Per normaalvorm (0NF t/m 3NF) de problemen beschrijven<br>
+            3. Een verbeterde ERD maken
+          </div>
+
+          <div class="topic-title" style="margin-top:1.2rem">Het systeem</div>
+          <p>TechRent verhuurt technologieproducten (laptops, tablets, camera's) aan klanten. De bestaande database heeft deze entiteiten:</p>
+
+          <!-- ERD visueel — de HUIDIGE (foute) ERD -->
+          <div class="erd-canvas" style="margin-top:1rem;overflow-x:auto">
+            <div style="min-width:680px">
+
+              <!-- SVG van de huidige ERD -->
+              <svg viewBox="0 0 820 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;font-family:'JetBrains Mono',monospace">
+                <defs><filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#5b4de8" flood-opacity="0.09"/></filter></defs>
+
+                <!-- customer -->
+                <g filter="url(#sh)">
+                  <rect x="10" y="10" width="175" height="130" rx="7" fill="white" stroke="#9db8d2" stroke-width="1.5"/>
+                  <rect x="10" y="10" width="175" height="28" rx="7" fill="#5b9bd5" stroke="#9db8d2" stroke-width="1.5"/>
+                  <rect x="10" y="30" width="175" height="8" fill="#5b9bd5"/>
+                  <text x="22" y="28" font-size="11" font-weight="700" fill="white">customer</text>
+                </g>
+                <line x1="10" y1="52" x2="185" y2="52" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="22" y="47" font-size="10" fill="#b45309">🔑</text><text x="36" y="47" font-size="10" fill="#1a1d2e">id INT</text>
+                <line x1="10" y1="66" x2="185" y2="66" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="22" y="62" font-size="10" fill="#4b5470">◆ name VARCHAR(75)</text>
+                <line x1="10" y1="80" x2="185" y2="80" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="22" y="76" font-size="10" fill="#dc2626" font-weight="700">◆ address VARCHAR(150)</text>
+                <line x1="10" y1="94" x2="185" y2="94" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="22" y="90" font-size="10" fill="#4b5470">◆ phone VARCHAR(15)</text>
+                <line x1="10" y1="108" x2="185" y2="108" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="22" y="104" font-size="10" fill="#4b5470">◆ email VARCHAR(150)</text>
+                <text x="22" y="128" font-size="9" fill="#dc2626" font-weight="600">⚠ address = samengesteld!</text>
+
+                <!-- rental -->
+                <g filter="url(#sh)">
+                  <rect x="290" y="80" width="185" height="190" rx="7" fill="white" stroke="#9db8d2" stroke-width="1.5"/>
+                  <rect x="290" y="80" width="185" height="28" rx="7" fill="#5b9bd5" stroke="#9db8d2" stroke-width="1.5"/>
+                  <rect x="290" y="100" width="185" height="8" fill="#5b9bd5"/>
+                  <text x="302" y="98" font-size="11" font-weight="700" fill="white">rental</text>
+                </g>
+                <line x1="290" y1="122" x2="475" y2="122" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="302" y="117" font-size="10" fill="#b45309">🔑</text><text x="316" y="117" font-size="10" fill="#1a1d2e">id INT</text>
+                <line x1="290" y1="136" x2="475" y2="136" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="302" y="131" font-size="10" fill="#4b5470">◆ date DATE</text>
+                <line x1="290" y1="150" x2="475" y2="150" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="302" y="145" font-size="10" fill="#4b5470">◆ returndate DATE</text>
+                <line x1="290" y1="164" x2="475" y2="164" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="302" y="159" font-size="10" fill="#dc2626" font-weight="700">◆ price DECIMAL(10,2)</text>
+                <line x1="290" y1="178" x2="475" y2="178" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="302" y="173" font-size="10" fill="#dc2626" font-weight="700">◆ paymentstatus VARCHAR(50)</text>
+                <line x1="290" y1="192" x2="475" y2="192" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="302" y="187" font-size="10" fill="#1a73e8">🔷 customer_id INT</text>
+                <line x1="290" y1="206" x2="475" y2="206" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="302" y="201" font-size="10" fill="#1a73e8">🔷 product_id INT</text>
+                <text x="302" y="258" font-size="9" fill="#dc2626" font-weight="600">⚠ price + paymentstatus</text>
+                <text x="302" y="270" font-size="9" fill="#dc2626" font-weight="600">  horen bij payment!</text>
+
+                <!-- product -->
+                <g filter="url(#sh)">
+                  <rect x="555" y="10" width="185" height="130" rx="7" fill="white" stroke="#9db8d2" stroke-width="1.5"/>
+                  <rect x="555" y="10" width="185" height="28" rx="7" fill="#5b9bd5" stroke="#9db8d2" stroke-width="1.5"/>
+                  <rect x="555" y="30" width="185" height="8" fill="#5b9bd5"/>
+                  <text x="567" y="28" font-size="11" font-weight="700" fill="white">product</text>
+                </g>
+                <line x1="555" y1="52" x2="740" y2="52" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="567" y="47" font-size="10" fill="#b45309">🔑</text><text x="581" y="47" font-size="10" fill="#1a1d2e">id INT</text>
+                <line x1="555" y1="66" x2="740" y2="66" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="567" y="62" font-size="10" fill="#4b5470">◆ name VARCHAR(100)</text>
+                <line x1="555" y1="80" x2="740" y2="80" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="567" y="76" font-size="10" fill="#dc2626" font-weight="700">◆ brand VARCHAR(100)</text>
+                <line x1="555" y1="94" x2="740" y2="94" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="567" y="90" font-size="10" fill="#4b5470">◆ priceperday DEC(10,2)</text>
+                <line x1="555" y1="108" x2="740" y2="108" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="567" y="104" font-size="10" fill="#1a73e8">🔷 category_id INT</text>
+                <text x="567" y="128" font-size="9" fill="#dc2626" font-weight="600">⚠ brand = indirecte afh.</text>
+
+                <!-- category -->
+                <g filter="url(#sh)">
+                  <rect x="640" y="210" width="155" height="80" rx="7" fill="white" stroke="#9db8d2" stroke-width="1.5"/>
+                  <rect x="640" y="210" width="155" height="28" rx="7" fill="#5b9bd5" stroke="#9db8d2" stroke-width="1.5"/>
+                  <rect x="640" y="230" width="155" height="8" fill="#5b9bd5"/>
+                  <text x="652" y="228" font-size="11" font-weight="700" fill="white">category</text>
+                </g>
+                <line x1="640" y1="252" x2="795" y2="252" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="652" y="247" font-size="10" fill="#b45309">🔑</text><text x="666" y="247" font-size="10" fill="#1a1d2e">id INT</text>
+                <text x="652" y="278" font-size="10" fill="#4b5470">◆ name VARCHAR(100)</text>
+
+                <!-- payment -->
+                <g filter="url(#sh)">
+                  <rect x="10" y="240" width="185" height="130" rx="7" fill="white" stroke="#9db8d2" stroke-width="1.5"/>
+                  <rect x="10" y="240" width="185" height="28" rx="7" fill="#5b9bd5" stroke="#9db8d2" stroke-width="1.5"/>
+                  <rect x="10" y="260" width="185" height="8" fill="#5b9bd5"/>
+                  <text x="22" y="258" font-size="11" font-weight="700" fill="white">payment</text>
+                </g>
+                <line x1="10" y1="282" x2="195" y2="282" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="22" y="277" font-size="10" fill="#b45309">🔑</text><text x="36" y="277" font-size="10" fill="#1a1d2e">id INT</text>
+                <line x1="10" y1="296" x2="195" y2="296" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="22" y="291" font-size="10" fill="#4b5470">◆ amount DECIMAL(10,2)</text>
+                <line x1="10" y1="310" x2="195" y2="310" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="22" y="305" font-size="10" fill="#4b5470">◆ date DATETIME</text>
+                <line x1="10" y1="324" x2="195" y2="324" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="22" y="319" font-size="10" fill="#4b5470">◆ method VARCHAR(50)</text>
+                <line x1="10" y1="338" x2="195" y2="338" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="22" y="333" font-size="10" fill="#1a73e8">🔷 rental_id INT</text>
+
+                <!-- Connectors -->
+                <!-- customer → rental -->
+                <line x1="185" y1="75" x2="290" y2="155" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <!-- product → rental -->
+                <line x1="555" y1="90" x2="475" y2="160" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <!-- product → category -->
+                <line x1="700" y1="140" x2="700" y2="210" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <!-- payment → rental -->
+                <line x1="195" y1="300" x2="290" y2="220" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+
+                <!-- Fout labels -->
+                <rect x="200" y="355" width="420" height="40" rx="6" fill="#fff1f2" stroke="#fca5a5" stroke-width="1"/>
+                <text x="215" y="370" font-size="9.5" fill="#dc2626" font-weight="700">🔴 Rood = mogelijke normalisatiefout</text>
+                <text x="215" y="385" font-size="9" fill="#9f1239">Gemarkeerde attributen moeten worden geanalyseerd en mogelijk verplaatst</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="hl-box warn" style="margin-top:.6rem">
+            <strong>🔍 Opdracht:</strong> Analyseer deze ERD per normaalvorm. Wat klopt er niet? Waarom kan dat problemen geven? En hoe los je het op?
+          </div>
+
+          <!-- MCQ intro -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ Hoeveel entiteiten heeft de huidige TechRent ERD?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-intro-1')">3 — customer, rental, product</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-intro-1')">4 — customer, rental, product, payment</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'fb-intro-1')">5 — customer, rental, product, category, payment</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-intro-1')">6 — inclusief brand als aparte entiteit</div>
+            </div>
+            <div class="mcq-feedback" id="fb-intro-1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(0)">Start analyse — 0NF →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 1 — 0NF ANALYSE
+    =================================================== -->
+    <div class="sec-card" id="card1">
+      <div class="sec-header" onclick="toggleCard(1)">
+        <div class="sec-icon">📋</div>
+        <div class="sec-title-group">
+          <div class="sec-title">0NF — Analyse</div>
+          <div class="sec-sub">Gegevens inventariseren, entiteiten en PK's bepalen</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>Wat controleer je bij 0NF?</strong><br>
+            ✓ Zijn er logische entiteiten?<br>
+            ✓ Is er een uniek attribuut per entiteit (PK-kandidaat)?<br>
+            ✓ Zijn er repeterende groepen — data die herhaalt?
+          </div>
+
+          <div class="step-reveal" id="steps-0nf">
+
+            <div class="step-reveal-item visible">
+              <div class="topic-title">Stap 1 — Zijn de entiteiten logisch?</div>
+              <p>De huidige ERD heeft vijf entiteiten. Controleer ze één voor één:</p>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:.8rem">
+                <div class="hl-box tip"><strong>✅ customer</strong> — logisch. Klanten zijn een eigen object met eigen gegevens.</div>
+                <div class="hl-box tip"><strong>✅ rental</strong> — logisch. Een verhuur is een eigen event (wie huurt wat en wanneer).</div>
+                <div class="hl-box tip"><strong>✅ product</strong> — logisch. Producten zijn eigen objecten met naam, merk, prijs.</div>
+                <div class="hl-box tip"><strong>✅ category</strong> — logisch. Categorieën zijn herbruikbare labels.</div>
+                <div class="hl-box tip"><strong>✅ payment</strong> — logisch. Betaling is een eigen event, los van de verhuur.</div>
+              </div>
+              <div class="hl-box warn" style="margin-top:.8rem"><strong>Conclusie 0NF:</strong> Alle vijf entiteiten zijn logisch en hebben een eigen <code>id</code> als PK. Op dit niveau zijn er geen grote problemen — de echte fouten zitten in de attributen.</div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Stap 2 — Zijn er repeterende groepen?</div>
+              <p>Kijk of er data is die herhaalt in meerdere entiteiten of rijen:</p>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:.8rem">
+                <div class="hl-box warn">
+                  <strong>⚠️ price en paymentstatus in rental</strong><br>
+                  Als een klant meerdere keren huurt, worden <code>price</code> en <code>paymentstatus</code> elke keer opnieuw opgeslagen in rental. Maar deze gegevens horen eigenlijk bij de <strong>betaling</strong>, niet bij de verhuur zelf.
+                </div>
+                <div class="hl-box warn">
+                  <strong>⚠️ address in customer</strong><br>
+                  <code>address VARCHAR(150)</code> bevat mogelijk meerdere waarden — straat, huisnummer én stad in één veld. Dat is een samengesteld attribuut.
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Stap 3 — PK-kandidaten controleren</div>
+              <p>Elke entiteit heeft een <code>id</code> als PK. Dat is correct en consistent.</p>
+              <div style="overflow-x:auto;margin-top:.8rem">
+                <table style="width:100%;border-collapse:collapse;font-size:.84rem">
+                  <thead style="background:var(--bg2)">
+                    <tr>
+                      <th style="padding:7px 12px;border:1px solid var(--border);text-align:left">Entiteit</th>
+                      <th style="padding:7px 12px;border:1px solid var(--border)">PK</th>
+                      <th style="padding:7px 12px;border:1px solid var(--border)">FK's</th>
+                      <th style="padding:7px 12px;border:1px solid var(--border)">0NF oordeel</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>customer</code></td><td style="padding:6px 12px;border:1px solid var(--border)">id ✅</td><td style="padding:6px 12px;border:1px solid var(--border)">—</td><td style="padding:6px 12px;border:1px solid var(--border);color:var(--accent3)">✅ OK</td></tr>
+                    <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>rental</code></td><td style="padding:6px 12px;border:1px solid var(--border)">id ✅</td><td style="padding:6px 12px;border:1px solid var(--border)">customer_id, product_id</td><td style="padding:6px 12px;border:1px solid var(--border);color:#dc2626">⚠️ price/paymentstatus?</td></tr>
+                    <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>product</code></td><td style="padding:6px 12px;border:1px solid var(--border)">id ✅</td><td style="padding:6px 12px;border:1px solid var(--border)">category_id</td><td style="padding:6px 12px;border:1px solid var(--border);color:#dc2626">⚠️ brand?</td></tr>
+                    <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>category</code></td><td style="padding:6px 12px;border:1px solid var(--border)">id ✅</td><td style="padding:6px 12px;border:1px solid var(--border)">—</td><td style="padding:6px 12px;border:1px solid var(--border);color:var(--accent3)">✅ OK</td></tr>
+                    <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>payment</code></td><td style="padding:6px 12px;border:1px solid var(--border)">id ✅</td><td style="padding:6px 12px;border:1px solid var(--border)">rental_id</td><td style="padding:6px 12px;border:1px solid var(--border);color:var(--accent3)">✅ OK</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.8rem;margin-top:1rem">
+            <button class="btn" id="steps-0nf-prev" style="display:none" onclick="stepReveal('steps-0nf', -1)">← Vorige</button>
+            <span class="step-counter" id="steps-0nf-counter">1 / 3</span>
+            <button class="btn filled" id="steps-0nf-next" onclick="stepReveal('steps-0nf', 1)">Volgende stap →</button>
+          </div>
+
+          <!-- MCQ -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ Wat is het probleem met <code>address VARCHAR(150)</code> in de customer-tabel?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-0nf-1')">Het datatype VARCHAR(150) is te lang</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'fb-0nf-1')">Het is een samengesteld attribuut — straat, huisnummer en stad zitten in één veld</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-0nf-1')">Address hoort niet bij customer</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-0nf-1')">Er is geen probleem — dit is correct</div>
+            </div>
+            <div class="mcq-feedback" id="fb-0nf-1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(1)">Verder naar 1NF →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 2 — 1NF ANALYSE
+    =================================================== -->
+    <div class="sec-card" id="card2">
+      <div class="sec-header" onclick="toggleCard(2)">
+        <div class="sec-icon">1️⃣</div>
+        <div class="sec-title-group">
+          <div class="sec-title">1NF — Analyse &amp; Correctie</div>
+          <div class="sec-sub">Enkelvoudige waarden · Elke rij uniek</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>Wat controleer je bij 1NF?</strong><br>
+            ✓ Bevat elk attribuut precies <strong>één waarde</strong>?<br>
+            ✓ Is elke rij uniek identificeerbaar via een PK?<br>
+            ✓ Zijn er herhalende groepen in één cel?
+          </div>
+
+          <!-- Fout 1 -->
+          <div class="topic-title" style="margin-top:1rem">🔴 Fout 1 — address is samengesteld</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:.6rem">
+            <div class="hl-box warn">
+              <strong>❌ Huidige situatie</strong><br>
+              <code>address VARCHAR(150)</code><br>
+              Bevat: <em>"Kerkstraat 12, Amsterdam 1012AB"</em><br>
+              = straat + huisnummer + stad + postcode in één veld
+            </div>
+            <div class="hl-box tip">
+              <strong>✅ Oplossing</strong><br>
+              Splitsen in aparte attributen:<br>
+              <code>street VARCHAR(100)</code><br>
+              <code>city VARCHAR(50)</code><br>
+              <code>zipcode VARCHAR(10)</code>
+            </div>
+          </div>
+
+          <!-- Fout 2 -->
+          <div class="topic-title" style="margin-top:1.2rem">🔴 Fout 2 — name in customer kan samengesteld zijn</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:.6rem">
+            <div class="hl-box warn">
+              <strong>❌ Huidige situatie</strong><br>
+              <code>name VARCHAR(75)</code><br>
+              Bevat: <em>"Jan Jansen"</em><br>
+              = voornaam + achternaam in één veld
+            </div>
+            <div class="hl-box tip">
+              <strong>✅ Oplossing</strong><br>
+              Splitsen in:<br>
+              <code>firstname VARCHAR(50)</code><br>
+              <code>lastname VARCHAR(50)</code>
+            </div>
+          </div>
+
+          <!-- Flip cards 1NF -->
+          <div class="topic-title" style="margin-top:1.5rem">📚 Herhaling — wanneer is 1NF geschonden?</div>
+          <div class="flip-grid" style="margin-top:.6rem">
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <div class="flip-front-icon">📦</div>
+                  <div class="flip-front-label">Samengesteld attribuut</div>
+                  <div class="flip-front-hint">klik om te onthullen</div>
+                </div>
+                <div class="flip-back">Meerdere waarden in één cel — bijv. <strong>"Jan Jansen"</strong> als naam. Oplossing: splits in <code>firstname</code> + <code>lastname</code>.</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <div class="flip-front-icon">🔁</div>
+                  <div class="flip-front-label">Herhalende groep</div>
+                  <div class="flip-front-hint">klik om te onthullen</div>
+                </div>
+                <div class="flip-back">Data die meerdere keren terugkomt in verschillende rijen. Bijv. klantgegevens in elke bestelling. Oplossing: aparte tabel.</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="flip(this)">
+              <div class="flip-inner">
+                <div class="flip-front">
+                  <div class="flip-front-icon">🔑</div>
+                  <div class="flip-front-label">Geen unieke PK</div>
+                  <div class="flip-front-hint">klik om te onthullen</div>
+                </div>
+                <div class="flip-back">Als geen enkel attribuut uniek is per rij. Oplossing: voeg een eigen <code>id</code> toe als primaire sleutel.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MCQ 1NF -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ <code>name VARCHAR(75)</code> in customer bevat "Jan Jansen". Wat is de correcte 1NF-oplossing?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-1nf-1')">Verander het datatype naar TEXT</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'fb-1nf-1')">Splits op in <code>firstname VARCHAR(50)</code> en <code>lastname VARCHAR(50)</code></div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-1nf-1')">Verplaats name naar de rental-tabel</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-1nf-1')">Voeg een tweede name-kolom toe</div>
+            </div>
+            <div class="mcq-feedback" id="fb-1nf-1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(2)">Verder naar 2NF &amp; 3NF →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 3 — 2NF & 3NF ANALYSE
+    =================================================== -->
+    <div class="sec-card" id="card3">
+      <div class="sec-header" onclick="toggleCard(3)">
+        <div class="sec-icon">2️⃣</div>
+        <div class="sec-title-group">
+          <div class="sec-title">2NF &amp; 3NF — Analyse &amp; Correctie</div>
+          <div class="sec-sub">Afhankelijkheden controleren · Indirecte afhankelijkheden verwijderen</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <strong>2NF-vraag:</strong><br>
+              Hoort elk attribuut <em>volledig</em> bij de PK van zijn tabel?
+            </div>
+            <div>
+              <strong>3NF-vraag:</strong><br>
+              Is er een A → B → C keten? Hangt iets af van een niet-sleutel?
+            </div>
+          </div>
+
+          <div class="step-reveal" id="steps-23nf">
+
+            <div class="step-reveal-item visible">
+              <div class="topic-title">2NF Fout — price en paymentstatus in rental</div>
+              <p><code>rental</code> bevat <code>price</code> en <code>paymentstatus</code>. Maar:</p>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:.7rem">
+                <div class="hl-box warn">
+                  <strong>❌ Probleem</strong><br>
+                  <code>price</code> en <code>paymentstatus</code> horen bij de <strong>betaling</strong>, niet bij de verhuur. Een verhuur kan ook bestaan zonder betaling (bijv. bij creditbetaling achteraf). Als de betaalstatus wijzigt, moet je rental aanpassen — maar dat is niet rental's verantwoordelijkheid.
+                </div>
+                <div class="hl-box tip">
+                  <strong>✅ Oplossing</strong><br>
+                  Verplaats naar <code>payment</code>:<br>
+                  <code>payment</code> krijgt:<br>
+                  — <code>amount DECIMAL(10,2)</code><br>
+                  — <code>paymentdate DATETIME</code><br>
+                  — <code>method VARCHAR(50)</code><br>
+                  — <code>status VARCHAR(50)</code><br>
+                  — <code>rental_id FK</code>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">3NF Fout — brand in product</div>
+              <p><code>product</code> bevat <code>brand VARCHAR(100)</code>. Is dat een indirecte afhankelijkheid?</p>
+              <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;font-family:var(--mono);font-size:.88rem;margin:.7rem 0;line-height:2.2">
+                <span style="color:var(--accent5);font-weight:700">product.id</span>
+                <span style="color:var(--text2)"> → bepaalt → </span>
+                <span style="color:var(--text)">brand</span>
+                <span style="color:var(--text2)"> → heeft eigen gegevens? </span>
+                <span style="color:#dc2626;font-weight:600">⚠️</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="hl-box warn">
+                  <strong>❌ Probleem</strong><br>
+                  Als een merk zijn naam verandert (bijv. "Lenovo" → "Lenovo Group"), moet je dat bij <em>elk product</em> aanpassen. Bovendien: als een merk extra info krijgt (website, land), past dat nergens.
+                </div>
+                <div class="hl-box tip">
+                  <strong>✅ Oplossing</strong><br>
+                  Maak een aparte <code>brand</code> tabel:<br>
+                  <code>brand (id, name)</code><br>
+                  In product: <code>brand_id FK</code>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Overzicht — alle fouten samengevat</div>
+              <div style="overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:.84rem">
+                  <thead style="background:var(--bg2)">
+                    <tr>
+                      <th style="padding:7px 12px;border:1px solid var(--border);text-align:left">NF</th>
+                      <th style="padding:7px 12px;border:1px solid var(--border)">Fout</th>
+                      <th style="padding:7px 12px;border:1px solid var(--border)">Gevolg</th>
+                      <th style="padding:7px 12px;border:1px solid var(--border)">Oplossing</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding:6px 12px;border:1px solid var(--border);font-weight:700;color:var(--accent1)">1NF</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)"><code>address</code> is samengesteld</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)">Kan niet filteren op stad of postcode</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)">Split in <code>street</code>, <code>city</code>, <code>zipcode</code></td>
+                    </tr>
+                    <tr>
+                      <td style="padding:6px 12px;border:1px solid var(--border);font-weight:700;color:var(--accent1)">1NF</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)"><code>name</code> is samengesteld</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)">Kan niet sorteren op achternaam</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)">Split in <code>firstname</code>, <code>lastname</code></td>
+                    </tr>
+                    <tr>
+                      <td style="padding:6px 12px;border:1px solid var(--border);font-weight:700;color:var(--accent2)">2NF</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)"><code>price</code> + <code>paymentstatus</code> in rental</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)">Betalingsstatus hoort niet bij verhuur</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)">Verplaats naar <code>payment</code></td>
+                    </tr>
+                    <tr>
+                      <td style="padding:6px 12px;border:1px solid var(--border);font-weight:700;color:var(--accent3)">3NF</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)"><code>brand</code> in product</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)">Merknaam herhaalt bij elk product</td>
+                      <td style="padding:6px 12px;border:1px solid var(--border)">Aparte <code>brand</code> tabel + FK</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.8rem;margin-top:1rem">
+            <button class="btn" id="steps-23nf-prev" style="display:none" onclick="stepReveal('steps-23nf', -1)">← Vorige</button>
+            <span class="step-counter" id="steps-23nf-counter">1 / 3</span>
+            <button class="btn filled" id="steps-23nf-next" onclick="stepReveal('steps-23nf', 1)">Volgende stap →</button>
+          </div>
+
+          <!-- Drag & drop — fout of geen fout? -->
+          <div class="topic-title" style="margin-top:1.5rem">🎮 Oefening — Fout of geen fout?</div>
+          <p style="margin-bottom:.8rem">Sleep elk attribuut naar de juiste kolom: heeft het een normalisatiefout of niet?</p>
+
+          <div id="dd-norm-source" class="drop-zone" style="flex-wrap:wrap;min-height:52px;margin-bottom:.8rem"
+               ondragover="allowDrop(event)" ondrop="drop(event,'dd-norm-source')">
+            <div class="drag-item" draggable="true" data-correct="fout" ondragstart="dragStart(event)">rental.price</div>
+            <div class="drag-item" draggable="true" data-correct="ok"   ondragstart="dragStart(event)">payment.rental_id</div>
+            <div class="drag-item" draggable="true" data-correct="fout" ondragstart="dragStart(event)">customer.address</div>
+            <div class="drag-item" draggable="true" data-correct="ok"   ondragstart="dragStart(event)">category.name</div>
+            <div class="drag-item" draggable="true" data-correct="fout" ondragstart="dragStart(event)">product.brand</div>
+            <div class="drag-item" draggable="true" data-correct="ok"   ondragstart="dragStart(event)">rental.customer_id</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:.8rem">
+            <div>
+              <div class="topic-title" style="font-size:.8rem;margin-bottom:.4rem">🔴 Normalisatiefout</div>
+              <div class="drop-zone" id="dd-norm-fout" ondragover="allowDrop(event)" ondrop="drop(event,'dd-norm-fout')"></div>
+            </div>
+            <div>
+              <div class="topic-title" style="font-size:.8rem;margin-bottom:.4rem">✅ Correct</div>
+              <div class="drop-zone" id="dd-norm-ok" ondragover="allowDrop(event)" ondrop="drop(event,'dd-norm-ok')"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="btn filled" onclick="checkNormDrag()">✅ Controleer</button>
+            <button class="btn" onclick="resetNormDrag()">🔄 Reset</button>
+          </div>
+          <div id="dd-norm-feedback" style="margin-top:.6rem;font-weight:600"></div>
+
+          <!-- MCQ 2NF -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ Waarom is <code>brand</code> in de product-tabel een 3NF-fout?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-23nf-1')">Omdat VARCHAR(100) te lang is voor een merknaam</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-23nf-1')">Omdat brand verplicht NOT NULL moet zijn</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'fb-23nf-1')">Omdat brand een eigen entiteit is met mogelijk eigen attributen — het hangt indirect af van product.id via brand → eigenschappen</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-23nf-1')">Omdat brand bij de category-tabel hoort</div>
+            </div>
+            <div class="mcq-feedback" id="fb-23nf-1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(3)">Bekijk het verbeterde ERD →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 4 — VERBETERD ERD
+    =================================================== -->
+    <div class="sec-card" id="card4">
+      <div class="sec-header" onclick="toggleCard(4)">
+        <div class="sec-icon">✅</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Verbeterd ERD — 3NF</div>
+          <div class="sec-sub">Alle fouten gecorrigeerd — klaar voor de database</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box tip">
+            <strong>Wat is er veranderd?</strong><br>
+            ✓ <code>customer.name</code> → gesplitst in <code>firstname</code> + <code>lastname</code><br>
+            ✓ <code>customer.address</code> → gesplitst in <code>street</code> + <code>city</code> + <code>zipcode</code><br>
+            ✓ <code>rental.price</code> + <code>rental.paymentstatus</code> → verplaatst naar <code>payment</code><br>
+            ✓ <code>product.brand</code> → aparte <code>brand</code> tabel + <code>brand_id FK</code>
+          </div>
+
+          <!-- Het verbeterde ERD als SVG -->
+          <div class="erd-canvas" style="margin-top:1rem;overflow-x:auto">
+            <div style="min-width:760px">
+              <svg viewBox="0 0 920 460" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;font-family:'JetBrains Mono',monospace">
+                <defs><filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#5b4de8" flood-opacity="0.08"/></filter></defs>
+
+                <!-- customer -->
+                <g filter="url(#sh2)">
+                  <rect x="10" y="10" width="195" height="162" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="10" y="10" width="195" height="28" rx="7" fill="#5b4de8" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="10" y="30" width="195" height="8" fill="#5b4de8"/>
+                  <text x="22" y="29" font-size="11" font-weight="700" fill="white">customer ✅</text>
+                </g>
+                <line x1="10" y1="54" x2="205" y2="54" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="48" font-size="10" fill="#b45309">🔑</text><text x="36" y="48" font-size="10" fill="#1a1d2e">id INT NN</text>
+                <line x1="10" y1="68" x2="205" y2="68" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="63" font-size="10" fill="#1a1d2e">◆ firstname VARCHAR(50)</text>
+                <line x1="10" y1="82" x2="205" y2="82" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="77" font-size="10" fill="#1a1d2e">◆ lastname VARCHAR(50)</text>
+                <line x1="10" y1="96" x2="205" y2="96" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="91" font-size="10" fill="#1a1d2e">◆ street VARCHAR(100)</text>
+                <line x1="10" y1="110" x2="205" y2="110" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="105" font-size="10" fill="#1a1d2e">◆ city VARCHAR(50)</text>
+                <line x1="10" y1="124" x2="205" y2="124" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="119" font-size="10" fill="#1a1d2e">◆ zipcode VARCHAR(10)</text>
+                <line x1="10" y1="138" x2="205" y2="138" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="133" font-size="10" fill="#1a1d2e">◇ phone VARCHAR(15)</text>
+                <line x1="10" y1="152" x2="205" y2="152" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="147" font-size="10" fill="#1a1d2e">◆ email VARCHAR(150)</text>
+
+                <!-- rental -->
+                <g filter="url(#sh2)">
+                  <rect x="300" y="80" width="195" height="146" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="300" y="80" width="195" height="28" rx="7" fill="#c2185b" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="300" y="100" width="195" height="8" fill="#c2185b"/>
+                  <text x="312" y="99" font-size="11" font-weight="700" fill="white">rental ✅</text>
+                </g>
+                <line x1="300" y1="124" x2="495" y2="124" stroke="#eef0f8" stroke-width="1"/>
+                <text x="312" y="118" font-size="10" fill="#b45309">🔑</text><text x="326" y="118" font-size="10" fill="#1a1d2e">id INT NN</text>
+                <line x1="300" y1="138" x2="495" y2="138" stroke="#eef0f8" stroke-width="1"/>
+                <text x="312" y="133" font-size="10" fill="#1a1d2e">◆ startdate DATE NN</text>
+                <line x1="300" y1="152" x2="495" y2="152" stroke="#eef0f8" stroke-width="1"/>
+                <text x="312" y="147" font-size="10" fill="#1a1d2e">◆ returndate DATE NN</text>
+                <line x1="300" y1="166" x2="495" y2="166" stroke="#eef0f8" stroke-width="1"/>
+                <text x="312" y="161" font-size="10" fill="#1a73e8">🔷 customer_id INT NN</text>
+                <line x1="300" y1="180" x2="495" y2="180" stroke="#eef0f8" stroke-width="1"/>
+                <text x="312" y="175" font-size="10" fill="#1a73e8">🔷 product_id INT NN</text>
+
+                <!-- payment -->
+                <g filter="url(#sh2)">
+                  <rect x="10" y="280" width="195" height="162" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="10" y="280" width="195" height="28" rx="7" fill="#0d9e6e" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="10" y="300" width="195" height="8" fill="#0d9e6e"/>
+                  <text x="22" y="299" font-size="11" font-weight="700" fill="white">payment ✅</text>
+                </g>
+                <line x1="10" y1="322" x2="205" y2="322" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="317" font-size="10" fill="#b45309">🔑</text><text x="36" y="317" font-size="10" fill="#1a1d2e">id INT NN</text>
+                <line x1="10" y1="336" x2="205" y2="336" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="331" font-size="10" fill="#1a1d2e">◆ amount DECIMAL(10,2)</text>
+                <line x1="10" y1="350" x2="205" y2="350" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="345" font-size="10" fill="#1a1d2e">◆ paymentdate DATETIME</text>
+                <line x1="10" y1="364" x2="205" y2="364" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="359" font-size="10" fill="#1a1d2e">◆ method VARCHAR(50)</text>
+                <line x1="10" y1="378" x2="205" y2="378" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="373" font-size="10" fill="#1a1d2e">◆ status VARCHAR(50)</text>
+                <line x1="10" y1="392" x2="205" y2="392" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="387" font-size="10" fill="#1a73e8">🔷 rental_id INT NN</text>
+
+                <!-- product -->
+                <g filter="url(#sh2)">
+                  <rect x="590" y="80" width="210" height="130" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="590" y="80" width="210" height="28" rx="7" fill="#1a73e8" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="590" y="100" width="210" height="8" fill="#1a73e8"/>
+                  <text x="602" y="99" font-size="11" font-weight="700" fill="white">product ✅</text>
+                </g>
+                <line x1="590" y1="124" x2="800" y2="124" stroke="#eef0f8" stroke-width="1"/>
+                <text x="602" y="118" font-size="10" fill="#b45309">🔑</text><text x="616" y="118" font-size="10" fill="#1a1d2e">id INT NN</text>
+                <line x1="590" y1="138" x2="800" y2="138" stroke="#eef0f8" stroke-width="1"/>
+                <text x="602" y="133" font-size="10" fill="#1a1d2e">◆ name VARCHAR(100)</text>
+                <line x1="590" y1="152" x2="800" y2="152" stroke="#eef0f8" stroke-width="1"/>
+                <text x="602" y="147" font-size="10" fill="#1a1d2e">◆ priceperday DECIMAL(10,2)</text>
+                <line x1="590" y1="166" x2="800" y2="166" stroke="#eef0f8" stroke-width="1"/>
+                <text x="602" y="161" font-size="10" fill="#1a73e8">🔷 brand_id INT NN</text>
+                <line x1="590" y1="180" x2="800" y2="180" stroke="#eef0f8" stroke-width="1"/>
+                <text x="602" y="175" font-size="10" fill="#1a73e8">🔷 category_id INT NN</text>
+
+                <!-- brand (nieuw!) -->
+                <g filter="url(#sh2)">
+                  <rect x="700" y="280" width="200" height="90" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="700" y="280" width="200" height="28" rx="7" fill="#b45309" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="700" y="300" width="200" height="8" fill="#b45309"/>
+                  <text x="712" y="299" font-size="11" font-weight="700" fill="white">brand ✨ nieuw</text>
+                </g>
+                <line x1="700" y1="322" x2="900" y2="322" stroke="#eef0f8" stroke-width="1"/>
+                <text x="712" y="317" font-size="10" fill="#b45309">🔑</text><text x="726" y="317" font-size="10" fill="#1a1d2e">id INT NN</text>
+                <line x1="700" y1="336" x2="900" y2="336" stroke="#eef0f8" stroke-width="1"/>
+                <text x="712" y="331" font-size="10" fill="#1a1d2e">◆ name VARCHAR(100)</text>
+                <text x="712" y="356" font-size="10" fill="#4b5470">◇ country VARCHAR(50)</text>
+
+                <!-- category -->
+                <g filter="url(#sh2)">
+                  <rect x="590" y="280" width="100" height="80" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="590" y="280" width="100" height="28" rx="7" fill="#0d766e" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="590" y="300" width="100" height="8" fill="#0d766e"/>
+                  <text x="602" y="299" font-size="11" font-weight="700" fill="white">category</text>
+                </g>
+                <line x1="590" y1="322" x2="690" y2="322" stroke="#eef0f8" stroke-width="1"/>
+                <text x="602" y="317" font-size="10" fill="#b45309">🔑</text><text x="616" y="317" font-size="10" fill="#1a1d2e">id</text>
+                <text x="602" y="346" font-size="10" fill="#1a1d2e">◆ name</text>
+
+                <!-- Connectors -->
+                <!-- customer → rental -->
+                <line x1="205" y1="90" x2="300" y2="140" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="207" cy="91" r="4" fill="none" stroke="#7c6af7" stroke-width="1.5"/>
+                <line x1="214" y1="97" x2="214" y2="85" stroke="#7c6af7" stroke-width="1.5"/>
+                <line x1="219" y1="100" x2="219" y2="82" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- product → rental -->
+                <line x1="590" y1="145" x2="495" y2="155" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="588" cy="145" r="4" fill="none" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- rental → payment -->
+                <line x1="305" y1="226" x2="180" y2="280" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="307" cy="227" r="4" fill="none" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- product → brand -->
+                <line x1="730" y1="210" x2="780" y2="280" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <line x1="734" y1="204" x2="734" y2="216" stroke="#7c6af7" stroke-width="1.5"/>
+                <line x1="739" y1="204" x2="739" y2="216" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- product → category -->
+                <line x1="640" y1="210" x2="640" y2="280" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="640" cy="211" r="4" fill="none" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- Legenda -->
+                <rect x="10" y="420" width="900" height="36" rx="6" fill="#f8f9fd" stroke="#e8eaf4" stroke-width="1"/>
+                <text x="24" y="435" font-size="9" fill="#b45309">🔑</text><text x="36" y="435" font-size="9" fill="#4b5470"> PK</text>
+                <text x="70" y="435" font-size="9" fill="#1a73e8">🔷</text><text x="82" y="435" font-size="9" fill="#4b5470"> FK</text>
+                <text x="116" y="435" font-size="9" fill="#1a1d2e">◆</text><text x="126" y="435" font-size="9" fill="#4b5470"> NOT NULL</text>
+                <text x="210" y="435" font-size="9" fill="#8892a4">◇</text><text x="220" y="435" font-size="9" fill="#4b5470"> NULL</text>
+                <text x="258" y="435" font-size="9" fill="#b45309">✨</text><text x="270" y="435" font-size="9" fill="#4b5470"> Nieuw toegevoegd</text>
+                <text x="24" y="449" font-size="9" fill="#5b4de8">🟣</text><text x="36" y="449" font-size="9" fill="#4b5470"> customer</text>
+                <text x="110" y="449" font-size="9" fill="#c2185b">🔴</text><text x="122" y="449" font-size="9" fill="#4b5470"> rental</text>
+                <text x="176" y="449" font-size="9" fill="#0d9e6e">🟢</text><text x="188" y="449" font-size="9" fill="#4b5470"> payment</text>
+                <text x="258" y="449" font-size="9" fill="#1a73e8">🔵</text><text x="270" y="449" font-size="9" fill="#4b5470"> product</text>
+                <text x="330" y="449" font-size="9" fill="#b45309">🟠</text><text x="342" y="449" font-size="9" fill="#4b5470"> brand (nieuw)</text>
+                <text x="430" y="449" font-size="9" fill="#0d766e">🟤</text><text x="442" y="449" font-size="9" fill="#4b5470"> category</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- MCQ verbeterd ERD -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ Hoeveel tabellen heeft de verbeterde TechRent database?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-erd-1')">5 — zelfde als daarvoor</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, true,  'fb-erd-1')">6 — we hebben brand toegevoegd als nieuwe entiteit</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-erd-1')">7 — ook street, city en zipcode worden aparte tabellen</div>
+              <div class="mcq-opt" onclick="checkMCQ(this, false, 'fb-erd-1')">4 — we hebben tabellen samengevoegd</div>
+            </div>
+            <div class="mcq-feedback" id="fb-erd-1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(4)">Bekijk de samenvatting →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 5 — RESULTAAT & CHECKLIST
+    =================================================== -->
+    <div class="sec-card" id="card5">
+      <div class="sec-header" onclick="toggleCard(5)">
+        <div class="sec-icon">🏁</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Samenvatting &amp; Leeruitkomsten</div>
+          <div class="sec-sub">Alles op een rij — module 6 afgerond</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <!-- Normalisatie stappenplan samengevat -->
+          <div class="topic-title">📋 Aanpak bij elke ERD-analyse</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:.8rem">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow-sm)">
+              <div style="font-size:1.4rem;margin-bottom:6px">📋</div>
+              <div style="font-weight:700;font-size:.9rem;margin-bottom:5px">0NF</div>
+              <div style="font-size:.83rem;color:var(--text2)">Zijn alle entiteiten logisch? Zijn er unieke PK's? Zijn er herhalende groepen?</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow-sm)">
+              <div style="font-size:1.4rem;margin-bottom:6px">1️⃣</div>
+              <div style="font-weight:700;font-size:.9rem;margin-bottom:5px">1NF</div>
+              <div style="font-size:.83rem;color:var(--text2)">Zijn attributen enkelvoudig? Geen samengestelde velden zoals <code>address</code> of <code>name</code>.</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow-sm)">
+              <div style="font-size:1.4rem;margin-bottom:6px">2️⃣</div>
+              <div style="font-weight:700;font-size:.9rem;margin-bottom:5px">2NF</div>
+              <div style="font-size:.83rem;color:var(--text2)">Hoort elk attribuut volledig bij de PK? Geen attributen die bij een andere entiteit horen.</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow-sm)">
+              <div style="font-size:1.4rem;margin-bottom:6px">3️⃣</div>
+              <div style="font-weight:700;font-size:.9rem;margin-bottom:5px">3NF</div>
+              <div style="font-size:.83rem;color:var(--text2)">Geen A → B → C ketens. Elk attribuut hangt direct af van de PK.</div>
+            </div>
+          </div>
+
+          <!-- Leeruitkomsten -->
+          <div class="topic-title" style="margin-top:1.5rem">✅ Leeruitkomsten — vink af wat je kunt</div>
+          <div class="checklist" style="margin-top:.6rem">
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan een bestaande ERD analyseren op normalisatiefouten</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik herken samengestelde attributen en weet hoe ik ze splits (1NF)</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik herken attributen die niet bij hun tabel horen en verplaats ze (2NF)</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik herken indirecte afhankelijkheden en maak daar een aparte tabel van (3NF)</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan een verbeterde ERD tekenen met correcte PK's en FK's</div>
+            </div>
+          </div>
+
+          <!-- Typer-oefening -->
+          <div class="typer-box" style="margin-top:1.5rem">
+            <div class="topic-title">✏️ Typer-oefening</div>
+            <p>Welke entiteit is in de verbeterde TechRent ERD <em>nieuw</em> toegevoegd ten opzichte van de originele?</p>
+            <div class="typer-row">
+              <input class="typer-input" id="typer-m6" type="text" placeholder="typ de entiteitnaam..." oninput="checkTyper('typer-m6','brand','hint-m6')">
+              <span class="typer-hint" id="hint-m6"></span>
+            </div>
+          </div>
+
+          <!-- Afsluiting -->
+          <div class="hl-box tip" style="margin-top:1.5rem;text-align:center">
+            <div class="big">🎉</div>
+            <div class="box-title">Module 6 klaar!</div>
+            <p>Je kunt nu zelfstandig een ERD analyseren, fouten vinden en de database verbeteren naar 3NF.</p>
+            <div style="margin-top:1rem;display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap">
+              <a href="index.html" class="btn">🏠 Terug naar overzicht</a>
+              <a href="module5.html" class="btn">← Module 5</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .sections -->
+</div><!-- .container -->
+
+<div class="big" style="text-align:center;padding:2rem;opacity:.3">ERD — Module 6</div>
+
+<script src="script.js"></script>
+<script>
+// ── Drag & drop normalisatiefout/geen fout ────────────────────────────────────
+const correctNorm = {
+  'rental.price':    'fout',
+  'payment.rental_id': 'ok',
+  'customer.address': 'fout',
+  'category.name':   'ok',
+  'product.brand':   'fout',
+  'rental.customer_id': 'ok',
+};
+
+function checkNormDrag() {
+  const foutItems = document.getElementById('dd-norm-fout').querySelectorAll('.drag-item');
+  const okItems   = document.getElementById('dd-norm-ok').querySelectorAll('.drag-item');
+  const srcItems  = document.getElementById('dd-norm-source').querySelectorAll('.drag-item');
+  let cor = 0, tot = 0;
+
+  foutItems.forEach(item => {
+    tot++;
+    if (correctNorm[item.textContent] === 'fout') { item.classList.add('correct'); item.classList.remove('wrong'); cor++; }
+    else item.classList.add('wrong');
+  });
+  okItems.forEach(item => {
+    tot++;
+    if (correctNorm[item.textContent] === 'ok') { item.classList.add('correct'); item.classList.remove('wrong'); cor++; }
+    else item.classList.add('wrong');
+  });
+  srcItems.forEach(item => { tot++; item.classList.add('wrong'); });
+
+  const fb = document.getElementById('dd-norm-feedback');
+  if (cor === tot && tot > 0) {
+    fb.textContent = '🎉 Perfect! Alle fouten correct geïdentificeerd!';
+    fb.style.color = 'var(--accent3)';
+    addPoint(3);
+  } else {
+    fb.textContent = cor + ' van ' + tot + ' correct. Denk: welke attributen staan op de verkeerde plek of zijn samengesteld?';
+    fb.style.color = '#f87171';
+  }
+}
+
+function resetNormDrag() {
+  const src = document.getElementById('dd-norm-source');
+  ['dd-norm-fout','dd-norm-ok'].forEach(id => {
+    document.getElementById(id).querySelectorAll('.drag-item').forEach(item => {
+      item.classList.remove('correct','wrong'); src.appendChild(item);
+    });
+  });
+  document.getElementById('dd-norm-feedback').textContent = '';
+}
+</script>
+</body>
+</html>

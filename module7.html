@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ERD van Scratch | SOD Module 7</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="pastel">
+
+<!-- ======================== THEME BAR ======================== -->
+<div class="theme-bar">
+  <button class="theme-btn active" onclick="setTheme('pastel', this)">🌸 Pastel</button>
+  <button class="theme-btn" onclick="setTheme('dark', this)">🌑 Dark</button>
+  <button class="theme-btn" onclick="setTheme('light', this)">☀️ Light</button>
+  <button class="theme-btn" onclick="setTheme('neon', this)">⚡ Neon</button>
+</div>
+
+<!-- ======================== MODULE NAVIGATIE ======================== -->
+<nav class="module-nav">
+  <div class="module-nav-title">📚 SOD — Alle modules</div>
+  <div class="module-nav-grid">
+    <a class="module-pill" href="index.html"><span class="pill-num">1</span> ERD Basis</a>
+    <a class="module-pill" href="module2.html"><span class="pill-num">2</span> Datatypes &amp; Tool</a>
+    <a class="module-pill" href="module3.html"><span class="pill-num">3</span> Relaties</a>
+    <a class="module-pill" href="module4.html"><span class="pill-num">4</span> Veel-op-veel</a>
+    <a class="module-pill" href="module5.html"><span class="pill-num">5</span> Normaalvormen</a>
+    <a class="module-pill" href="module6.html"><span class="pill-num">6</span> ERD Analyseren</a>
+    <a class="module-pill active" href="module7.html"><span class="pill-num">7</span> ERD van Scratch</a>
+  </div>
+</nav>
+
+<!-- ======================== SCORE BAR ======================== -->
+<div class="score-bar">
+  <span class="score-label">Voortgang Module 7</span>
+  <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
+  <span class="score-num" id="scoreNum">0 / 20 ⭐</span>
+</div>
+
+<!-- ======================== HERO ======================== -->
+<div class="container">
+  <div class="hero">
+    <div class="hero-label">SOD · Module 7 · MBO</div>
+    <h1>ERD van<br>Scratch</h1>
+    <p>Nu doe je alles zelf — casus lezen, entiteiten herkennen, ERD'ish schrijven, M:N oplossen én normaliseren naar 3NF. Alles wat je geleerd hebt komt samen. 🚲</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Onderdelen</div></div>
+      <div class="stat"><div class="stat-num">~50</div><div class="stat-label">Minuten</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Oefeningen</div></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS STRIP -->
+  <div class="progress-strip">
+    <div class="prog-step active" onclick="scrollToCard(0)">Casus</div>
+    <div class="prog-step" onclick="scrollToCard(1)">Entiteiten</div>
+    <div class="prog-step" onclick="scrollToCard(2)">Attributen</div>
+    <div class="prog-step" onclick="scrollToCard(3)">ERD'ish</div>
+    <div class="prog-step" onclick="scrollToCard(4)">Normalisatie</div>
+    <div class="prog-step" onclick="scrollToCard(5)">Volledig ERD</div>
+  </div>
+
+  <div class="sections">
+
+    <!-- ===================================================
+         KAART 0 — CASUS
+    =================================================== -->
+    <div class="sec-card open" id="card0">
+      <div class="sec-header" onclick="toggleCard(0)">
+        <div class="sec-icon">🚲</div>
+        <div class="sec-title-group">
+          <div class="sec-title">De casus — Wheels-on</div>
+          <div class="sec-sub">Lees de beschrijving — alles wat je nodig hebt staat erin</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>Wat ga je doen in module 7?</strong><br>
+            Je bouwt een compleet ERD van nul. Geen bestaand diagram — alleen een tekst. Stap voor stap:<br>
+            1. Entiteiten &amp; attributen herkennen<br>
+            2. ERD'ish zinnen schrijven voor elke relatie<br>
+            3. M:N relaties oplossen met tussentabellen<br>
+            4. Normaliseren naar 3NF<br>
+            5. Het volledige ERD bouwen
+          </div>
+
+          <!-- Casus tekst — gemarkeerd -->
+          <div class="topic-title" style="margin-top:1.2rem">📄 Wheels-on — de beschrijving</div>
+
+          <div style="background:var(--surface);border:1.5px solid var(--accent1);border-radius:12px;padding:1.4rem 1.8rem;font-size:.93rem;line-height:2;margin:.8rem 0;box-shadow:var(--shadow-sm)">
+            <p>Wheels-on biedt klanten de mogelijkheid om voertuigen met twee wielen te <strong>huren of te kopen</strong>. <span style="background:rgba(91,77,232,.12);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--accent1)">Klanten</span> kunnen zich registreren met hun naam, adres en woonplaats.</p>
+
+            <p style="margin-top:.8rem">Elk <span style="background:rgba(91,77,232,.12);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--accent1)">voertuig</span> heeft een uniek identificatienummer en is ingedeeld als een fiets, brommer of scooter. Ook het merk en model worden bijgehouden.</p>
+
+            <p style="margin-top:.8rem">Wanneer een klant wil huren, dient hij een <span style="background:rgba(194,24,91,.12);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--accent2)">aanvraag</span> in. Elke aanvraag krijgt een uniek aanvraagnummer en een datum. Bij goedkeuring wordt een <span style="background:rgba(13,158,110,.12);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--accent3)">leasecontract</span> opgesteld met contractnummer, begindatum en einddatum.</p>
+
+            <p style="margin-top:.8rem">Klanten kunnen ook een <span style="background:rgba(26,115,232,.12);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--accent4)">verzekering</span> afsluiten voor hun gehuurde voertuig, met een uniek ID en naam.</p>
+
+            <p style="margin-top:.8rem">Klanten kunnen voertuigen ook <strong>kopen</strong>. Aankopen worden vastgelegd als een <span style="background:rgba(180,83,9,.12);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--accent5)">verkooporder</span> met ordernummer en datum.</p>
+
+            <p style="margin-top:.8rem">Alle financiële transacties — zowel voor verhuur als aankoop — worden geregistreerd als een <span style="background:rgba(13,118,110,.12);border-radius:4px;padding:1px 5px;font-weight:600;color:#0d766e">betaling</span> met betalingsnummer en bedrag.</p>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:.6rem">
+            <span style="font-size:.82rem;color:var(--text2)">Gemarkeerd:</span>
+            <span style="background:rgba(91,77,232,.12);color:var(--accent1);border-radius:4px;padding:1px 8px;font-size:.8rem;font-weight:600">entiteiten</span>
+            <span style="font-size:.82rem;color:var(--text2)">— zelfstandige naamwoorden die een eigen tabel verdienen</span>
+          </div>
+
+          <!-- MCQ -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ Hoeveel entiteiten heeft het Wheels-on systeem?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-c1')">5 — klant, voertuig, aanvraag, contract, betaling</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,true, 'fb-c1')">7 — klant, voertuig, aanvraag, leasecontract, verzekering, verkooporder, betaling</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-c1')">6 — merk als aparte entiteit meegeteld</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-c1')">4 — klant, voertuig, contract, betaling</div>
+            </div>
+            <div class="mcq-feedback" id="fb-c1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(0)">Stap 1 — Entiteiten bepalen →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 1 — ENTITEITEN
+    =================================================== -->
+    <div class="sec-card" id="card1">
+      <div class="sec-header" onclick="toggleCard(1)">
+        <div class="sec-icon">📦</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Stap 1 — Entiteiten herkennen</div>
+          <div class="sec-sub">Welke "dingen" sla je op? · Naamgeving · PK vaststellen</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>Methode:</strong> Zoek zelfstandige naamwoorden in de casus en vraag jezelf: <em>"Wil ik hierover meerdere gegevens opslaan?"</em> Als ja → entiteit. Gebruik altijd klein, enkelvoud, geen spaties.
+          </div>
+
+          <!-- Drag & drop: entiteit of geen entiteit -->
+          <div class="topic-title" style="margin-top:1rem">🎮 Oefening — Entiteit of niet?</div>
+          <p style="margin-bottom:.8rem">Sleep elk woord naar de juiste kolom.</p>
+
+          <div id="pool-ent" class="drop-zone" style="flex-wrap:wrap;min-height:52px;margin-bottom:.8rem"
+               ondragover="allowDrop(event)" ondrop="drop(event,'pool-ent')">
+            <div class="drag-item" draggable="true" data-correct="entity" ondragstart="dragStart(event)">klant</div>
+            <div class="drag-item" draggable="true" data-correct="entity" ondragstart="dragStart(event)">voertuig</div>
+            <div class="drag-item" draggable="true" data-correct="no"     ondragstart="dragStart(event)">woonplaats</div>
+            <div class="drag-item" draggable="true" data-correct="entity" ondragstart="dragStart(event)">aanvraag</div>
+            <div class="drag-item" draggable="true" data-correct="no"     ondragstart="dragStart(event)">begindatum</div>
+            <div class="drag-item" draggable="true" data-correct="entity" ondragstart="dragStart(event)">leasecontract</div>
+            <div class="drag-item" draggable="true" data-correct="no"     ondragstart="dragStart(event)">merk</div>
+            <div class="drag-item" draggable="true" data-correct="entity" ondragstart="dragStart(event)">verzekering</div>
+            <div class="drag-item" draggable="true" data-correct="entity" ondragstart="dragStart(event)">verkooporder</div>
+            <div class="drag-item" draggable="true" data-correct="entity" ondragstart="dragStart(event)">betaling</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:.8rem">
+            <div>
+              <div class="topic-title" style="font-size:.8rem;margin-bottom:.4rem">📦 Entiteit — eigen tabel</div>
+              <div class="drop-zone" id="z-entity" ondragover="allowDrop(event)" ondrop="drop(event,'z-entity')"></div>
+            </div>
+            <div>
+              <div class="topic-title" style="font-size:.8rem;margin-bottom:.4rem">🏷️ Attribuut / Context — geen tabel</div>
+              <div class="drop-zone" id="z-no" ondragover="allowDrop(event)" ondrop="drop(event,'z-no')"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="btn filled" onclick="checkEntDrag()">✅ Controleer</button>
+            <button class="btn" onclick="resetEntDrag()">🔄 Reset</button>
+          </div>
+          <div id="dd-ent-fb" style="margin-top:.6rem;font-weight:600"></div>
+
+          <div class="hl-box warn" style="margin-top:1.2rem">
+            <strong>⚠️ Let op — merk:</strong> In de casus staat "merk en model worden bijgehouden". Je kunt <code>merk</code> als attribuut houden in <code>voertuig</code>, maar voor 3NF geldt: als een merk eigen gegevens heeft (bijv. land van herkomst, website), dan maak je er een aparte entiteit van. In deze opdracht behandelen we <code>brand</code> als <strong>attribuut</strong> — tenzij de opdracht anders vraagt.
+          </div>
+
+          <!-- Overzicht entiteiten -->
+          <div class="topic-title" style="margin-top:1.2rem">✅ De 7 entiteiten van Wheels-on</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-top:.6rem">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;box-shadow:var(--shadow-sm)">
+              <div style="font-family:var(--mono);font-weight:700;color:var(--accent1);margin-bottom:3px">klant</div>
+              <div style="font-size:.8rem;color:var(--text2)">Registreert zich, huurt of koopt</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;box-shadow:var(--shadow-sm)">
+              <div style="font-family:var(--mono);font-weight:700;color:var(--accent1);margin-bottom:3px">voertuig</div>
+              <div style="font-size:.8rem;color:var(--text2)">Fiets, brommer of scooter</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;box-shadow:var(--shadow-sm)">
+              <div style="font-family:var(--mono);font-weight:700;color:var(--accent2);margin-bottom:3px">aanvraag</div>
+              <div style="font-size:.8rem;color:var(--text2)">Verzoek tot huur van voertuig</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;box-shadow:var(--shadow-sm)">
+              <div style="font-family:var(--mono);font-weight:700;color:var(--accent3);margin-bottom:3px">leasecontract</div>
+              <div style="font-size:.8rem;color:var(--text2)">Goedgekeurde huurovereenkomst</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;box-shadow:var(--shadow-sm)">
+              <div style="font-family:var(--mono);font-weight:700;color:var(--accent4);margin-bottom:3px">verzekering</div>
+              <div style="font-size:.8rem;color:var(--text2)">Optioneel bij gehuurde voertuig</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;box-shadow:var(--shadow-sm)">
+              <div style="font-family:var(--mono);font-weight:700;color:var(--accent5);margin-bottom:3px">verkooporder</div>
+              <div style="font-size:.8rem;color:var(--text2)">Aankoop van voertuig</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;box-shadow:var(--shadow-sm)">
+              <div style="font-family:var(--mono);font-weight:700;color:#0d766e;margin-bottom:3px">betaling</div>
+              <div style="font-size:.8rem;color:var(--text2)">Voor verhuur én aankoop</div>
+            </div>
+          </div>
+
+          <div class="step-controls" style="margin-top:1.2rem">
+            <button class="btn filled" onclick="openNextCard(1)">Stap 2 — Attributen bepalen →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 2 — ATTRIBUTEN & DATATYPES
+    =================================================== -->
+    <div class="sec-card" id="card2">
+      <div class="sec-header" onclick="toggleCard(2)">
+        <div class="sec-icon">🏷️</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Stap 2 — Attributen &amp; Datatypes</div>
+          <div class="sec-sub">Wat sla je op per entiteit? · PK · FK · NN / NULL</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>Attribuutregels (herhaling):</strong><br>
+            ✓ Geen samengestelde attributen (adres → straat + stad)<br>
+            ✓ Geen afgeleide attributen (leeftijd → geboortedatum)<br>
+            ✓ Elk attribuut beschrijft de eigen entiteit
+          </div>
+
+          <!-- Entiteiten uitklapbaar -->
+          <div class="step-reveal" id="steps-attr">
+
+            <div class="step-reveal-item visible">
+              <div class="topic-title">klant &amp; voertuig</div>
+              <div class="erd-canvas" style="display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center">
+                <div class="erd-entity">
+                  <div class="erd-entity-name" style="background:var(--accent1);color:#fff">klant</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id  INT  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> firstname  VARCHAR(50)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> lastname  VARCHAR(50)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> street  VARCHAR(100)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> city  VARCHAR(50)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> email  VARCHAR(100)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◇</span> phone  VARCHAR(20)</div>
+                  </div>
+                </div>
+                <div class="erd-entity">
+                  <div class="erd-entity-name">voertuig</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id  INT  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> vehicletype  VARCHAR(20)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> brand  VARCHAR(50)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> model  VARCHAR(50)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> priceperday  DECIMAL(8,2)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> saleprice  DECIMAL(10,2)  NN</div>
+                  </div>
+                </div>
+              </div>
+              <div class="hl-box tip" style="margin-top:.6rem"><strong>Let op naam:</strong> <code>name</code> in klant is samengesteld → split in <code>firstname</code> + <code>lastname</code>. Adres → <code>street</code> + <code>city</code>.</div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">aanvraag &amp; leasecontract</div>
+              <div class="erd-canvas" style="display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center">
+                <div class="erd-entity">
+                  <div class="erd-entity-name" style="background:var(--accent2);color:#fff">aanvraag</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id  INT  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> requestnumber  VARCHAR(20)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> requestdate  DATE  NN</div>
+                    <div class="erd-attr"><span class="icon-req" style="color:var(--accent4)">🔷</span> klant_id  INT  NN</div>
+                    <div class="erd-attr"><span class="icon-req" style="color:var(--accent4)">🔷</span> voertuig_id  INT  NN</div>
+                  </div>
+                </div>
+                <div class="erd-entity">
+                  <div class="erd-entity-name" style="background:var(--accent3);color:#fff">leasecontract</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id  INT  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> contractnumber  VARCHAR(20)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> startdate  DATE  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> enddate  DATE  NN</div>
+                    <div class="erd-attr"><span class="icon-req" style="color:var(--accent4)">🔷</span> aanvraag_id  INT  NN</div>
+                  </div>
+                </div>
+              </div>
+              <div class="hl-box tip" style="margin-top:.6rem">Een leasecontract volgt altijd uit een aanvraag — vandaar <code>aanvraag_id</code> als FK in leasecontract.</div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">verzekering, verkooporder &amp; betaling</div>
+              <div class="erd-canvas" style="display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center">
+                <div class="erd-entity">
+                  <div class="erd-entity-name" style="background:var(--accent4);color:#fff">verzekering</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id  INT  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> name  VARCHAR(100)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> coveragetype  VARCHAR(50)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> monthlyprice  DECIMAL(8,2)  NN</div>
+                  </div>
+                </div>
+                <div class="erd-entity">
+                  <div class="erd-entity-name" style="background:var(--accent5);color:#fff">verkooporder</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id  INT  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> ordernumber  VARCHAR(20)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> orderdate  DATE  NN</div>
+                    <div class="erd-attr"><span class="icon-req" style="color:var(--accent4)">🔷</span> klant_id  INT  NN</div>
+                    <div class="erd-attr"><span class="icon-req" style="color:var(--accent4)">🔷</span> voertuig_id  INT  NN</div>
+                  </div>
+                </div>
+                <div class="erd-entity">
+                  <div class="erd-entity-name" style="background:#0d766e;color:#fff">betaling</div>
+                  <div class="erd-attrs">
+                    <div class="erd-attr"><span class="icon-pk">🔑</span> id  INT  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> paymentnumber  VARCHAR(20)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> amount  DECIMAL(10,2)  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> paymentdate  DATE  NN</div>
+                    <div class="erd-attr"><span class="icon-req">◆</span> method  VARCHAR(30)  NN</div>
+                    <div class="erd-attr"><span class="icon-req" style="color:var(--accent4)">🔷</span> leasecontract_id  INT</div>
+                    <div class="erd-attr"><span class="icon-req" style="color:var(--accent4)">🔷</span> verkooporder_id  INT</div>
+                  </div>
+                </div>
+              </div>
+              <div class="hl-box warn" style="margin-top:.6rem">
+                <strong>Betaling is bijzonder:</strong> Een betaling kan voor een verhuur <em>óf</em> een aankoop zijn — nooit allebei tegelijk. Beide FK's zijn daarom <strong>nullable</strong> (NULL toegestaan). Eén ervan is altijd ingevuld.
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.8rem;margin-top:.8rem">
+            <button class="btn" id="steps-attr-prev" style="display:none" onclick="stepReveal('steps-attr',-1)">← Vorige</button>
+            <span class="step-counter" id="steps-attr-counter">1 / 3</span>
+            <button class="btn filled" id="steps-attr-next" onclick="stepReveal('steps-attr',1)">Volgende →</button>
+          </div>
+
+          <!-- MCQ datatypes -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ Welk datatype gebruik je voor <code>startdate</code> in leasecontract?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-attr1')">VARCHAR(20) — het is een tekstveld</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,true, 'fb-attr1')">DATE — alleen een datum, geen tijdstip</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-attr1')">DATETIME — datum én tijd samen</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-attr1')">INT — voor de dag als getal</div>
+            </div>
+            <div class="mcq-feedback" id="fb-attr1"></div>
+          </div>
+
+          <div class="mcq">
+            <div class="mcq-question">❓ Waarom heeft <code>betaling</code> twee nullable FK's (<code>leasecontract_id</code> en <code>verkooporder_id</code>)?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-attr2')">Omdat betalingen optioneel zijn</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,true, 'fb-attr2')">Omdat een betaling voor verhuur óf aankoop geldt — nooit allebei — en altijd één FK leeg is</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-attr2')">Omdat FK's altijd nullable moeten zijn</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-attr2')">Dat is een fout — beide FK's moeten NOT NULL zijn</div>
+            </div>
+            <div class="mcq-feedback" id="fb-attr2"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(2)">Stap 3 — ERD'ish schrijven →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 3 — ERD'ISH
+    =================================================== -->
+    <div class="sec-card" id="card3">
+      <div class="sec-header" onclick="toggleCard(3)">
+        <div class="sec-icon">✍️</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Stap 3 — ERD'ish schrijven</div>
+          <div class="sec-sub">Alle relaties beschrijven in woorden · M:N herkennen</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box info">
+            <strong>De formule (herhaling):</strong><br>
+            Each <em>[Entiteit A]</em> <strong>may / must</strong> <em>[werkwoord]</em> <strong>1 and only 1 / 1 or more</strong> <em>[Entiteit B]</em>.
+          </div>
+
+          <div class="step-reveal" id="steps-erdish">
+
+            <div class="step-reveal-item visible">
+              <div class="topic-title">Relatie 1 — klant → aanvraag (1:N)</div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent1);border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:var(--accent1);font-weight:700">klant</span> <span style="color:var(--accent2)">may</span> <span style="color:var(--text2);font-style:italic">submit</span> <span style="color:var(--accent3)">1 or more</span> <span style="color:var(--accent2);font-weight:700">aanvraag</span>.
+              </div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent2);border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:var(--accent2);font-weight:700">aanvraag</span> <span style="color:var(--accent2)">must</span> <span style="color:var(--text2);font-style:italic">be submitted by</span> <span style="color:var(--accent3)">1 and only 1</span> <span style="color:var(--accent1);font-weight:700">klant</span>.
+              </div>
+              <div class="hl-box tip" style="margin-top:.5rem">FK: <code>klant_id</code> in <strong>aanvraag</strong> (N-kant)</div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Relatie 2 — voertuig → aanvraag (1:N)</div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent1);border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:var(--accent1);font-weight:700">voertuig</span> <span style="color:var(--accent2)">may</span> <span style="color:var(--text2);font-style:italic">be requested in</span> <span style="color:var(--accent3)">1 or more</span> <span style="color:var(--accent2);font-weight:700">aanvraag</span>.
+              </div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent2);border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:var(--accent2);font-weight:700">aanvraag</span> <span style="color:var(--accent2)">must</span> <span style="color:var(--text2);font-style:italic">refer to</span> <span style="color:var(--accent3)">1 and only 1</span> <span style="color:var(--accent1);font-weight:700">voertuig</span>.
+              </div>
+              <div class="hl-box tip" style="margin-top:.5rem">FK: <code>voertuig_id</code> in <strong>aanvraag</strong></div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Relatie 3 — aanvraag → leasecontract (1:1)</div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent2);border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:var(--accent2);font-weight:700">aanvraag</span> <span style="color:var(--accent2)">may</span> <span style="color:var(--text2);font-style:italic">result in</span> <span style="color:var(--accent3)">1 and only 1</span> <span style="color:var(--accent3);font-weight:700">leasecontract</span>.
+              </div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent3);border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:var(--accent3);font-weight:700">leasecontract</span> <span style="color:var(--accent2)">must</span> <span style="color:var(--text2);font-style:italic">come from</span> <span style="color:var(--accent3)">1 and only 1</span> <span style="color:var(--accent2);font-weight:700">aanvraag</span>.
+              </div>
+              <div class="hl-box tip" style="margin-top:.5rem">1:1 relatie — FK: <code>aanvraag_id</code> in <strong>leasecontract</strong> (de "may"-kant)</div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Relatie 4 — leasecontract ↔ verzekering</div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent3);border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:var(--accent3);font-weight:700">leasecontract</span> <span style="color:var(--accent2)">may</span> <span style="color:var(--text2);font-style:italic">include</span> <span style="color:var(--accent3)">1 and only 1</span> <span style="color:var(--accent4);font-weight:700">verzekering</span>.
+              </div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent4);border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:var(--accent4);font-weight:700">verzekering</span> <span style="color:var(--accent2)">may</span> <span style="color:var(--text2);font-style:italic">be used in</span> <span style="color:var(--accent3)">1 or more</span> <span style="color:var(--accent3);font-weight:700">leasecontract</span>.
+              </div>
+              <div class="hl-box tip" style="margin-top:.5rem">FK: <code>verzekering_id</code> in <strong>leasecontract</strong> (nullable — klant hoeft geen verzekering af te sluiten)</div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Relatie 5 — klant &amp; voertuig → verkooporder (1:N)</div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent1);border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:var(--accent1);font-weight:700">klant</span> <span style="color:var(--accent2)">may</span> <span style="color:var(--text2);font-style:italic">place</span> <span style="color:var(--accent3)">1 or more</span> <span style="color:var(--accent5);font-weight:700">verkooporder</span>.
+              </div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent5);border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:var(--accent5);font-weight:700">verkooporder</span> <span style="color:var(--accent2)">must</span> <span style="color:var(--text2);font-style:italic">be placed by</span> <span style="color:var(--accent3)">1 and only 1</span> <span style="color:var(--accent1);font-weight:700">klant</span>.
+              </div>
+              <div class="hl-box tip" style="margin-top:.5rem">FK's in verkooporder: <code>klant_id</code> + <code>voertuig_id</code></div>
+            </div>
+
+            <div class="step-reveal-item">
+              <div class="topic-title">Relatie 6 — betaling → leasecontract / verkooporder</div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid #0d766e;border-radius:0 8px 8px 0;padding:10px 16px;font-family:var(--mono);font-size:.84rem;line-height:2;margin:.5rem 0">
+                Each <span style="color:#0d766e;font-weight:700">betaling</span> <span style="color:var(--accent2)">must</span> <span style="color:var(--text2);font-style:italic">belong to</span> <span style="color:var(--accent3)">1 and only 1</span> <span style="color:var(--accent3);font-weight:700">leasecontract</span> <em>or</em> <span style="color:var(--accent5);font-weight:700">verkooporder</span>.
+              </div>
+              <div class="hl-box warn" style="margin-top:.5rem">Twee nullable FK's: <code>leasecontract_id</code> en <code>verkooporder_id</code>. Altijd precies één ingevuld.</div>
+            </div>
+
+          </div>
+          <div style="display:flex;align-items:center;gap:.8rem;margin-top:.8rem">
+            <button class="btn" id="steps-erdish-prev" style="display:none" onclick="stepReveal('steps-erdish',-1)">← Vorige</button>
+            <span class="step-counter" id="steps-erdish-counter">1 / 6</span>
+            <button class="btn filled" id="steps-erdish-next" onclick="stepReveal('steps-erdish',1)">Volgende →</button>
+          </div>
+
+          <!-- MCQ ERD'ish -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ De relatie aanvraag → leasecontract is 1:1. Aan welke kant staat de FK?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-e1')">In aanvraag als <code>leasecontract_id</code></div>
+              <div class="mcq-opt" onclick="checkMCQ(this,true, 'fb-e1')">In leasecontract als <code>aanvraag_id</code> — want leasecontract is afhankelijk van aanvraag (may-kant)</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-e1')">In beide tabellen als kruisverwijzing</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-e1')">Een 1:1 relatie heeft geen FK nodig</div>
+            </div>
+            <div class="mcq-feedback" id="fb-e1"></div>
+          </div>
+
+          <div class="step-controls">
+            <button class="btn filled" onclick="openNextCard(3)">Stap 4 — Normalisatie →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 4 — NORMALISATIE
+    =================================================== -->
+    <div class="sec-card" id="card4">
+      <div class="sec-header" onclick="toggleCard(4)">
+        <div class="sec-icon">🧹</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Stap 4 — Normalisatie naar 3NF</div>
+          <div class="sec-sub">Checklist doorlopen · Fouten zoeken · Verbeteringen doorvoeren</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <!-- NF checklist -->
+          <div class="topic-title">Doorloop de normalisatiechecklist</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:.8rem">
+
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px">
+              <div style="font-weight:700;color:var(--accent1);margin-bottom:6px">0NF — Gegevens geïnventariseerd?</div>
+              <div style="font-size:.88rem;color:var(--text2)">✅ Alle entiteiten hebben een logische naam en een unieke <code>id</code> als PK. Geen grote herhalende groepen gevonden.</div>
+            </div>
+
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px">
+              <div style="font-weight:700;color:var(--accent1);margin-bottom:6px">1NF — Enkelvoudige waarden?</div>
+              <div style="font-size:.88rem;color:var(--text2)">
+                ⚠️ <strong>naam</strong> in klant → gesplitst in <code>firstname</code> + <code>lastname</code><br>
+                ⚠️ <strong>adres</strong> in klant → gesplitst in <code>street</code> + <code>city</code><br>
+                ✅ Alle overige attributen zijn enkelvoudig
+              </div>
+            </div>
+
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px">
+              <div style="font-weight:700;color:var(--accent2);margin-bottom:6px">2NF — Volledig afhankelijk van PK?</div>
+              <div style="font-size:.88rem;color:var(--text2)">
+                ✅ Elke tabel heeft een enkelvoudige PK (<code>id</code>)<br>
+                ✅ Alle attributen zijn volledig afhankelijk van hun PK<br>
+                ✅ Geen gedeeltelijke afhankelijkheden gevonden
+              </div>
+            </div>
+
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px">
+              <div style="font-weight:700;color:var(--accent3);margin-bottom:6px">3NF — Geen indirecte afhankelijkheden?</div>
+              <div style="font-size:.88rem;color:var(--text2)">
+                ⚠️ <strong>vehicletype</strong> in voertuig — "fiets", "brommer", "scooter" zijn vaste opties. Je kunt dit als VARCHAR houden, maar strikt 3NF zou een aparte <code>vehicletype</code> tabel rechtvaardigen. In deze opdracht houden we het als attribuut.<br>
+                ✅ <strong>brand</strong> en <strong>model</strong> zijn directe eigenschappen van voertuig — geen indirecte keten<br>
+                ✅ Geen andere indirecte afhankelijkheden gevonden
+              </div>
+            </div>
+          </div>
+
+          <!-- Drag & drop normalisatiecheck -->
+          <div class="topic-title" style="margin-top:1.5rem">🎮 Oefening — 1NF of 3NF fout?</div>
+          <p style="margin-bottom:.8rem">Sleep elk probleem naar de juiste normaalvorm.</p>
+
+          <div id="pool-nf" class="drop-zone" style="flex-wrap:wrap;min-height:52px;margin-bottom:.8rem"
+               ondragover="allowDrop(event)" ondrop="drop(event,'pool-nf')">
+            <div class="drag-item" draggable="true" data-correct="1nf" ondragstart="dragStart(event)">naam = samengesteld</div>
+            <div class="drag-item" draggable="true" data-correct="3nf" ondragstart="dragStart(event)">brand → eigen info</div>
+            <div class="drag-item" draggable="true" data-correct="1nf" ondragstart="dragStart(event)">adres = samengesteld</div>
+            <div class="drag-item" draggable="true" data-correct="3nf" ondragstart="dragStart(event)">type → vaste lijst</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:.8rem">
+            <div>
+              <div class="topic-title" style="font-size:.8rem;margin-bottom:.4rem">1️⃣ 1NF fout</div>
+              <div class="drop-zone" id="z-1nf" ondragover="allowDrop(event)" ondrop="drop(event,'z-1nf')"></div>
+            </div>
+            <div>
+              <div class="topic-title" style="font-size:.8rem;margin-bottom:.4rem">3️⃣ 3NF fout</div>
+              <div class="drop-zone" id="z-3nf" ondragover="allowDrop(event)" ondrop="drop(event,'z-3nf')"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="btn filled" onclick="checkNFDrag()">✅ Controleer</button>
+            <button class="btn" onclick="resetNFDrag()">🔄 Reset</button>
+          </div>
+          <div id="dd-nf-fb" style="margin-top:.6rem;font-weight:600"></div>
+
+          <div class="step-controls" style="margin-top:1.2rem">
+            <button class="btn filled" onclick="openNextCard(4)">Stap 5 — Volledig ERD →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+         KAART 5 — VOLLEDIG ERD
+    =================================================== -->
+    <div class="sec-card" id="card5">
+      <div class="sec-header" onclick="toggleCard(5)">
+        <div class="sec-icon">🗺️</div>
+        <div class="sec-title-group">
+          <div class="sec-title">Volledig ERD — Wheels-on</div>
+          <div class="sec-sub">Alle entiteiten · Attributen · Relaties · 3NF</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="sec-body">
+        <div class="sec-inner">
+
+          <div class="hl-box tip">
+            <strong>Het eindresultaat</strong> — 7 entiteiten, volledig in 3NF, met alle relaties correct ingesteld.
+          </div>
+
+          <!-- Volledig ERD SVG -->
+          <div class="erd-canvas" style="margin-top:1rem;overflow-x:auto">
+            <div style="min-width:860px">
+              <svg viewBox="0 0 980 540" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;font-family:'JetBrains Mono',monospace">
+                <defs><filter id="sh3"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#5b4de8" flood-opacity="0.08"/></filter></defs>
+
+                <!-- KLANT x=10 y=10 -->
+                <g filter="url(#sh3)">
+                  <rect x="10" y="10" width="190" height="172" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="10" y="10" width="190" height="28" rx="7" fill="#5b4de8" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="10" y="30" width="190" height="8" fill="#5b4de8"/>
+                  <text x="22" y="29" font-size="11" font-weight="700" fill="white">klant</text>
+                </g>
+                <line x1="10" y1="54" x2="200" y2="54" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="48" font-size="10" fill="#b45309">🔑</text><text x="36" y="48" font-size="10" fill="#1a1d2e">id  INT  NN</text>
+                <line x1="10" y1="68" x2="200" y2="68" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="63" font-size="10" fill="#1a1d2e">◆ firstname  VARCHAR(50)</text>
+                <line x1="10" y1="82" x2="200" y2="82" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="77" font-size="10" fill="#1a1d2e">◆ lastname  VARCHAR(50)</text>
+                <line x1="10" y1="96" x2="200" y2="96" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="91" font-size="10" fill="#1a1d2e">◆ street  VARCHAR(100)</text>
+                <line x1="10" y1="110" x2="200" y2="110" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="105" font-size="10" fill="#1a1d2e">◆ city  VARCHAR(50)</text>
+                <line x1="10" y1="124" x2="200" y2="124" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="119" font-size="10" fill="#1a1d2e">◆ email  VARCHAR(100)</text>
+                <line x1="10" y1="138" x2="200" y2="138" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="133" font-size="10" fill="#4b5470">◇ phone  VARCHAR(20)</text>
+
+                <!-- VOERTUIG x=560 y=10 -->
+                <g filter="url(#sh3)">
+                  <rect x="560" y="10" width="200" height="140" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="560" y="10" width="200" height="28" rx="7" fill="#c2185b" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="560" y="30" width="200" height="8" fill="#c2185b"/>
+                  <text x="572" y="29" font-size="11" font-weight="700" fill="white">voertuig</text>
+                </g>
+                <line x1="560" y1="54" x2="760" y2="54" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="48" font-size="10" fill="#b45309">🔑</text><text x="586" y="48" font-size="10" fill="#1a1d2e">id  INT  NN</text>
+                <line x1="560" y1="68" x2="760" y2="68" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="63" font-size="10" fill="#1a1d2e">◆ vehicletype  VARCHAR(20)</text>
+                <line x1="560" y1="82" x2="760" y2="82" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="77" font-size="10" fill="#1a1d2e">◆ brand  VARCHAR(50)</text>
+                <line x1="560" y1="96" x2="760" y2="96" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="91" font-size="10" fill="#1a1d2e">◆ model  VARCHAR(50)</text>
+                <line x1="560" y1="110" x2="760" y2="110" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="105" font-size="10" fill="#1a1d2e">◆ priceperday  DEC(8,2)</text>
+                <line x1="560" y1="124" x2="760" y2="124" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="119" font-size="10" fill="#1a1d2e">◆ saleprice  DEC(10,2)</text>
+
+                <!-- AANVRAAG x=280 y=10 -->
+                <g filter="url(#sh3)">
+                  <rect x="280" y="10" width="200" height="140" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="280" y="10" width="200" height="28" rx="7" fill="#b45309" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="280" y="30" width="200" height="8" fill="#b45309"/>
+                  <text x="292" y="29" font-size="11" font-weight="700" fill="white">aanvraag</text>
+                </g>
+                <line x1="280" y1="54" x2="480" y2="54" stroke="#eef0f8" stroke-width="1"/>
+                <text x="292" y="48" font-size="10" fill="#b45309">🔑</text><text x="306" y="48" font-size="10" fill="#1a1d2e">id  INT  NN</text>
+                <line x1="280" y1="68" x2="480" y2="68" stroke="#eef0f8" stroke-width="1"/>
+                <text x="292" y="63" font-size="10" fill="#1a1d2e">◆ requestnumber  VARCHAR(20)</text>
+                <line x1="280" y1="82" x2="480" y2="82" stroke="#eef0f8" stroke-width="1"/>
+                <text x="292" y="77" font-size="10" fill="#1a1d2e">◆ requestdate  DATE</text>
+                <line x1="280" y1="96" x2="480" y2="96" stroke="#eef0f8" stroke-width="1"/>
+                <text x="292" y="91" font-size="10" fill="#1a73e8">🔷 klant_id  INT  NN</text>
+                <line x1="280" y1="110" x2="480" y2="110" stroke="#eef0f8" stroke-width="1"/>
+                <text x="292" y="105" font-size="10" fill="#1a73e8">🔷 voertuig_id  INT  NN</text>
+
+                <!-- LEASECONTRACT x=230 y=220 -->
+                <g filter="url(#sh3)">
+                  <rect x="230" y="220" width="210" height="140" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="230" y="220" width="210" height="28" rx="7" fill="#0d9e6e" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="230" y="240" width="210" height="8" fill="#0d9e6e"/>
+                  <text x="242" y="239" font-size="11" font-weight="700" fill="white">leasecontract</text>
+                </g>
+                <line x1="230" y1="264" x2="440" y2="264" stroke="#eef0f8" stroke-width="1"/>
+                <text x="242" y="258" font-size="10" fill="#b45309">🔑</text><text x="256" y="258" font-size="10" fill="#1a1d2e">id  INT  NN</text>
+                <line x1="230" y1="278" x2="440" y2="278" stroke="#eef0f8" stroke-width="1"/>
+                <text x="242" y="273" font-size="10" fill="#1a1d2e">◆ contractnumber  VARCHAR(20)</text>
+                <line x1="230" y1="292" x2="440" y2="292" stroke="#eef0f8" stroke-width="1"/>
+                <text x="242" y="287" font-size="10" fill="#1a1d2e">◆ startdate  DATE  NN</text>
+                <line x1="230" y1="306" x2="440" y2="306" stroke="#eef0f8" stroke-width="1"/>
+                <text x="242" y="301" font-size="10" fill="#1a1d2e">◆ enddate  DATE  NN</text>
+                <line x1="230" y1="320" x2="440" y2="320" stroke="#eef0f8" stroke-width="1"/>
+                <text x="242" y="315" font-size="10" fill="#1a73e8">🔷 aanvraag_id  INT  NN</text>
+                <line x1="230" y1="334" x2="440" y2="334" stroke="#eef0f8" stroke-width="1"/>
+                <text x="242" y="329" font-size="10" fill="#1a73e8">🔷 verzekering_id  INT</text>
+
+                <!-- VERZEKERING x=560 y=220 -->
+                <g filter="url(#sh3)">
+                  <rect x="560" y="220" width="200" height="124" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="560" y="220" width="200" height="28" rx="7" fill="#1a73e8" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="560" y="240" width="200" height="8" fill="#1a73e8"/>
+                  <text x="572" y="239" font-size="11" font-weight="700" fill="white">verzekering</text>
+                </g>
+                <line x1="560" y1="264" x2="760" y2="264" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="258" font-size="10" fill="#b45309">🔑</text><text x="586" y="258" font-size="10" fill="#1a1d2e">id  INT  NN</text>
+                <line x1="560" y1="278" x2="760" y2="278" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="273" font-size="10" fill="#1a1d2e">◆ name  VARCHAR(100)</text>
+                <line x1="560" y1="292" x2="760" y2="292" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="287" font-size="10" fill="#1a1d2e">◆ coveragetype  VARCHAR(50)</text>
+                <line x1="560" y1="306" x2="760" y2="306" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="301" font-size="10" fill="#1a1d2e">◆ monthlyprice  DEC(8,2)</text>
+
+                <!-- VERKOOPORDER x=560 y=400 -->
+                <g filter="url(#sh3)">
+                  <rect x="560" y="400" width="200" height="124" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="560" y="400" width="200" height="28" rx="7" fill="#b45309" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="560" y="420" width="200" height="8" fill="#b45309"/>
+                  <text x="572" y="419" font-size="11" font-weight="700" fill="white">verkooporder</text>
+                </g>
+                <line x1="560" y1="444" x2="760" y2="444" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="438" font-size="10" fill="#b45309">🔑</text><text x="586" y="438" font-size="10" fill="#1a1d2e">id  INT  NN</text>
+                <line x1="560" y1="458" x2="760" y2="458" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="453" font-size="10" fill="#1a1d2e">◆ ordernumber  VARCHAR(20)</text>
+                <line x1="560" y1="472" x2="760" y2="472" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="467" font-size="10" fill="#1a1d2e">◆ orderdate  DATE  NN</text>
+                <line x1="560" y1="486" x2="760" y2="486" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="481" font-size="10" fill="#1a73e8">🔷 klant_id  INT  NN</text>
+                <line x1="560" y1="500" x2="760" y2="500" stroke="#eef0f8" stroke-width="1"/>
+                <text x="572" y="495" font-size="10" fill="#1a73e8">🔷 voertuig_id  INT  NN</text>
+
+                <!-- BETALING x=230 y=420 -->
+                <g filter="url(#sh3)">
+                  <rect x="10" y="420" width="200" height="140" rx="7" fill="white" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="10" y="420" width="200" height="28" rx="7" fill="#0d766e" stroke="#c8ceea" stroke-width="1.5"/>
+                  <rect x="10" y="440" width="200" height="8" fill="#0d766e"/>
+                  <text x="22" y="439" font-size="11" font-weight="700" fill="white">betaling</text>
+                </g>
+                <line x1="10" y1="464" x2="210" y2="464" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="458" font-size="10" fill="#b45309">🔑</text><text x="36" y="458" font-size="10" fill="#1a1d2e">id  INT  NN</text>
+                <line x1="10" y1="478" x2="210" y2="478" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="473" font-size="10" fill="#1a1d2e">◆ paymentnumber  VARCHAR(20)</text>
+                <line x1="10" y1="492" x2="210" y2="492" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="487" font-size="10" fill="#1a1d2e">◆ amount  DECIMAL(10,2)</text>
+                <line x1="10" y1="506" x2="210" y2="506" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="501" font-size="10" fill="#1a1d2e">◆ paymentdate  DATE</text>
+                <line x1="10" y1="520" x2="210" y2="520" stroke="#eef0f8" stroke-width="1"/>
+                <text x="22" y="515" font-size="10" fill="#4b5470">◇ leasecontract_id  INT</text>
+                <text x="22" y="529" font-size="10" fill="#4b5470">◇ verkooporder_id  INT</text>
+
+                <!-- CONNECTORS (gestippeld = non-identifying) -->
+                <!-- klant → aanvraag -->
+                <line x1="200" y1="70" x2="280" y2="70" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="202" cy="70" r="4" fill="none" stroke="#7c6af7" stroke-width="1.5"/>
+                <line x1="210" y1="64" x2="210" y2="76" stroke="#7c6af7" stroke-width="1.5"/>
+                <line x1="215" y1="64" x2="215" y2="76" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- voertuig → aanvraag -->
+                <line x1="560" y1="80" x2="480" y2="90" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="558" cy="80" r="4" fill="none" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- aanvraag → leasecontract -->
+                <line x1="370" y1="150" x2="340" y2="220" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="370" cy="152" r="4" fill="none" stroke="#7c6af7" stroke-width="1.5"/>
+                <line x1="364" y1="158" x2="376" y2="158" stroke="#7c6af7" stroke-width="1.5"/>
+                <line x1="364" y1="163" x2="376" y2="163" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- verzekering → leasecontract -->
+                <line x1="560" y1="270" x2="440" y2="300" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="558" cy="270" r="4" fill="none" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- klant → verkooporder -->
+                <line x1="100" y1="182" x2="100" y2="420" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <line x1="100" y1="418" x2="560" y2="455" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="100" cy="183" r="4" fill="none" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- voertuig → verkooporder -->
+                <line x1="660" y1="150" x2="660" y2="400" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="660" cy="151" r="4" fill="none" stroke="#7c6af7" stroke-width="1.5"/>
+
+                <!-- betaling → leasecontract -->
+                <line x1="210" y1="490" x2="335" y2="360" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+
+                <!-- betaling → verkooporder -->
+                <line x1="210" y1="510" x2="560" y2="490" stroke="#7c6af7" stroke-width="1.5" stroke-dasharray="5,3"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Relaties overzicht -->
+          <div class="topic-title" style="margin-top:1.2rem">📋 Alle relaties samengevat</div>
+          <div style="overflow-x:auto;margin:.6rem 0">
+            <table style="width:100%;border-collapse:collapse;font-size:.84rem">
+              <thead style="background:var(--bg2)">
+                <tr>
+                  <th style="padding:7px 12px;border:1px solid var(--border);text-align:left">Van</th>
+                  <th style="padding:7px 12px;border:1px solid var(--border)">Naar</th>
+                  <th style="padding:7px 12px;border:1px solid var(--border)">Type</th>
+                  <th style="padding:7px 12px;border:1px solid var(--border)">FK</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>klant</code></td><td style="padding:6px 12px;border:1px solid var(--border)"><code>aanvraag</code></td><td style="padding:6px 12px;border:1px solid var(--border)">1 : N</td><td style="padding:6px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">klant_id in aanvraag</td></tr>
+                <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>voertuig</code></td><td style="padding:6px 12px;border:1px solid var(--border)"><code>aanvraag</code></td><td style="padding:6px 12px;border:1px solid var(--border)">1 : N</td><td style="padding:6px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">voertuig_id in aanvraag</td></tr>
+                <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>aanvraag</code></td><td style="padding:6px 12px;border:1px solid var(--border)"><code>leasecontract</code></td><td style="padding:6px 12px;border:1px solid var(--border)">1 : 1</td><td style="padding:6px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">aanvraag_id in leasecontract</td></tr>
+                <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>verzekering</code></td><td style="padding:6px 12px;border:1px solid var(--border)"><code>leasecontract</code></td><td style="padding:6px 12px;border:1px solid var(--border)">1 : N</td><td style="padding:6px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">verzekering_id in leasecontract (NULL)</td></tr>
+                <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>klant</code></td><td style="padding:6px 12px;border:1px solid var(--border)"><code>verkooporder</code></td><td style="padding:6px 12px;border:1px solid var(--border)">1 : N</td><td style="padding:6px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">klant_id in verkooporder</td></tr>
+                <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>voertuig</code></td><td style="padding:6px 12px;border:1px solid var(--border)"><code>verkooporder</code></td><td style="padding:6px 12px;border:1px solid var(--border)">1 : N</td><td style="padding:6px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">voertuig_id in verkooporder</td></tr>
+                <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>betaling</code></td><td style="padding:6px 12px;border:1px solid var(--border)"><code>leasecontract</code></td><td style="padding:6px 12px;border:1px solid var(--border)">N : 1</td><td style="padding:6px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">leasecontract_id in betaling (NULL)</td></tr>
+                <tr><td style="padding:6px 12px;border:1px solid var(--border)"><code>betaling</code></td><td style="padding:6px 12px;border:1px solid var(--border)"><code>verkooporder</code></td><td style="padding:6px 12px;border:1px solid var(--border)">N : 1</td><td style="padding:6px 12px;border:1px solid var(--border);font-family:var(--mono);font-size:.8rem">verkooporder_id in betaling (NULL)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Typer oefening -->
+          <div class="typer-box" style="margin-top:1.5rem">
+            <div class="topic-title">✏️ Typer-oefening</div>
+            <p>Welke entiteit is de brug tussen aanvraag en het opstellen van het huurcontract?</p>
+            <div class="typer-row">
+              <input class="typer-input" id="typer-m7" type="text" placeholder="typ de entiteitnaam..." oninput="checkTyper('typer-m7','leasecontract','hint-m7')">
+              <span class="typer-hint" id="hint-m7"></span>
+            </div>
+          </div>
+
+          <!-- MCQ eindcheck -->
+          <div class="mcq" style="margin-top:1.5rem">
+            <div class="mcq-question">❓ Waarom zijn beide FK's in de <code>betaling</code>-tabel nullable?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-erd2')">Omdat betalingen altijd optioneel zijn</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-erd2')">Omdat FK's standaard nullable zijn</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,true, 'fb-erd2')">Omdat een betaling voor huur óf aankoop geldt — nooit allebei — dus één FK is altijd NULL</div>
+              <div class="mcq-opt" onclick="checkMCQ(this,false,'fb-erd2')">Omdat betaling geen relatie heeft met andere tabellen</div>
+            </div>
+            <div class="mcq-feedback" id="fb-erd2"></div>
+          </div>
+
+          <!-- Leeruitkomsten -->
+          <div class="topic-title" style="margin-top:1.5rem">✅ Leeruitkomsten — vink af wat je kunt</div>
+          <div class="checklist" style="margin-top:.6rem">
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan zelfstandig entiteiten herkennen uit een casusbeschrijving</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik ken de juiste datatypes voor alle soorten attributen</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik schrijf correcte ERD'ish zinnen voor elke relatie</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik herken en los M:N relaties op met een tussentabel</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik kan een database normaliseren naar 3NF</div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">Ik bouw een volledig ERD van scratch met correcte PK's en FK's</div>
+            </div>
+          </div>
+
+          <!-- Afsluiting -->
+          <div class="hl-box tip" style="margin-top:1.5rem;text-align:center">
+            <div class="big">🎓</div>
+            <div class="box-title">Module 7 — én de cursus — klaar!</div>
+            <p>Je hebt alle modules doorlopen. Van ERD-basis tot volledig normaliseren van scratch. Succes met de toets! 💪</p>
+            <div style="margin-top:1rem;display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap">
+              <a href="index.html" class="btn">🏠 Terug naar overzicht</a>
+              <a href="module6.html" class="btn">← Module 6</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .sections -->
+</div><!-- .container -->
+
+<div class="big" style="text-align:center;padding:2rem;opacity:.3">ERD — Module 7</div>
+
+<script src="script.js"></script>
+<script>
+// ── Entiteit drag & drop ──────────────────────────────────────────────────────
+const entCorrect = {
+  klant: 'entity', voertuig: 'entity', aanvraag: 'entity',
+  leasecontract: 'entity', verzekering: 'entity',
+  verkooporder: 'entity', betaling: 'entity',
+  woonplaats: 'no', begindatum: 'no', merk: 'no',
+};
+
+function checkEntDrag() {
+  const entItems = document.getElementById('z-entity').querySelectorAll('.drag-item');
+  const noItems  = document.getElementById('z-no').querySelectorAll('.drag-item');
+  const srcItems = document.getElementById('pool-ent').querySelectorAll('.drag-item');
+  let cor = 0, tot = 0;
+  [...entItems].forEach(i => { tot++; if(entCorrect[i.textContent]==='entity'){i.classList.add('correct');i.classList.remove('wrong');cor++;}else i.classList.add('wrong'); });
+  [...noItems].forEach(i  => { tot++; if(entCorrect[i.textContent]==='no')    {i.classList.add('correct');i.classList.remove('wrong');cor++;}else i.classList.add('wrong'); });
+  [...srcItems].forEach(i => { tot++; i.classList.add('wrong'); });
+  const fb = document.getElementById('dd-ent-fb');
+  if (cor===tot&&tot>0) { fb.textContent='🎉 Perfect! Alle items correct.'; fb.style.color='var(--accent3)'; addPoint(3); }
+  else { fb.textContent=cor+' van '+tot+' correct.'; fb.style.color='#f87171'; }
+}
+function resetEntDrag() {
+  const pool = document.getElementById('pool-ent');
+  ['z-entity','z-no'].forEach(id => {
+    document.getElementById(id).querySelectorAll('.drag-item').forEach(i => { i.classList.remove('correct','wrong'); pool.appendChild(i); });
+  });
+  document.getElementById('dd-ent-fb').textContent = '';
+}
+
+// ── NF drag & drop ────────────────────────────────────────────────────────────
+const nfCorrect = {
+  'naam = samengesteld': '1nf',
+  'adres = samengesteld': '1nf',
+  'brand → eigen info': '3nf',
+  'type → vaste lijst': '3nf',
+};
+function checkNFDrag() {
+  const items1 = document.getElementById('z-1nf').querySelectorAll('.drag-item');
+  const items3 = document.getElementById('z-3nf').querySelectorAll('.drag-item');
+  const src    = document.getElementById('pool-nf').querySelectorAll('.drag-item');
+  let cor=0,tot=0;
+  [...items1].forEach(i=>{tot++;if(nfCorrect[i.textContent]==='1nf'){i.classList.add('correct');i.classList.remove('wrong');cor++;}else i.classList.add('wrong');});
+  [...items3].forEach(i=>{tot++;if(nfCorrect[i.textContent]==='3nf'){i.classList.add('correct');i.classList.remove('wrong');cor++;}else i.classList.add('wrong');});
+  [...src].forEach(i=>{tot++;i.classList.add('wrong');});
+  const fb=document.getElementById('dd-nf-fb');
+  if(cor===tot&&tot>0){fb.textContent='🎉 Perfect!';fb.style.color='var(--accent3)';addPoint(3);}
+  else{fb.textContent=cor+' van '+tot+' correct.';fb.style.color='#f87171';}
+}
+function resetNFDrag() {
+  const pool=document.getElementById('pool-nf');
+  ['z-1nf','z-3nf'].forEach(id=>{
+    document.getElementById(id).querySelectorAll('.drag-item').forEach(i=>{i.classList.remove('correct','wrong');pool.appendChild(i);});
+  });
+  document.getElementById('dd-nf-fb').textContent='';
+}
+</script>
+</body>
+</html>

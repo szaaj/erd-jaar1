@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Data Chaos → 3NF | Normalisatie</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  background:#f0f2f8;
+  color:#1a1d2e;
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;
+}
+
+/* ── SLIDE ENGINE ── */
+.slides{width:100%;height:100vh;position:relative}
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity .35s ease, transform .35s ease;
+  transform:translateX(50px);
+  overflow:hidden;
+}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.exit{opacity:0;transform:translateX(-50px)}
+
+/* ── SLIDE HEADER ── */
+.slide-header{
+  background:#1a1d2e;
+  color:#fff;
+  padding:12px 28px;
+  display:flex;align-items:center;gap:14px;
+  flex-shrink:0;
+}
+.slide-header .nf-pill{
+  font-family:'Syne',sans-serif;font-size:1rem;font-weight:900;
+  padding:4px 14px;border-radius:6px;letter-spacing:.02em;
+}
+.slide-header h2{
+  font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;
+  color:#fff;flex:1;
+}
+.slide-header .step-info{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;
+}
+
+/* ── PROGRESS BAR ── */
+.prog-bar{
+  height:5px;background:#dde2ef;flex-shrink:0;
+  display:flex;gap:2px;
+}
+.pb-seg{flex:1;background:#dde2ef;transition:background .3s}
+.pb-seg.done{background:#22c55e}
+.pb-seg.active{background:#6366f1}
+
+/* ── MAIN LAYOUT ── */
+.slide-body{
+  flex:1;display:flex;gap:0;overflow:hidden;
+}
+
+/* LEFT PANEL — chaos reference */
+.ref-panel{
+  width:260px;flex-shrink:0;
+  background:#fff;
+  border-right:3px solid #e2e8f0;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.ref-header{
+  background:#1e293b;color:#fff;
+  padding:8px 12px;
+  font-family:'Syne',sans-serif;font-size:.78rem;font-weight:800;
+  letter-spacing:.04em;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.ref-table-wrap{
+  overflow-y:auto;padding:8px;flex:1;
+}
+.ref-tbl{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.62rem}
+.ref-tbl th{
+  background:#f8fafc;color:#64748b;padding:4px 6px;
+  text-align:left;border-bottom:2px solid #e2e8f0;
+  font-size:.58rem;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;
+}
+.ref-tbl td{
+  padding:4px 6px;border-bottom:1px solid #f1f5f9;
+  white-space:nowrap;color:#334155;
+}
+.ref-tbl tr:hover td{background:#f8fafc}
+.ref-dup{color:#ef4444;font-weight:700;background:rgba(239,68,68,.08);border-radius:2px;padding:1px 3px}
+
+/* RIGHT PANEL — content */
+.content-panel{
+  flex:1;overflow-y:auto;
+  padding:22px 28px 80px;
+  background:#f8fafc;
+}
+
+/* ── TYPOGRAPHY ── */
+h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:900;line-height:1.05;color:#1a1d2e}
+h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:#1a1d2e;margin-bottom:6px}
+p{color:#475569;line-height:1.7;font-size:.92rem}
+code{
+  font-family:'JetBrains Mono',monospace;font-size:.82em;
+  background:#eef2ff;color:#4f46e5;
+  padding:1px 6px;border-radius:4px;font-weight:600;
+}
+
+/* ── CONTENT TABLES ── */
+.tbl-wrap{overflow-x:auto;border-radius:8px;border:1.5px solid #e2e8f0;margin:8px 0}
+.ctbl{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.78rem}
+.ctbl th{
+  background:#f1f5f9;color:#64748b;padding:7px 12px;
+  text-align:left;border-bottom:2px solid #e2e8f0;
+  font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;
+}
+.ctbl td{padding:6px 12px;border-bottom:1px solid #f1f5f9;color:#1e293b;white-space:nowrap}
+.ctbl tr:last-child td{border-bottom:none}
+.ctbl tr:hover td{background:#f8fafc}
+
+.td-pk{background:#fef9c3;color:#854d0e;font-weight:700;border-radius:3px}
+.td-fk{background:#dbeafe;color:#1e40af;font-weight:700;border-radius:3px}
+.td-dup{background:#fee2e2;color:#b91c1c;font-weight:600}
+.td-new{background:#dcfce7;color:#166534;font-weight:600}
+
+/* ── CALLOUT BOXES ── */
+.box{
+  border-radius:10px;padding:12px 16px;
+  display:flex;align-items:flex-start;gap:10px;
+  margin:8px 0;font-size:.88rem;
+}
+.box-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.box.danger{background:#fef2f2;border:2px solid #fca5a5;color:#991b1b}
+.box.ok{background:#f0fdf4;border:2px solid #86efac;color:#166534}
+.box.warn{background:#fffbeb;border:2px solid #fde68a;color:#92400e}
+.box.info{background:#eff6ff;border:2px solid #bfdbfe;color:#1e40af}
+.box.purple{background:#faf5ff;border:2px solid #d8b4fe;color:#6b21a8}
+.box strong{font-weight:700}
+
+/* ── STEP CARD ── */
+.step-card{
+  background:#fff;border:2px solid #e2e8f0;border-radius:10px;
+  padding:14px 18px;margin-bottom:10px;
+  display:flex;gap:12px;align-items:flex-start;
+}
+.step-num{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:.95rem;font-weight:900;
+  flex-shrink:0;
+}
+.step-body-txt{flex:1}
+.step-title{font-weight:700;font-size:.9rem;color:#1a1d2e;margin-bottom:4px}
+.step-desc{font-size:.84rem;color:#64748b;line-height:1.6}
+
+/* ── ENTITY BOX ── */
+.erd-box{
+  background:#fff;border:2px solid #c7d2fe;border-radius:10px;
+  overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:.75rem;
+  min-width:155px;box-shadow:0 2px 8px rgba(99,102,241,.08);
+}
+.erd-head{
+  padding:7px 12px;font-weight:700;font-size:.8rem;
+  border-bottom:2px solid #c7d2fe;letter-spacing:.02em;
+}
+.erd-r{
+  display:flex;align-items:center;gap:7px;
+  padding:4px 12px;border-bottom:1px solid #f1f5f9;color:#1e293b;
+}
+.erd-r:last-child{border-bottom:none}
+.edt{font-size:.65rem;background:#dbeafe;color:#1e40af;padding:1px 5px;border-radius:3px;margin-left:auto;flex-shrink:0}
+.enn{font-size:.62rem;background:#dcfce7;color:#166534;padding:1px 4px;border-radius:3px;flex-shrink:0}
+
+/* ── BADGE ── */
+.badge{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:5px;
+}
+.b-ind{background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe}
+.b-green{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.b-red{background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5}
+.b-amber{background:#fef9c3;color:#854d0e;border:1px solid #fde68a}
+.b-cyan{background:#cffafe;color:#155e75;border:1px solid #a5f3fc}
+.b-indigo{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}
+.b-orange{background:#ffedd5;color:#9a3412;border:1px solid #fed7aa}
+.b-red{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.b-amber2{background:#fef9c3;color:#854d0e;border:1px solid #fde68a}
+.b-pink{background:#fce7f3;color:#9d174d;border:1px solid #f9a8d4}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.row{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.col{flex:1;min-width:0}
+
+/* ── NF LABEL ── */
+.nf-label{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 12px;border-radius:6px;margin-bottom:12px;
+}
+
+/* ── BEFORE/AFTER ── */
+.ba-wrap{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.ba-arrow{font-size:1.5rem;color:#94a3b8;flex-shrink:0;align-self:center}
+
+/* ── NAV ── */
+.nav{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  z-index:100;
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.95);
+  border:2px solid #e2e8f0;
+  box-shadow:0 4px 20px rgba(0,0,0,.1);
+  backdrop-filter:blur(8px);
+  padding:8px 16px;border-radius:40px;
+}
+.nav-btn{
+  background:#1a1d2e;color:#fff;
+  font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;
+  padding:7px 18px;border-radius:20px;cursor:pointer;border:none;
+  transition:all .18s;
+}
+.nav-btn:hover{background:#312e81}
+.nav-btn:disabled{background:#cbd5e1;color:#94a3b8;cursor:default}
+.nav-dots{display:flex;gap:5px;align-items:center}
+.dot{width:9px;height:9px;border-radius:50%;background:#e2e8f0;cursor:pointer;transition:all .22s;border:2px solid #cbd5e1}
+.dot.active{background:#6366f1;border-color:#6366f1;width:24px;border-radius:5px}
+.dot.done{background:#22c55e;border-color:#22c55e}
+.slide-num{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#94a3b8;min-width:120px;text-align:center}
+
+/* ── TITLE SLIDE special ── */
+.title-slide{
+  background:linear-gradient(135deg,#1a1d2e 0%,#312e81 100%);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:60px;
+  align-items:flex-start;
+}
+.title-slide .subtitle{
+  color:rgba(255,255,255,.65);font-size:1rem;max-width:560px;margin-bottom:28px;
+}
+.route-chips{display:flex;gap:8px;flex-wrap:wrap}
+.route-chip{
+  background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.9);
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;
+  padding:6px 14px;border-radius:8px;
+  display:flex;align-items:center;gap:6px;
+}
+.route-chip.active-chip{background:rgba(99,102,241,.6);border-color:#818cf8}
+
+/* Table label */
+.tbl-label{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:#64748b;
+  margin-bottom:5px;display:flex;align-items:center;gap:6px;
+}
+
+.flip-card{perspective:600px;height:130px}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flip-back{transform:rotateY(180deg)}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     SLIDE 1 — TITEL
+════════════════════════════════ -->
+<div class="slide title-slide active" id="s1">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:14px">SOD · Databases · Normalisatie</div>
+  <h1 style="color:#fff;font-size:clamp(2.4rem,5vw,3.8rem);margin-bottom:12px;line-height:1.05">Van Data Chaos<br><span style="color:#818cf8">naar 3NF</span></h1>
+  <p class="subtitle">Als data op meerdere plekken staat, gaat het vroeg of laat fout. Normalisatie lost dat op. Stap voor stap leer je hoe je één rommelige tabel omzet naar een nette, correcte database — aan de hand van een gaming-toernooi. 🎮</p>
+
+  <div style="background:rgba(255,255,255,.08);border:1.5px solid rgba(129,140,248,.4);border-radius:10px;padding:12px 18px;margin-bottom:24px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#a5b4fc;margin-bottom:8px">🎯 Na deze les kun je…</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:.82rem;color:#e0e7ff">✅ Ik kan <strong>uitleggen</strong> wat normalisatie is en waarom herhaling een probleem is</div>
+      <div style="font-size:.82rem;color:#e0e7ff">✅ Ik kan <strong>aangeven</strong> welke attributen herhalen en wat de entiteit is (0NF)</div>
+      <div style="font-size:.82rem;color:#e0e7ff">✅ Ik kan een tabel stap voor stap naar <strong>1NF, 2NF en 3NF</strong> normaliseren</div>
+      <div style="font-size:.82rem;color:#e0e7ff">✅ Ik kan <strong>verklaren</strong> waarom een attribuut zoals <code style="background:rgba(255,255,255,.15);color:#c7d2fe;padding:1px 5px;border-radius:3px">supplier</code> een eigen tabel wordt</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px">
+    <div style="background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 18px;color:#fff;font-size:.88rem">
+      🎯 <strong>Casus:</strong> GameToernooi<br><span style="color:rgba(255,255,255,.55);font-size:.8rem">gamers · teams · games · arenas · scores · sponsors</span>
+    </div>
+    <div style="background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 18px;color:#fff;font-size:.88rem">
+      📐 <strong>Route:</strong><br><span style="color:rgba(255,255,255,.55);font-size:.8rem">0NF → 1NF → 2NF → 3NF</span>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px">
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.76rem;color:rgba(255,255,255,.5)">⚠️ Level 0 — De chaos</div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.76rem;color:rgba(255,255,255,.5)">🔍 Level 1 — Analyseren</div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.76rem;color:rgba(255,255,255,.5)">🔑 Level 2 — PK toevoegen</div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.76rem;color:rgba(255,255,255,.5)">✂️ Level 3 — Team afsplitsen</div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.76rem;color:rgba(255,255,255,.5)">✂️ Level 4 — Game &amp; Arena</div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.76rem;color:rgba(255,255,255,.5)">🎮 Level 5 — Juiste tabel</div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.76rem;color:rgba(255,255,255,.5)">⛓️ Level 6 — Ketens verbreken</div>
+    <div style="background:rgba(129,140,248,.15);border:1px solid #818cf8;border-radius:8px;padding:6px 12px;font-size:.76rem;color:#818cf8;font-weight:700">🏆 Level 7 — Database voltooid</div>
+  </div>
+
+  <div class="route-chips">
+    <div class="route-chip active-chip">📋 0NF — Analyseren</div>
+    <div class="route-chip">1️⃣ 1NF — PK + splitsen</div>
+    <div class="route-chip">2️⃣ 2NF — Juiste tabel</div>
+    <div class="route-chip">3️⃣ 3NF — Geen ketens</div>
+    <div class="route-chip">🏁 Klaar!</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SLIDE 2 — CHAOS TABEL
+════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#7c3aed;color:#fff">Start</span>
+    <h2>De beginsituatie — alles door elkaar 😬</h2>
+    <span class="step-info">⚠️ Level 0 — De chaos</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg active"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div></div>
+  <div class="slide-body" style="flex-direction:column;overflow-y:auto;padding:22px 28px 80px;background:#f8fafc;gap:14px">
+
+    <p style="font-size:.95rem">Dit gaat over een <strong>gaming-toernooi</strong>. Kijk naar deze tabel. Alles staat door elkaar: gamers, teams, games, arenas, scores, sponsors. <span style="color:#b91c1c;font-weight:700">Zie je de herhalingen? Rood gemarkeerd.</span></p>
+
+    <div class="tbl-wrap">
+      <table class="ctbl">
+        <thead><tr>
+          <th>gamertag</th><th>team</th><th>registrationdate</th>
+          <th>game</th><th>arena</th><th>score</th>
+          <th>sponsor</th><th>equipment</th><th>prize</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>ShadowSlayer</td><td class="td-dup">NightRiders</td><td>14-02-2025</td><td class="td-dup">League of Legends</td><td>Blue</td><td>3850</td><td class="td-dup">RedBull</td><td>Razer Keyboard</td><td class="td-dup">€500</td></tr>
+          <tr><td>Firestorm</td><td class="td-dup">NightRiders</td><td>15-02-2025</td><td class="td-dup">League of Legends</td><td>Red</td><td>4120</td><td class="td-dup">RedBull</td><td>Logitech Mouse</td><td class="td-dup">€500</td></tr>
+          <tr><td>IcePhantom</td><td>ShadowTeam</td><td>16-02-2025</td><td class="td-dup">League of Legends</td><td>Yellow</td><td>3670</td><td class="td-dup">RedBull</td><td>HyperX Headset</td><td class="td-dup">€500</td></tr>
+          <tr><td>Thunderwolf</td><td class="td-dup">NightRiders</td><td>16-02-2025</td><td>EA Sports FC</td><td>Green</td><td>2900</td><td>Nike</td><td>SteelSeries Mouse</td><td>€250</td></tr>
+          <tr><td>BlazeMaster</td><td>ShadowTeam</td><td>16-02-2025</td><td>EA Sports FC</td><td>White</td><td>3100</td><td>Nike</td><td>Razer Keyboard</td><td>€250</td></tr>
+          <tr><td>DragonFury</td><td>StormChasers</td><td>17-02-2025</td><td>EA Sports FC</td><td>Black</td><td>2750</td><td>Nike</td><td>Logitech Mouse</td><td>€250</td></tr>
+          <tr><td>CyberNinja</td><td>StormChasers</td><td>17-02-2025</td><td class="td-dup">League of Legends</td><td>Blue</td><td>4400</td><td class="td-dup">RedBull</td><td>HyperX Headset</td><td class="td-dup">€500</td></tr>
+          <tr><td>Warlock</td><td class="td-dup">NightRiders</td><td>17-02-2025</td><td>EA Sports FC</td><td>Green</td><td>3200</td><td>Nike</td><td>Razer Keyboard</td><td>€250</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="g2">
+      <div class="box danger">
+        <span class="box-icon">🔴</span>
+        <div><strong>Herhalingen!</strong> "NightRiders" staat 4×. "League of Legends" staat 4×. "RedBull" staat 4×. Als één naam verandert → overal aanpassen, kans op fouten!</div>
+      </div>
+      <div class="box warn">
+        <span class="box-icon">⚠️</span>
+        <div><strong>Geen primaire sleutel!</strong> Geen unieke identificatie per rij. Wat als twee gamers dezelfde naam gebruiken? Database weet het niet.</div>
+      </div>
+    </div>
+
+    <div class="box info">
+      <span class="box-icon">🎯</span>
+      <div><strong>Dit is onze startpositie.</strong> Op elke volgende slide zie je links verkleind deze tabel terug — zodat je altijd kunt vergelijken waar we mee begonnen. Rechts zie je de huidige stap.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Reusable mini-chaos table as include via JS template -->
+<!-- ════════════════════════════════
+     SLIDE 3 — 0NF ANALYSE
+════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#d97706;color:#fff">0NF</span>
+    <h2>Nulde Normaalvorm — wat hebben we eigenlijk?</h2>
+    <span class="step-info">🔍 Level 1 — Analyseren</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg done"></div><div class="pb-seg active"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div></div>
+  <div class="slide-body">
+    <!-- REF PANEL -->
+    <div class="ref-panel">
+      <div class="ref-header">📋 <span>Beginsituatie</span></div>
+      <div class="ref-table-wrap">
+        <table class="ref-tbl">
+          <thead><tr><th>gamertag</th><th>team</th><th>game</th><th>arena</th><th>score</th><th>sponsor</th></tr></thead>
+          <tbody>
+            <tr><td>ShadowSlayer</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Blue</td><td>3850</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Firestorm</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Red</td><td>4120</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>IcePhantom</td><td>ShadowTeam</td><td class="ref-dup">LoL</td><td>Yellow</td><td>3670</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Thunderwolf</td><td class="ref-dup">NightRiders</td><td>EA FC</td><td>Green</td><td>2900</td><td>Nike</td></tr>
+            <tr><td>DragonFury</td><td>StormChasers</td><td>EA FC</td><td>Black</td><td>2750</td><td>Nike</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:.6rem;color:#ef4444;font-family:'JetBrains Mono',monospace;padding:4px">🔴 = herhaling</div>
+      </div>
+    </div>
+    <!-- CONTENT -->
+    <div class="content-panel">
+      <div class="nf-label" style="background:#fef9c3;border:1.5px solid #fde68a;color:#854d0e">📋 0NF — Analysestappen</div>
+
+      <div class="step-card">
+        <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">1</div>
+        <div class="step-body-txt">
+          <div class="step-title">Constanten vs. procesdata — wat blijft hetzelfde, wat verandert?</div>
+          <div style="font-size:.78rem;color:#92400e;margin:4px 0 6px;line-height:1.5">📚 <strong>Vakterm:</strong> <em>Constanten</em> = gegevens die altijd hetzelfde blijven. <em>Procesdata</em> = gegevens die per inschrijving verschillen.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+            <div class="box info" style="flex:1;margin:0;font-size:.82rem"><span class="box-icon">📌</span><div><strong>Constanten</strong> (blijven hetzelfde): game, sponsor, prize — voor elke inschrijving bij die game identiek</div></div>
+            <div class="box purple" style="flex:1;margin:0;font-size:.82rem"><span class="box-icon">🔄</span><div><strong>Procesdata</strong> (verschilt per inschrijving): gamertag, team, registrationdate, <strong>arena</strong>, score, equipment</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">2</div>
+        <div class="step-body-txt">
+          <div class="step-title">Alle attributen inventariseren</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px">
+            <code>gamertag</code><code>team</code><code>registrationdate</code>
+            <code>game</code><code>arena</code><code>score</code>
+            <code>sponsor</code><code>equipment</code><code>prize</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">3</div>
+        <div class="step-body-txt">
+          <div class="step-title">Naam van de entiteit</div>
+          <div class="step-desc">Alle data gaat over het inschrijven voor het toernooi → entiteit heet <code>tourneyregistration</code></div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">4</div>
+        <div class="step-body-txt">
+          <div class="step-title">Uniek attribuut — PK-kandidaat</div>
+          <div class="step-desc"><code>gamertag</code> lijkt uniek, maar een gamer kan meerdere keren meedoen. We voegen later een eigen <code>id</code> toe als PK.</div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">5</div>
+        <div class="step-body-txt">
+          <div class="step-title">Repeterende groepen</div>
+          <div class="box danger" style="margin-top:6px;font-size:.82rem">
+            <span class="box-icon">🔴</span>
+            <div><code>team</code> herhaalt — NightRiders staat 4×.<br><code>game</code> herhaalt — League of Legends staat 4×.<br><code>sponsor</code> + <code>prize</code> herhalen ook.<br>→ Dit lossen we op in 1NF!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SLIDE 4 — 1NF STAP 1: PK TOEVOEGEN
+════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#0891b2;color:#fff">1NF</span>
+    <h2>Eerste Normaalvorm — stap 1: PK toevoegen</h2>
+    <span class="step-info">🔑 Level 2 — PK toevoegen</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg active"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div></div>
+  <div class="slide-body">
+    <div class="ref-panel">
+      <div class="ref-header">📋 <span>Beginsituatie</span></div>
+      <div class="ref-table-wrap">
+        <table class="ref-tbl">
+          <thead><tr><th>gamertag</th><th>team</th><th>game</th><th>arena</th><th>score</th><th>sponsor</th></tr></thead>
+          <tbody>
+            <tr><td>ShadowSlayer</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Blue</td><td>3850</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Firestorm</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Red</td><td>4120</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>IcePhantom</td><td>ShadowTeam</td><td class="ref-dup">LoL</td><td>Yellow</td><td>3670</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Thunderwolf</td><td class="ref-dup">NightRiders</td><td>EA FC</td><td>Green</td><td>2900</td><td>Nike</td></tr>
+            <tr><td>DragonFury</td><td>StormChasers</td><td>EA FC</td><td>Black</td><td>2750</td><td>Nike</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:.6rem;color:#ef4444;font-family:'JetBrains Mono',monospace;padding:4px">🔴 = herhaling</div>
+      </div>
+    </div>
+    <div class="content-panel">
+      <div class="nf-label" style="background:#cffafe;border:1.5px solid #a5f3fc;color:#155e75">1️⃣ 1NF — Regels</div>
+
+      <div class="box purple" style="margin-bottom:10px;font-size:.85rem">
+        <span class="box-icon">📖</span>
+        <div>
+          <strong>Twee begrippen die je altijd nodig hebt:</strong><br>
+          🔑 <strong>Primary Key (PK)</strong> — het unieke ID van elke rij. Geen twee rijen mogen dezelfde waarde hebben. Vergelijk het met een BSN-nummer: iedereen heeft er één en geen twee mensen delen hetzelfde.<br>
+          🔷 <strong>Foreign Key (FK)</strong> — een verwijzing naar de PK van een andere tabel. Zo koppel je tabellen aan elkaar. Vergelijk het met een teamrijnummer op een spelerspas: via dat nummer vind je alle info over het team.
+        </div>
+      </div>
+
+      <div class="g2" style="margin-bottom:10px">
+        <div class="box ok"><span class="box-icon">✅</span><div><strong>Elk attribuut = één waarde</strong><br>Geen "Jan, Lisa" in één cel.</div></div>
+        <div class="box ok"><span class="box-icon">✅</span><div><strong>Elke rij heeft een unieke PK</strong><br>We voegen <code>id</code> toe → elke rij identificeerbaar.</div></div>
+      </div>
+
+      <!-- Samengestelde attributen uitleg — inklapbaar -->
+      <div style="margin-bottom:10px">
+        <button id="split-toggle-btn" onclick="toggleSplit()" style="width:100%;text-align:left;padding:10px 14px;background:#fffbeb;border:2px solid #fde68a;border-radius:10px;cursor:pointer;font-size:.85rem;color:#92400e;font-family:inherit">⚠️ <strong>Samengestelde attributen</strong> — klik om uit te klappen ▶</button>
+        <div id="split-toggle-content" style="display:none;background:#fffbeb;border:2px solid #fde68a;border-top:none;border-radius:0 0 10px 10px;padding:10px 14px;font-size:.85rem;color:#92400e">
+          Een attribuut mag maar <em>één</em> ding bevatten. Soms zit er stiekem meer in één cel:
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+            <div style="flex:1;background:#fee2e2;border-radius:8px;padding:8px 10px;font-size:.8rem">
+              <div style="font-weight:700;color:#991b1b;margin-bottom:4px">❌ Fout — 1 cel, 2 waarden</div>
+              <div style="font-family:JetBrains Mono,monospace;font-size:.75rem;color:#7f1d1d">
+                address = <span style="background:#fca5a5;padding:1px 4px;border-radius:3px">Kerkstraat 12, Amsterdam</span><br>
+                <span style="color:#991b1b;font-size:.7rem">→ Straat én stad in 1 cel! ❌</span><br><br>
+                customername = <span style="background:#fca5a5;padding:1px 4px;border-radius:3px">Jan Jansen</span><br>
+                <span style="color:#991b1b;font-size:.7rem">→ Voornaam én achternaam in 1 cel! ❌</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;font-size:1.2rem;color:#94a3b8">→</div>
+            <div style="flex:1;background:#dcfce7;border-radius:8px;padding:8px 10px;font-size:.8rem">
+              <div style="font-weight:700;color:#166534;margin-bottom:4px">✅ Goed — 1 cel, 1 waarde</div>
+              <div style="font-family:JetBrains Mono,monospace;font-size:.75rem;color:#14532d">
+                street = <span style="background:#86efac;padding:1px 4px;border-radius:3px">Kerkstraat 12</span><br>
+                city = <span style="background:#86efac;padding:1px 4px;border-radius:3px">Amsterdam</span><br><br>
+                firstname = <span style="background:#86efac;padding:1px 4px;border-radius:3px">Jan</span><br>
+                lastname = <span style="background:#86efac;padding:1px 4px;border-radius:3px">Jansen</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:8px;font-size:.78rem;color:#92400e">💡 Waarom? Zo kun je later zoeken op alleen de stad, of sorteren op achternaam.</div>
+        </div>
+      </div>
+
+      <div class="tbl-label"><span class="badge b-indigo">tourneyregistration na stap 1</span> — <span style="color:#ef4444">Rood = nog steeds herhalingen!</span></div>
+      <div class="tbl-wrap">
+        <table class="ctbl" style="font-size:.75rem">
+          <thead><tr><th>id 🔑</th><th>gamertag</th><th style="background:#dcfce7;color:#166534;font-weight:700">team 🔴</th><th>regdate</th><th style="background:#fee2e2;color:#991b1b;font-weight:700">game 🔴</th><th>arena</th><th>score</th><th style="background:#fce7f3;color:#9d174d;font-weight:700">sponsor 🔴</th><th style="background:#fef9c3;color:#854d0e;font-weight:700">prize 🔴</th></tr></thead>
+          <tbody>
+            <tr><td class="td-pk">1</td><td>ShadowSlayer</td><td class="td-dup">NightRiders</td><td>14-02-25</td><td class="td-dup">LoL</td><td>Blue</td><td>3850</td><td class="td-dup">RedBull</td><td class="td-dup">€500</td></tr>
+            <tr><td class="td-pk">2</td><td>Firestorm</td><td class="td-dup">NightRiders</td><td>15-02-25</td><td class="td-dup">LoL</td><td>Red</td><td>4120</td><td class="td-dup">RedBull</td><td class="td-dup">€500</td></tr>
+            <tr><td class="td-pk">3</td><td>IcePhantom</td><td>ShadowTeam</td><td>16-02-25</td><td class="td-dup">LoL</td><td>Yellow</td><td>3670</td><td class="td-dup">RedBull</td><td class="td-dup">€500</td></tr>
+            <tr><td class="td-pk">4</td><td>Thunderwolf</td><td class="td-dup">NightRiders</td><td>16-02-25</td><td>EA FC</td><td>Green</td><td>2900</td><td>Nike</td><td>€250</td></tr>
+            <tr><td class="td-pk">5</td><td>DragonFury</td><td>StormChasers</td><td>17-02-25</td><td>EA FC</td><td>Black</td><td>2750</td><td>Nike</td><td>€250</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:.68rem;color:#94a3b8;margin-top:2px;font-family:'JetBrains Mono',monospace">equipment weggelaten om ruimte te besparen — staat wel in de echte tabel</div>
+
+      <div class="box warn" style="margin-top:8px">
+        <span class="box-icon">⚠️</span>
+        <div><strong>id toegevoegd ✅ — maar herhalingen zijn er nog!</strong> "NightRiders", "LoL", "RedBull", "€500" staan nog steeds meerdere keren. Volgende stap: team afsplitsen.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SLIDE 5 — 1NF STAP 2: TEAM
+════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#0891b2;color:#fff">1NF</span>
+    <h2>Eerste Normaalvorm — stap 2: team afsplitsen</h2>
+    <span class="step-info">✂️ Level 3 — Team afsplitsen</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg active"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div></div>
+  <div class="slide-body">
+    <div class="ref-panel">
+      <div class="ref-header">📋 <span>Beginsituatie</span></div>
+      <div class="ref-table-wrap">
+        <table class="ref-tbl">
+          <thead><tr><th>gamertag</th><th>team</th><th>game</th><th>arena</th><th>score</th><th>sponsor</th></tr></thead>
+          <tbody>
+            <tr><td>ShadowSlayer</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Blue</td><td>3850</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Firestorm</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Red</td><td>4120</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>IcePhantom</td><td>ShadowTeam</td><td class="ref-dup">LoL</td><td>Yellow</td><td>3670</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Thunderwolf</td><td class="ref-dup">NightRiders</td><td>EA FC</td><td>Green</td><td>2900</td><td>Nike</td></tr>
+            <tr><td>DragonFury</td><td>StormChasers</td><td>EA FC</td><td>Black</td><td>2750</td><td>Nike</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:.6rem;color:#ef4444;font-family:'JetBrains Mono',monospace;padding:4px">🔴 = herhaling</div>
+      </div>
+    </div>
+    <div class="content-panel">
+      <div class="nf-label" style="background:#cffafe;border:1.5px solid #a5f3fc;color:#155e75">1️⃣ 1NF — Repeterende groep 1 wegwerken</div>
+
+      <div class="box danger" style="margin-bottom:10px">
+        <span class="box-icon">🔴</span>
+        <div><strong>"NightRiders" staat 4×!</strong> Als de naam verandert → 4 rijen aanpassen. Kans op fouten. <strong>Oplossing:</strong> aparte <code>team</code>-tabel. In de hoofdtabel → <code>team_id</code> als FK (verwijzing).</div>
+      </div>
+
+      <div class="ba-wrap">
+        <div style="flex:1.6;min-width:0">
+          <div class="tbl-label"><span class="badge b-indigo">tourneyregistration</span> — team vervangen door team_id</div>
+          <div class="tbl-wrap">
+            <table class="ctbl" style="font-size:.75rem">
+              <thead><tr><th>id</th><th>gamertag</th><th style="background:#dcfce7;color:#166534;font-weight:700">team_id 🔷</th><th>registrationdate</th><th>game</th><th>arena</th><th>score</th><th>sponsor</th></tr></thead>
+              <tbody>
+                <tr><td class="td-pk">1</td><td>ShadowSlayer</td><td class="td-fk">1</td><td>14-02-2025</td><td class="td-dup">LoL</td><td>Blue</td><td>3850</td><td class="td-dup">RedBull</td></tr>
+                <tr><td class="td-pk">2</td><td>Firestorm</td><td class="td-fk">1</td><td>15-02-2025</td><td class="td-dup">LoL</td><td>Red</td><td>4120</td><td class="td-dup">RedBull</td></tr>
+                <tr><td class="td-pk">3</td><td>IcePhantom</td><td class="td-fk">2</td><td>16-02-2025</td><td class="td-dup">LoL</td><td>Yellow</td><td>3670</td><td class="td-dup">RedBull</td></tr>
+                <tr><td class="td-pk">4</td><td>Thunderwolf</td><td class="td-fk">1</td><td>16-02-2025</td><td>EA FC</td><td>Green</td><td>2900</td><td>Nike</td></tr>
+                <tr><td class="td-pk">5</td><td>DragonFury</td><td class="td-fk">3</td><td>17-02-2025</td><td>EA FC</td><td>Black</td><td>2750</td><td>Nike</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="ba-arrow">→</div>
+        <div style="flex:1;min-width:0">
+          <div class="tbl-label"><span class="badge b-green">team — nieuw! ✨</span></div>
+          <div class="tbl-wrap">
+            <table class="ctbl">
+              <thead><tr><th>id (PK) 🔑</th><th>name</th></tr></thead>
+              <tbody>
+                <tr><td class="td-pk">1</td><td class="td-new">NightRiders</td></tr>
+                <tr><td class="td-pk">2</td><td class="td-new">ShadowTeam</td></tr>
+                <tr><td class="td-pk">3</td><td class="td-new">StormChasers</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="box ok" style="margin-top:8px;font-size:.82rem">
+            <span class="box-icon">✅</span>
+            <div>"NightRiders" staat nu <strong>1×</strong>. Aanpassen = 1 rij!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box warn">
+        <span class="box-icon">⚠️</span>
+        <div><strong>Nog steeds herhalingen!</strong> "League of Legends", "RedBull", "€500" herhalen nog. Volgende stap: game + arena + sponsor afsplitsen.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SLIDE 6 — 1NF STAP 3: GAME + ARENA + SPONSOR
+════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#0891b2;color:#fff">1NF</span>
+    <h2>Eerste Normaalvorm — stap 3: game, arena &amp; sponsor</h2>
+    <span class="step-info">✂️ Level 4 — Game & Arena</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg active"></div><div class="pb-seg"></div><div class="pb-seg"></div><div class="pb-seg"></div></div>
+  <div class="slide-body">
+    <div class="ref-panel">
+      <div class="ref-header">📋 <span>Beginsituatie</span></div>
+      <div class="ref-table-wrap">
+        <table class="ref-tbl">
+          <thead><tr><th>gamertag</th><th>team</th><th>game</th><th>arena</th><th>score</th><th>sponsor</th></tr></thead>
+          <tbody>
+            <tr><td>ShadowSlayer</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Blue</td><td>3850</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Firestorm</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Red</td><td>4120</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>IcePhantom</td><td>ShadowTeam</td><td class="ref-dup">LoL</td><td>Yellow</td><td>3670</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Thunderwolf</td><td class="ref-dup">NightRiders</td><td>EA FC</td><td>Green</td><td>2900</td><td>Nike</td></tr>
+            <tr><td>DragonFury</td><td>StormChasers</td><td>EA FC</td><td>Black</td><td>2750</td><td>Nike</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:.6rem;color:#ef4444;font-family:'JetBrains Mono',monospace;padding:4px">🔴 = herhaling</div>
+      </div>
+    </div>
+    <div class="content-panel">
+      <div class="nf-label" style="background:#cffafe;border:1.5px solid #a5f3fc;color:#155e75">1️⃣ 1NF — Repeterende groep 2 wegwerken</div>
+
+      <div class="box danger" style="margin-bottom:10px">
+        <span class="box-icon">🔴</span>
+        <div>"League of Legends" staat 4× + "RedBull" staat 4× + "€500" staat 4×. Game, arena, sponsor en prize horen samen → aparte tabel <code>gamearena</code>. Hoofdtabel krijgt <code>gamearena_id</code> als FK.</div>
+      </div>
+
+      <div class="row" style="gap:12px;align-items:flex-start">
+        <div style="flex:1.4;min-width:0">
+          <div class="tbl-label"><span class="badge b-indigo">tourneyregistration (1NF ✅)</span></div>
+          <div class="tbl-wrap">
+            <table class="ctbl" style="font-size:.75rem">
+              <thead><tr><th>id</th><th>gamertag</th><th style="background:#dcfce7;color:#166534;font-weight:700">team_id 🔷</th><th>registrationdate</th><th style="background:#ffedd5;color:#9a3412;font-weight:700">gamearena_id 🔷</th><th>score</th><th>equipment</th></tr></thead>
+              <tbody>
+                <tr><td class="td-pk">1</td><td>ShadowSlayer</td><td class="td-fk">1</td><td>14-02-2025</td><td class="td-fk">1</td><td>3850</td><td>Razer KB</td></tr>
+                <tr><td class="td-pk">2</td><td>Firestorm</td><td class="td-fk">1</td><td>15-02-2025</td><td class="td-fk">2</td><td>4120</td><td>Logi M</td></tr>
+                <tr><td class="td-pk">3</td><td>IcePhantom</td><td class="td-fk">2</td><td>16-02-2025</td><td class="td-fk">3</td><td>3670</td><td>HyperX</td></tr>
+                <tr><td class="td-pk">4</td><td>Thunderwolf</td><td class="td-fk">1</td><td>16-02-2025</td><td class="td-fk">4</td><td>2900</td><td>Steel M</td></tr>
+                <tr><td class="td-pk">5</td><td>DragonFury</td><td class="td-fk">3</td><td>17-02-2025</td><td class="td-fk">6</td><td>2750</td><td>Logi M</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="tbl-label"><span class="badge b-orange">gamearena — nieuw! ✨</span></div>
+          <div class="tbl-wrap">
+            <table class="ctbl" style="font-size:.75rem">
+              <thead><tr><th>id</th><th>game</th><th>arena</th><th>sponsor</th><th>prize</th></tr></thead>
+              <tbody>
+                <tr><td class="td-pk">1</td><td class="td-new">LoL</td><td>Blue</td><td class="td-new">RedBull</td><td>€500</td></tr>
+                <tr><td class="td-pk">2</td><td class="td-new">LoL</td><td>Red</td><td class="td-new">RedBull</td><td>€500</td></tr>
+                <tr><td class="td-pk">3</td><td class="td-new">LoL</td><td>Yellow</td><td class="td-new">RedBull</td><td>€500</td></tr>
+                <tr><td class="td-pk">4</td><td class="td-new">EA FC</td><td>Green</td><td class="td-new">Nike</td><td>€250</td></tr>
+                <tr><td class="td-pk">5</td><td class="td-new">EA FC</td><td>White</td><td class="td-new">Nike</td><td>€250</td></tr>
+                <tr><td class="td-pk">6</td><td class="td-new">EA FC</td><td>Black</td><td class="td-new">Nike</td><td>€250</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="box ok" style="margin-top:8px;font-size:.82rem"><span class="box-icon">✅</span><div><strong>1NF bereikt!</strong> Geen grote herhalingen meer in de hoofdtabel. Gamertag verplaatsen we in de volgende stap (2NF).</div></div>
+          <div class="box warn" style="font-size:.82rem"><span class="box-icon">⚠️</span><div><strong>Nog niet helemaal klaar!</strong> "LoL" staat nog 3× in <code>gamearena</code>. En <code>sponsor</code>/<code>prize</code> hangen af van <code>game</code> — niet van de combinatie game+arena. We parkeren dit bewust en lossen het op in 3NF. Databases bouw je stap voor stap!</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SLIDE 7 — 2NF
+════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#15803d;color:#fff">2NF</span>
+    <h2>Tweede Normaalvorm — hoort alles bij de PK?</h2>
+    <span class="step-info">🎮 Level 5 — Juiste tabel</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg active"></div><div class="pb-seg"></div><div class="pb-seg"></div></div>
+  <div class="slide-body">
+    <div class="ref-panel">
+      <div class="ref-header">📋 <span>Beginsituatie</span></div>
+      <div class="ref-table-wrap">
+        <table class="ref-tbl">
+          <thead><tr><th>gamertag</th><th>team</th><th>game</th><th>arena</th><th>score</th><th>sponsor</th></tr></thead>
+          <tbody>
+            <tr><td>ShadowSlayer</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Blue</td><td>3850</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Firestorm</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Red</td><td>4120</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>IcePhantom</td><td>ShadowTeam</td><td class="ref-dup">LoL</td><td>Yellow</td><td>3670</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Thunderwolf</td><td class="ref-dup">NightRiders</td><td>EA FC</td><td>Green</td><td>2900</td><td>Nike</td></tr>
+            <tr><td>DragonFury</td><td>StormChasers</td><td>EA FC</td><td>Black</td><td>2750</td><td>Nike</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:.6rem;color:#ef4444;font-family:'JetBrains Mono',monospace;padding:4px">🔴 = herhaling</div>
+      </div>
+    </div>
+    <div class="content-panel">
+      <div class="nf-label" style="background:#dcfce7;border:1.5px solid #86efac;color:#166534">2️⃣ 2NF — Hoort elk attribuut bij de inschrijving?</div>
+
+      <div class="box info" style="margin-bottom:8px">
+        <span class="box-icon">📖</span>
+        <div><strong>Wat zegt 2NF?</strong> Elk attribuut moet écht bij de tabel horen waar het in staat. Stel jezelf de vraag: <em>"Beschrijft dit attribuut dit ding — of eigenlijk iets anders?"</em> Als het iets anders beschrijft, hoort het in een eigen tabel.</div>
+      </div>
+
+      <div class="box warn" style="margin-bottom:10px">
+        <span class="box-icon">🔍</span>
+        <div><strong>Hoort <code>gamertag</code> écht bij een inschrijving?</strong><br>
+        Nee! Een gamer bestaat ook <em>zonder</em> inschrijving — en kan meerdere keren meedoen. <code>gamertag</code> en <code>team_id</code> beschrijven de <em>gamer</em>, niet de inschrijving. Elke zelfstandige entiteit krijgt zijn eigen tabel → aparte <code>gamer</code>-tabel.</div>
+      </div>
+
+      <div class="ba-wrap">
+        <div style="flex:1.4;min-width:0">
+          <div class="tbl-label"><span class="badge b-indigo">tourneyregistration (2NF ✅)</span></div>
+          <div class="tbl-wrap">
+            <table class="ctbl" style="font-size:.75rem">
+              <thead><tr><th>id</th><th style="background:#cffafe;color:#155e75;font-weight:700">gamer_id 🔷</th><th>registrationdate</th><th style="background:#ffedd5;color:#9a3412;font-weight:700">gamearena_id 🔷</th><th>score</th><th>equipment</th></tr></thead>
+              <tbody>
+                <tr><td class="td-pk">1</td><td class="td-fk">1</td><td>14-02-2025</td><td class="td-fk">1</td><td>3850</td><td>Razer KB</td></tr>
+                <tr><td class="td-pk">2</td><td class="td-fk">2</td><td>15-02-2025</td><td class="td-fk">2</td><td>4120</td><td>Logi M</td></tr>
+                <tr><td class="td-pk">3</td><td class="td-fk">3</td><td>16-02-2025</td><td class="td-fk">3</td><td>3670</td><td>HyperX</td></tr>
+                <tr><td class="td-pk">4</td><td class="td-fk">4</td><td>16-02-2025</td><td class="td-fk">4</td><td>2900</td><td>Steel M</td></tr>
+                <tr><td class="td-pk">5</td><td class="td-fk">5</td><td>17-02-2025</td><td class="td-fk">6</td><td>2750</td><td>Logi M</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="ba-arrow">→</div>
+        <div style="flex:1;min-width:0">
+          <div class="tbl-label"><span class="badge b-cyan">gamer — nieuw! ✨</span></div>
+          <div class="tbl-wrap">
+            <table class="ctbl" style="font-size:.75rem">
+              <thead><tr><th>id 🔑</th><th>gamertag</th><th style="background:#dcfce7;color:#166534;font-weight:700">team_id 🔷</th></tr></thead>
+              <tbody>
+                <tr><td class="td-pk">1</td><td class="td-new">ShadowSlayer</td><td class="td-fk">1</td></tr>
+                <tr><td class="td-pk">2</td><td class="td-new">Firestorm</td><td class="td-fk">1</td></tr>
+                <tr><td class="td-pk">3</td><td class="td-new">IcePhantom</td><td class="td-fk">2</td></tr>
+                <tr><td class="td-pk">4</td><td class="td-new">Thunderwolf</td><td class="td-fk">1</td></tr>
+                <tr><td class="td-pk">5</td><td class="td-new">DragonFury</td><td class="td-fk">3</td></tr>
+                <tr><td class="td-pk">6</td><td class="td-new">CyberNinja</td><td class="td-fk">3</td></tr>
+                <tr><td class="td-pk">7</td><td class="td-new">Warlock</td><td class="td-fk">1</td></tr>
+                <tr><td class="td-pk">8</td><td class="td-new">BlazeMaster</td><td class="td-fk">2</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="box ok" style="margin-top:6px">
+        <span class="box-icon">✅</span>
+        <div><strong>2NF bereikt!</strong> <code>tourneyregistration</code> bevat alleen gegevens die echt bij een inschrijving horen. Gamergegevens staan in <code>gamer</code>.<br>
+        <small style="color:#166534">💡 <code>equipment</code> blijft in <code>tourneyregistration</code> — een gamer brengt per inschrijving ander materiaal mee. Het hoort dus bij de inschrijving, niet bij de gamer zelf.</small></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SLIDE 8 — 3NF
+════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#1d4ed8;color:#fff">3NF</span>
+    <h2>Derde Normaalvorm — geen indirecte afhankelijkheden</h2>
+    <span class="step-info">⛓️ Level 6 — Ketens verbreken</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg active"></div><div class="pb-seg"></div></div>
+  <div class="slide-body">
+    <div class="ref-panel">
+      <div class="ref-header">📋 <span>Beginsituatie</span></div>
+      <div class="ref-table-wrap">
+        <table class="ref-tbl">
+          <thead><tr><th>gamertag</th><th>team</th><th>game</th><th>arena</th><th>score</th><th>sponsor</th></tr></thead>
+          <tbody>
+            <tr><td>ShadowSlayer</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Blue</td><td>3850</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Firestorm</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Red</td><td>4120</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>IcePhantom</td><td>ShadowTeam</td><td class="ref-dup">LoL</td><td>Yellow</td><td>3670</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Thunderwolf</td><td class="ref-dup">NightRiders</td><td>EA FC</td><td>Green</td><td>2900</td><td>Nike</td></tr>
+            <tr><td>DragonFury</td><td>StormChasers</td><td>EA FC</td><td>Black</td><td>2750</td><td>Nike</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:.6rem;color:#ef4444;font-family:'JetBrains Mono',monospace;padding:4px">🔴 = herhaling</div>
+      </div>
+    </div>
+    <div class="content-panel">
+      <div class="nf-label" style="background:#dbeafe;border:1.5px solid #bfdbfe;color:#1e40af">3️⃣ 3NF — Geen A → B → C ketens</div>
+
+      <div class="box info" style="margin-bottom:8px">
+        <span class="box-icon">💡</span>
+        <div><strong>Stel je voor:</strong> op een kassabon staat de naam van de leverancier van een product. Maar die leveranciersinfo hoort niet op elke bon — die hoort op een aparte leverancierskaart. Zo werkt 3NF ook: als attribuut A → B → C, dan hoort C in een eigen tabel.<br>
+        <strong>Onze situatie:</strong> inschrijving → game → sponsor. Sponsor hangt af van game, niet van de inschrijving. Dus <code>sponsor</code> hoort niet in de <code>gamearena</code>-tabel!</div>
+      </div>
+
+      <div class="box danger" style="margin-bottom:8px">
+        <span class="box-icon">🔴</span>
+        <div>
+          <strong>Twee ketens in de <code>gamearena</code>-tabel:</strong><br>
+          <strong>1.</strong> <code>id</code> → <code>game</code> → <code>sponsor</code> + <code>prize</code> — sponsor en prize hangen af van game, niet van game+arena. Dat is een keten!<br>
+          <strong>2.</strong> <code>sponsor</code> is zelf een entiteit — RedBull en Nike hebben eigen gegevens (website, contactpersoon). Ook een indirecte afhankelijkheid.
+        </div>
+      </div>
+
+      <div class="box ok" style="margin-bottom:10px">
+        <span class="box-icon">✅</span>
+        <div><strong>Oplossing — twee stappen:</strong><br>
+        Stap 1: Splits <code>gamearena</code> → <code>game</code> + <code>arena</code><br>
+        Stap 2: Splits <code>sponsor</code> uit <code>game</code> → aparte <code>sponsor</code>-tabel, <code>game</code> krijgt <code>sponsor_id</code> als FK</div>
+      </div>
+
+      <div class="row" style="gap:10px;align-items:flex-start">
+        <div style="flex:1;min-width:0">
+          <div class="tbl-label"><span class="badge b-orange">gamearena (vóór)</span></div>
+          <div class="tbl-wrap">
+            <table class="ctbl" style="font-size:.72rem">
+              <thead><tr><th>id</th><th>game</th><th>arena</th><th style="color:#b91c1c">sponsor ⚠️</th><th style="color:#b91c1c">prize ⚠️</th></tr></thead>
+              <tbody>
+                <tr><td class="td-pk">1</td><td class="td-dup">LoL</td><td>Blue</td><td class="td-dup">RedBull</td><td class="td-dup">€500</td></tr>
+                <tr><td class="td-pk">2</td><td class="td-dup">LoL</td><td>Red</td><td class="td-dup">RedBull</td><td class="td-dup">€500</td></tr>
+                <tr><td class="td-pk">3</td><td class="td-dup">LoL</td><td>Yellow</td><td class="td-dup">RedBull</td><td class="td-dup">€500</td></tr>
+                <tr><td class="td-pk">4</td><td class="td-dup">EA FC</td><td>Green</td><td class="td-dup">Nike</td><td class="td-dup">€250</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="ba-arrow">→</div>
+        <div style="flex:1.4;min-width:0;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div style="flex:1">
+              <div class="tbl-label"><span class="badge b-red">game ✨</span></div>
+              <div class="tbl-wrap">
+                <table class="ctbl" style="font-size:.72rem">
+                  <thead><tr><th>id 🔑</th><th>name</th><th style="background:#fce7f3;color:#9d174d;font-weight:700">sponsor_id 🔷</th><th>prize</th></tr></thead>
+                  <tbody>
+                    <tr><td class="td-pk">1</td><td class="td-new">League of Legends</td><td class="td-fk">1</td><td>€500</td></tr>
+                    <tr><td class="td-pk">2</td><td class="td-new">EA Sports FC</td><td class="td-fk">2</td><td>€250</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div style="flex:1">
+              <div class="tbl-label"><span class="badge b-pink">sponsor ✨ nieuw!</span></div>
+              <div class="tbl-wrap">
+                <table class="ctbl" style="font-size:.72rem">
+                  <thead><tr><th>id 🔑</th><th>name</th></tr></thead>
+                  <tbody>
+                    <tr><td class="td-pk">1</td><td class="td-new">RedBull</td></tr>
+                    <tr><td class="td-pk">2</td><td class="td-new">Nike</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="tbl-label"><span class="badge b-amber2">arena ✨</span></div>
+            <div class="tbl-wrap">
+              <table class="ctbl" style="font-size:.72rem">
+                <thead><tr><th>id 🔑</th><th>name</th><th style="background:#fee2e2;color:#991b1b;font-weight:700">game_id 🔷</th></tr></thead>
+                <tbody>
+                  <tr><td class="td-pk">1</td><td>Blue</td><td class="td-fk">1</td></tr>
+                  <tr><td class="td-pk">2</td><td>Red</td><td class="td-fk">1</td></tr>
+                  <tr><td class="td-pk">3</td><td>Yellow</td><td class="td-fk">1</td></tr>
+                  <tr><td class="td-pk">4</td><td>Green</td><td class="td-fk">2</td></tr>
+                  <tr><td class="td-pk">5</td><td>White</td><td class="td-fk">2</td></tr>
+                  <tr><td class="td-pk">6</td><td>Black</td><td class="td-fk">2</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box ok" style="margin-top:8px">
+        <span class="box-icon">✅</span>
+        <div><strong>3NF bereikt!</strong> "RedBull" staat nu <strong>1×</strong> in de sponsor-tabel. Geen indirecte afhankelijkheden meer.<br>
+        <div style="margin-top:8px;background:rgba(255,255,255,.15);border-radius:6px;padding:8px 10px;font-size:.8rem;line-height:1.6">
+          🔗 <strong>Zo lees je de database:</strong><br>
+          inschrijving → <code>arena_id</code> → arena → <code>game_id</code> → game → <code>sponsor_id</code> → sponsor<br>
+          <span style="color:#bbf7d0;font-size:.75rem">Via één inschrijving vind je zo de arena, het game én de sponsor.</span>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SLIDE 9 — EINDRESULTAAT
+════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#7c3aed;color:#fff">🏁 Klaar!</span>
+    <h2>Eindresultaat — van 1 tabel naar 6 nette tabellen</h2>
+    <span class="step-info">🏆 Level 7 — Database voltooid</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg active"></div></div>
+  <div class="slide-body">
+    <div class="ref-panel">
+      <div class="ref-header">📋 <span>Beginsituatie</span></div>
+      <div class="ref-table-wrap">
+        <table class="ref-tbl">
+          <thead><tr><th>gamertag</th><th>team</th><th>game</th><th>arena</th><th>score</th><th>sponsor</th></tr></thead>
+          <tbody>
+            <tr><td>ShadowSlayer</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Blue</td><td>3850</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Firestorm</td><td class="ref-dup">NightRiders</td><td class="ref-dup">LoL</td><td>Red</td><td>4120</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>IcePhantom</td><td>ShadowTeam</td><td class="ref-dup">LoL</td><td>Yellow</td><td>3670</td><td class="ref-dup">RedBull</td></tr>
+            <tr><td>Thunderwolf</td><td class="ref-dup">NightRiders</td><td>EA FC</td><td>Green</td><td>2900</td><td>Nike</td></tr>
+            <tr><td>DragonFury</td><td>StormChasers</td><td>EA FC</td><td>Black</td><td>2750</td><td>Nike</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:.6rem;color:#ef4444;font-family:'JetBrains Mono',monospace;padding:4px">🔴 = herhaling</div>
+      </div>
+    </div>
+    <div class="content-panel">
+      <div class="box ok" style="margin-bottom:14px">
+        <span class="box-icon">🎉</span>
+        <div><strong>3NF bereikt!</strong> Geen herhalingen meer. Elke naam — team, game, sponsor — staat maar <strong>1×</strong> in de database. Aanpassen = altijd op 1 plek.</div>
+      </div>
+
+      <!-- ERD legenda -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;padding:8px 12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;font-size:.72rem;font-family:'JetBrains Mono',monospace">
+        <span style="color:#475569">🔑 = primaire sleutel (PK)</span>
+        <span style="color:#475569">🔷 = verwijzing naar andere tabel (FK)</span>
+        <span style="color:#475569">▪ = verplicht veld &nbsp; ○ = optioneel veld</span>
+        <span style="background:#dcfce7;color:#166634;padding:2px 7px;border-radius:4px;font-weight:700">team_id</span> <span style="background:#cffafe;color:#155e75;padding:2px 7px;border-radius:4px;font-weight:700">gamer_id</span> <span style="background:#fee2e2;color:#991b1b;padding:2px 7px;border-radius:4px;font-weight:700">game_id</span> <span style="background:#fef9c3;color:#854d0e;padding:2px 7px;border-radius:4px;font-weight:700">arena_id</span> <span style="background:#fce7f3;color:#9d174d;padding:2px 7px;border-radius:4px;font-weight:700">sponsor_id</span> <span style="color:#64748b;font-size:.68rem">← zelfde kleur = zelfde tabel</span>
+      </div>
+      <!-- ERD tabellen overzicht -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+
+        <div class="erd-box" style="border-color:#6366f1">
+          <div class="erd-head" style="background:#eef2ff;color:#4338ca">tourneyregistration</div>
+          <div class="erd-r">🔑 <span style="flex:1">id</span></div>
+          <div class="erd-r" style="background:#cffafe;color:#155e75;;border-radius:4px;margin:1px 4px">🔷 <span style="flex:1;font-weight:700">gamer_id</span></div>
+          <div class="erd-r" style="background:#fef9c3;color:#854d0e;;border-radius:4px;margin:1px 4px">🔷 <span style="flex:1;font-weight:700">arena_id</span></div>
+          <div class="erd-r">▪ <span style="flex:1">registrationdate</span></div>
+          <div class="erd-r">▪ <span style="flex:1">score</span></div>
+          <div class="erd-r" style="opacity:.75">○ <span style="flex:1">equipment</span></div>
+        </div>
+
+        <div class="erd-box" style="border-color:#06b6d4">
+          <div class="erd-head" style="background:#cffafe;color:#155e75">gamer</div>
+          <div class="erd-r">🔑 <span style="flex:1">id</span></div>
+          <div class="erd-r" style="background:#dcfce7;color:#166534;;border-radius:4px;margin:1px 4px">🔷 <span style="flex:1;font-weight:700">team_id</span></div>
+          <div class="erd-r">🎮 <span style="flex:1">gamertag</span></div>
+        </div>
+
+        <div class="erd-box" style="border-color:#22c55e">
+          <div class="erd-head" style="background:#dcfce7;color:#166534">team</div>
+          <div class="erd-r">🔑 <span style="flex:1">id</span></div>
+          <div class="erd-r">▪ <span style="flex:1">name</span></div>
+        </div>
+
+        <div class="erd-box" style="border-color:#f59e0b">
+          <div class="erd-head" style="background:#fef9c3;color:#854d0e">arena</div>
+          <div class="erd-r">🔑 <span style="flex:1">id</span></div>
+          <div class="erd-r" style="background:#fee2e2;color:#991b1b;;border-radius:4px;margin:1px 4px">🔷 <span style="flex:1;font-weight:700">game_id</span></div>
+          <div class="erd-r">▪ <span style="flex:1">name</span></div>
+        </div>
+
+        <div class="erd-box" style="border-color:#ef4444">
+          <div class="erd-head" style="background:#fee2e2;color:#991b1b">game</div>
+          <div class="erd-r">🔑 <span style="flex:1">id</span></div>
+          <div class="erd-r">▪ <span style="flex:1">name</span></div>
+          <div class="erd-r" style="background:#fce7f3;color:#9d174d;;border-radius:4px;margin:1px 4px">🔷 <span style="flex:1;font-weight:700">sponsor_id</span></div>
+          <div class="erd-r">▪ <span style="flex:1">prize</span></div>
+        </div>
+
+        <div class="erd-box" style="border-color:#ec4899">
+          <div class="erd-head" style="background:#fce7f3;color:#9d174d">sponsor ✨</div>
+          <div class="erd-r">🔑 <span style="flex:1">id</span></div>
+          <div class="erd-r">▪ <span style="flex:1">name</span></div>
+          <div class="erd-r" style="opacity:.75">○ <span style="flex:1">website</span></div>
+        </div>
+
+      </div>
+
+      <!-- Samenvatting -->
+      <div class="g3">
+        <div class="box ok" style="font-size:.82rem">
+          <span class="box-icon">1️⃣</span>
+          <div><strong>1NF:</strong> PK toegevoegd, team, game en arena afgesplitst in eigen tabellen</div>
+        </div>
+        <div class="box ok" style="font-size:.82rem">
+          <span class="box-icon">2️⃣</span>
+          <div><strong>2NF:</strong> gamertag + team_id → aparte gamer-tabel</div>
+        </div>
+        <div class="box ok" style="font-size:.82rem">
+          <span class="box-icon">3️⃣</span>
+          <div><strong>3NF:</strong> gamearena → game + arena + sponsor (twee indirecte afhankelijkheden opgelost)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SLIDE 10 — SAMENVATTING NORMALISATIESTAPPEN
+══════════════════════════════ -->
+<div class="slide" id="s10">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#0f172a;color:#f8fafc">📊 Overzicht</span>
+    <h2>Samenvatting — de normalisatiestappen</h2>
+    <span class="step-info">📊 Overzicht</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg active"></div></div>
+
+  <div class="slide-body" style="flex-direction:column;overflow-y:auto;padding:18px 24px 80px;gap:12px;background:#f8fafc">
+
+    <!-- Tijdlijn / stappenrij -->
+    <div style="display:flex;align-items:stretch;gap:0;margin-bottom:4px">
+
+      <!-- 0NF -->
+      <div style="flex:1;background:#fef2f2;border:2px solid #fca5a5;border-radius:10px 0 0 10px;padding:10px 12px">
+        <div style="font-size:.65rem;font-weight:800;color:#991b1b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">0NF — Analyseren</div>
+        <div style="font-size:.78rem;color:#1e293b;line-height:1.45">
+          <div style="margin-bottom:4px">📋 <strong>Wat doen we?</strong></div>
+          <ul style="margin:0;padding-left:14px;font-size:.74rem;color:#475569">
+            <li>Entiteiten benoemen</li>
+            <li>Attributen inventariseren</li>
+            <li>Herhalingen markeren</li>
+            <li>PK-kandidaat aanwijzen</li>
+          </ul>
+        </div>
+        <div style="margin-top:8px;background:#fee2e2;border-radius:5px;padding:5px 8px;font-size:.7rem;color:#991b1b">
+          ❌ Alles in 1 tabel<br>gamertag, team, game, arena, sponsor door elkaar
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;padding:0 4px;color:#94a3b8;font-size:1.1rem">→</div>
+
+      <!-- 1NF -->
+      <div style="flex:1;background:#fffbeb;border:2px solid #fcd34d;padding:10px 12px">
+        <div style="font-size:.65rem;font-weight:800;color:#854d0e;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">1NF — Opsplitsen</div>
+        <div style="font-size:.78rem;color:#1e293b;line-height:1.45">
+          <div style="margin-bottom:4px">🔑 <strong>Wat doen we?</strong></div>
+          <ul style="margin:0;padding-left:14px;font-size:.74rem;color:#475569">
+            <li>PK toevoegen (<code>id</code>)</li>
+            <li>Samengestelde waarden splitsen (<code>address</code>, <code>name</code>)</li>
+            <li>Herhalende groepen afsplitsen: team, game, arena</li>
+          </ul>
+        </div>
+        <div style="margin-top:8px;background:#fef9c3;border-radius:5px;padding:5px 8px;font-size:.7rem;color:#854d0e">
+          ✅ Tabellen: <strong>tourneyregistration · team · game · arena</strong>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;padding:0 4px;color:#94a3b8;font-size:1.1rem">→</div>
+
+      <!-- 2NF -->
+      <div style="flex:1;background:#f0fdf4;border:2px solid #86efac;padding:10px 12px">
+        <div style="font-size:.65rem;font-weight:800;color:#166534;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">2NF — Juiste tabel</div>
+        <div style="font-size:.78rem;color:#1e293b;line-height:1.45">
+          <div style="margin-bottom:4px">🔗 <strong>Wat doen we?</strong></div>
+          <ul style="margin:0;padding-left:14px;font-size:.74rem;color:#475569">
+            <li>Elk attribuut hoort bij de <em>hele</em> PK</li>
+            <li>Zelfstandige entiteiten krijgen eigen tabel</li>
+            <li>Gamer-tabel afsplitsen (gamertag + team_id)</li>
+          </ul>
+        </div>
+        <div style="margin-top:8px;background:#dcfce7;border-radius:5px;padding:5px 8px;font-size:.7rem;color:#166534">
+          ✅ Nieuw: <strong>gamer</strong> (gamertag, team_id)
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;padding:0 4px;color:#94a3b8;font-size:1.1rem">→</div>
+
+      <!-- 3NF -->
+      <div style="flex:1;background:#eff6ff;border:2px solid #93c5fd;border-radius:0 10px 10px 0;padding:10px 12px">
+        <div style="font-size:.65rem;font-weight:800;color:#1d4ed8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">3NF — Geen ketens</div>
+        <div style="font-size:.78rem;color:#1e293b;line-height:1.45">
+          <div style="margin-bottom:4px">⛓️ <strong>Wat doen we?</strong></div>
+          <ul style="margin:0;padding-left:14px;font-size:.74rem;color:#475569">
+            <li>Indirecte afhankelijkheden verwijderen</li>
+            <li>game → sponsor/prize is een keten</li>
+            <li>sponsor afsplitsen uit game → eigen tabel</li>
+          </ul>
+        </div>
+        <div style="margin-top:8px;background:#dbeafe;border-radius:5px;padding:5px 8px;font-size:.7rem;color:#1d4ed8">
+          ✅ Nieuw: <strong>game · arena · sponsor</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Flip kaartjes -->
+    <div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:14px 16px">
+      <div style="font-size:.72rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">🃏 Klik op een tabel — zie de attributen</div>
+      <div style="font-size:.68rem;color:#94a3b8;margin-bottom:12px">Klik nogmaals om te sluiten</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+
+        <!-- tourneyregistration -->
+        <div class="flip-card" onclick="this.classList.toggle('flipped')" style="cursor:pointer;flex:1;min-width:130px">
+          <div class="flip-inner">
+            <div class="flip-front" style="background:#eef2ff;border:2px solid #6366f1;border-radius:10px;padding:14px 10px;text-align:center">
+              <div style="font-size:1.4rem;margin-bottom:6px">📋</div>
+              <div style="font-size:.78rem;font-weight:700;color:#4338ca">tourneyregistration</div>
+              <div style="font-size:.62rem;color:#6366f1;margin-top:4px">klik om te openen</div>
+            </div>
+            <div class="flip-back" style="background:#4338ca;border:2px solid #6366f1;border-radius:10px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#fff;line-height:1.8">
+              <div style="font-weight:700;margin-bottom:4px;font-size:.72rem">tourneyregistration</div>
+              🔑 id<br>
+              <span style="background:#cffafe;color:#155e75;border-radius:3px;padding:0 3px">🔷 gamer_id</span><br>
+              <span style="background:#fef9c3;color:#854d0e;border-radius:3px;padding:0 3px">🔷 arena_id</span><br>
+              ▪ registrationdate<br>
+              ▪ score<br>
+              ○ equipment
+            </div>
+          </div>
+        </div>
+
+        <!-- gamer -->
+        <div class="flip-card" onclick="this.classList.toggle('flipped')" style="cursor:pointer;flex:1;min-width:130px">
+          <div class="flip-inner">
+            <div class="flip-front" style="background:#cffafe;border:2px solid #06b6d4;border-radius:10px;padding:14px 10px;text-align:center">
+              <div style="font-size:1.4rem;margin-bottom:6px">🎮</div>
+              <div style="font-size:.78rem;font-weight:700;color:#155e75">gamer</div>
+              <div style="font-size:.62rem;color:#0891b2;margin-top:4px">klik om te openen</div>
+            </div>
+            <div class="flip-back" style="background:#155e75;border:2px solid #06b6d4;border-radius:10px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#fff;line-height:1.8">
+              <div style="font-weight:700;margin-bottom:4px;font-size:.72rem">gamer</div>
+              🔑 id<br>
+              ▪ gamertag<br>
+              <span style="background:#dcfce7;color:#166534;border-radius:3px;padding:0 3px">🔷 team_id</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- team -->
+        <div class="flip-card" onclick="this.classList.toggle('flipped')" style="cursor:pointer;flex:1;min-width:130px">
+          <div class="flip-inner">
+            <div class="flip-front" style="background:#dcfce7;border:2px solid #22c55e;border-radius:10px;padding:14px 10px;text-align:center">
+              <div style="font-size:1.4rem;margin-bottom:6px">👥</div>
+              <div style="font-size:.78rem;font-weight:700;color:#166534">team</div>
+              <div style="font-size:.62rem;color:#16a34a;margin-top:4px">klik om te openen</div>
+            </div>
+            <div class="flip-back" style="background:#166534;border:2px solid #22c55e;border-radius:10px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#fff;line-height:1.8">
+              <div style="font-weight:700;margin-bottom:4px;font-size:.72rem">team</div>
+              🔑 id<br>
+              ▪ name
+            </div>
+          </div>
+        </div>
+
+        <!-- arena -->
+        <div class="flip-card" onclick="this.classList.toggle('flipped')" style="cursor:pointer;flex:1;min-width:130px">
+          <div class="flip-inner">
+            <div class="flip-front" style="background:#fef9c3;border:2px solid #f59e0b;border-radius:10px;padding:14px 10px;text-align:center">
+              <div style="font-size:1.4rem;margin-bottom:6px">🏟️</div>
+              <div style="font-size:.78rem;font-weight:700;color:#854d0e">arena</div>
+              <div style="font-size:.62rem;color:#b45309;margin-top:4px">klik om te openen</div>
+            </div>
+            <div class="flip-back" style="background:#854d0e;border:2px solid #f59e0b;border-radius:10px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#fff;line-height:1.8">
+              <div style="font-weight:700;margin-bottom:4px;font-size:.72rem">arena</div>
+              🔑 id<br>
+              ▪ name<br>
+              <span style="background:#fee2e2;color:#991b1b;border-radius:3px;padding:0 3px">🔷 game_id</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- game -->
+        <div class="flip-card" onclick="this.classList.toggle('flipped')" style="cursor:pointer;flex:1;min-width:130px">
+          <div class="flip-inner">
+            <div class="flip-front" style="background:#fee2e2;border:2px solid #ef4444;border-radius:10px;padding:14px 10px;text-align:center">
+              <div style="font-size:1.4rem;margin-bottom:6px">🕹️</div>
+              <div style="font-size:.78rem;font-weight:700;color:#991b1b">game</div>
+              <div style="font-size:.62rem;color:#dc2626;margin-top:4px">klik om te openen</div>
+            </div>
+            <div class="flip-back" style="background:#991b1b;border:2px solid #ef4444;border-radius:10px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#fff;line-height:1.8">
+              <div style="font-weight:700;margin-bottom:4px;font-size:.72rem">game</div>
+              🔑 id<br>
+              ▪ name<br>
+              <span style="background:#fce7f3;color:#9d174d;border-radius:3px;padding:0 3px">🔷 sponsor_id</span><br>
+              ▪ prize
+            </div>
+          </div>
+        </div>
+
+        <!-- sponsor -->
+        <div class="flip-card" onclick="this.classList.toggle('flipped')" style="cursor:pointer;flex:1;min-width:130px">
+          <div class="flip-inner">
+            <div class="flip-front" style="background:#fce7f3;border:2px solid #ec4899;border-radius:10px;padding:14px 10px;text-align:center">
+              <div style="font-size:1.4rem;margin-bottom:6px">💰</div>
+              <div style="font-size:.78rem;font-weight:700;color:#9d174d">sponsor</div>
+              <div style="font-size:.62rem;color:#be185d;margin-top:4px">klik om te openen</div>
+            </div>
+            <div class="flip-back" style="background:#9d174d;border:2px solid #ec4899;border-radius:10px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#fff;line-height:1.8">
+              <div style="font-weight:700;margin-bottom:4px;font-size:.72rem">sponsor</div>
+              🔑 id<br>
+              ▪ name<br>
+              ○ website
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Gouden regels -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <div style="background:#fff;border:1.5px solid #fca5a5;border-radius:8px;padding:10px 12px">
+        <div style="font-size:.72rem;font-weight:800;color:#991b1b;margin-bottom:4px">1NF — de gouden regel</div>
+        <div style="font-size:.75rem;color:#475569;line-height:1.45">Elk attribuut bevat <strong>één waarde</strong>. Elke rij heeft een <strong>unieke PK</strong>. Herhaalde groepen worden aparte tabellen.</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid #86efac;border-radius:8px;padding:10px 12px">
+        <div style="font-size:.72rem;font-weight:800;color:#166534;margin-bottom:4px">2NF — de gouden regel</div>
+        <div style="font-size:.75rem;color:#475569;line-height:1.45">Elk attribuut is <strong>volledig afhankelijk</strong> van de <em>hele</em> primaire sleutel. Elke zelfstandige entiteit (zoals een gamer) krijgt zijn eigen tabel.</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid #93c5fd;border-radius:8px;padding:10px 12px">
+        <div style="font-size:.72rem;font-weight:800;color:#1d4ed8;margin-bottom:4px">3NF — de gouden regel</div>
+        <div style="font-size:.75rem;color:#475569;line-height:1.45">Elk attribuut is <strong>direct afhankelijk</strong> van de PK — niet via een ander attribuut (geen A → B → C ketens).</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     SLIDE 11 — QUIZ
+══════════════════════════════ -->
+<div class="slide" id="s11">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#7c3aed;color:#fff">🧠 Quiz</span>
+    <h2>Test jezelf — ben je klaar voor de toets?</h2>
+    <span class="step-info">🧠 Quiz</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg active"></div></div>
+
+  <div class="slide-body" style="flex-direction:column;overflow-y:auto;padding:20px 28px 80px;gap:14px;background:#f8fafc">
+
+    <div id="quiz-container">
+
+      <!-- Inklapbaar referentiepaneel -->
+      <div style="margin-bottom:14px">
+        <button id="ref-toggle" onclick="toggleRef()" style="background:#1e293b;color:#fff;border:none;padding:8px 16px;border-radius:20px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;margin-bottom:8px">📋 Eindresultaat tonen ▶</button>
+        <div id="ref-panel-content" style="display:none">
+          <div style="font-size:.7rem;color:#64748b;margin-bottom:8px">💡 Gebruik dit als geheugensteun bij de vragen</div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+
+            <div style="background:#eef2ff;border:1.5px solid #6366f1;border-radius:8px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:.65rem;line-height:1.7;color:#3730a3;min-width:130px">
+              <strong style="font-size:.7rem">tourneyregistration</strong><br>
+              🔑 id<br><span style="background:#cffafe;color:#155e75;border-radius:2px;padding:0 3px">🔷 gamer_id</span><br><span style="background:#fef9c3;color:#854d0e;border-radius:2px;padding:0 3px">🔷 arena_id</span><br>▪ registrationdate<br>▪ score<br>○ equipment
+            </div>
+
+            <div style="background:#cffafe;border:1.5px solid #06b6d4;border-radius:8px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:.65rem;line-height:1.7;color:#155e75;min-width:110px">
+              <strong style="font-size:.7rem">gamer</strong><br>
+              🔑 id<br>▪ gamertag<br><span style="background:#dcfce7;color:#166534;border-radius:2px;padding:0 3px">🔷 team_id</span>
+            </div>
+
+            <div style="background:#dcfce7;border:1.5px solid #22c55e;border-radius:8px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:.65rem;line-height:1.7;color:#166534;min-width:100px">
+              <strong style="font-size:.7rem">team</strong><br>
+              🔑 id<br>▪ name
+            </div>
+
+            <div style="background:#fef9c3;border:1.5px solid #f59e0b;border-radius:8px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:.65rem;line-height:1.7;color:#854d0e;min-width:110px">
+              <strong style="font-size:.7rem">arena</strong><br>
+              🔑 id<br>▪ name<br><span style="background:#fee2e2;color:#991b1b;border-radius:2px;padding:0 3px">🔷 game_id</span>
+            </div>
+
+            <div style="background:#fee2e2;border:1.5px solid #ef4444;border-radius:8px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:.65rem;line-height:1.7;color:#991b1b;min-width:110px">
+              <strong style="font-size:.7rem">game</strong><br>
+              🔑 id<br>▪ name<br><span style="background:#fce7f3;color:#9d174d;border-radius:2px;padding:0 3px">🔷 sponsor_id</span><br>▪ prize
+            </div>
+
+            <div style="background:#fce7f3;border:1.5px solid #ec4899;border-radius:8px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:.65rem;line-height:1.7;color:#9d174d;min-width:100px">
+              <strong style="font-size:.7rem">sponsor</strong><br>
+              🔑 id<br>▪ name<br>○ website
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Score balk -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div style="font-size:.82rem;color:#64748b">Vraag <span id="q-current">1</span> van <span id="q-total">6</span></div>
+        <div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden">
+          <div id="q-progress" style="height:100%;background:#7c3aed;border-radius:4px;transition:width .4s;width:0%"></div>
+        </div>
+        <div style="font-size:.82rem;font-weight:700;color:#7c3aed">⭐ <span id="q-score">0</span> punten</div>
+      </div>
+
+      <!-- Vraag kaart -->
+      <div id="q-card" style="background:#fff;border:2px solid #e2e8f0;border-radius:14px;padding:22px 24px;margin-bottom:14px">
+        <div id="q-badge" style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;color:#7c3aed"></div>
+        <div id="q-text" style="font-size:1rem;font-weight:600;color:#1e293b;line-height:1.5;margin-bottom:16px"></div>
+        <div id="q-options" style="display:flex;flex-direction:column;gap:8px"></div>
+        <div id="q-feedback" style="display:none;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.88rem;line-height:1.55"></div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end">
+        <button id="q-next" onclick="quizNext()" style="display:none;background:#7c3aed;color:#fff;border:none;padding:10px 24px;border-radius:20px;font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer">Volgende vraag →</button>
+      </div>
+    </div>
+
+    <!-- Eindscherm (verborgen) -->
+    <div id="quiz-result" style="display:none;text-align:center;padding:30px 0">
+      <div id="result-emoji" style="font-size:3.5rem;margin-bottom:12px"></div>
+      <div id="result-title" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:900;color:#1e293b;margin-bottom:8px"></div>
+      <div id="result-sub" style="font-size:.92rem;color:#64748b;margin-bottom:20px"></div>
+      <div id="result-score-box" style="display:inline-block;background:#7c3aed;color:#fff;padding:12px 28px;border-radius:12px;font-size:1.1rem;font-weight:700;margin-bottom:24px"></div>
+      <br>
+      <button onclick="quizReset()" style="background:#1e293b;color:#fff;border:none;padding:10px 24px;border-radius:20px;font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;margin-top:12px">🔄 Opnieuw proberen</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     SLIDE 12 — SLEEP-OPDRACHT
+══════════════════════════════ -->
+<div class="slide" id="s12">
+  <div class="slide-header">
+    <span class="nf-pill" style="background:#0f172a;color:#f8fafc">🎯 Sleep-opdracht</span>
+    <h2>WebshopPro — normaliseer zelf!</h2>
+    <span class="step-info">🎯 Sleep-opdracht</span>
+  </div>
+  <div class="prog-bar"><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg done"></div><div class="pb-seg active"></div></div>
+
+  <div class="slide-body" style="flex-direction:column;overflow-y:auto;padding:16px 24px 80px;gap:12px;background:#f8fafc">
+
+    <!-- Kassabon referentie -->
+    <div style="background:#1e293b;border-radius:10px;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#94a3b8;line-height:1.8">
+      <div style="color:#f8fafc;font-weight:700;margin-bottom:6px">🧾 WebshopPro — Kassabon (casus)</div>
+      <span style="color:#fbbf24">Bestelnr: 1024</span> · Datum: 15-02-2025 · Klant: <span style="color:#86efac">Jan Jansen</span> · Kerkstraat 12, Amsterdam · jan@email.com<br>
+      &nbsp;→ Laptop ASUS X512 €799 (TechSupply) &nbsp;·&nbsp; Draadloze muis €29 (OfficeGoods) &nbsp;·&nbsp; Kortingscode: WINTER10<br>
+      <span style="color:#fbbf24">Bestelnr: 1025</span> · Datum: 16-02-2025 · Klant: <span style="color:#86efac">Lisa de Vries</span> · Dorpsstraat 5, Utrecht · lisa@email.com<br>
+      &nbsp;→ iPhone 14 €999 (MobileWorld) &nbsp;·&nbsp; Oplader USB-C €19 (MobileWorld)<br>
+      <span style="color:#fbbf24">Bestelnr: 1026</span> · Datum: 16-02-2025 · Klant: <span style="color:#86efac">Jan Jansen</span> · Kerkstraat 12, Amsterdam · jan@email.com<br>
+      &nbsp;→ Monitor Samsung €199 (ScreenTech) &nbsp;·&nbsp; HDMI-kabel €15 (ScreenTech) &nbsp;·&nbsp; Kortingscode: MAART5
+    </div>
+
+    <!-- Stappentabs -->
+    <div style="display:flex;gap:6px">
+      <button id="drag-tab-0" onclick="dragStep(0)" style="padding:7px 16px;border-radius:20px;border:2px solid #f59e0b;background:#f59e0b;color:#fff;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer">Splitsen</button>
+      <button id="drag-tab-1" onclick="dragStep(1)" style="padding:7px 16px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer">1NF</button>
+      <button id="drag-tab-2" onclick="dragStep(2)" style="padding:7px 16px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer">2NF</button>
+      <button id="drag-tab-3" onclick="dragStep(3)" style="padding:7px 16px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer">3NF</button>
+      <div id="drag-score-display" style="margin-left:auto;font-size:.82rem;font-weight:700;color:#7c3aed;align-self:center">⭐ <span id="drag-score">0</span> / <span id="drag-total">0</span> correct</div>
+    </div>
+
+    <!-- Stap inhoud -->
+    <div id="drag-step-content"></div>
+
+  </div>
+</div>
+
+<!-- ══════ NAV ══════ -->
+<div class="nav">
+  <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>← Terug</button>
+  <div class="nav-dots" id="navDots"></div>
+  <div class="slide-num" id="slideNum">🏠 Lobby</div>
+  <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Verder →</button>
+</div>
+
+<script>
+const TOTAL = 12;
+let current = 1;
+
+// Build dots
+const dotsEl = document.getElementById('navDots');
+for(let i=1;i<=TOTAL;i++){
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===1?' active':'');
+  d.title = 'Slide '+i;
+  d.onclick = ()=>goTo(i);
+  dotsEl.appendChild(d);
+}
+
+const LEVELS = {
+    1: '🏠 Lobby',
+    2: '⚠️ Level 0',
+    3: '🔍 Level 1',
+    4: '🔑 Level 2',
+    5: '✂️ Level 3',
+    6: '✂️ Level 4',
+    7: '🎮 Level 5',
+    8: '⛓️ Level 6',
+    9: '🏆 Level 7',
+    10: '📊 Overzicht',
+    11: '🧠 Quiz',
+    12: '🎯 Sleep-opdracht'
+  };
+function goTo(n){
+  if(n<1||n>TOTAL) return;
+  const prev = document.getElementById('s'+current);
+  prev.classList.remove('active');
+  prev.classList.add('exit');
+  setTimeout(()=>prev.classList.remove('exit'), 380);
+  current = n;
+  document.getElementById('s'+current).classList.add('active');
+  if(current===11 && typeof quizRender==='function'){ quizReset(); }
+  if(current===12 && typeof dragStep==='function'){ dragStep(0); }
+  document.querySelectorAll('.dot').forEach((d,i)=>{
+    d.classList.remove('active','done');
+    if(i+1 < current) d.classList.add('done');
+    if(i+1 === current) d.classList.add('active');
+  });
+  document.getElementById('slideNum').textContent = LEVELS[current] || current+' / '+TOTAL;
+  document.getElementById('prevBtn').disabled = current===1;
+  document.getElementById('nextBtn').disabled = current===TOTAL;
+  document.getElementById('nextBtn').textContent = current===TOTAL ? '✅ Klaar!' : current===9 ? '📊 Overzicht →' : current===10 ? '🧠 Quiz →' : current===11 ? '🎯 Sleep-opdracht →' : 'Verder →';
+}
+
+
+// ── QUIZ ──
+// Slide-referenties per vraag voor de fout-feedback
+const QUIZ_SLIDE_REFS = [3, 4, 5, 7, 8, 8]; // slidenum per vraag
+
+const QUIZ = [
+  {
+    badge: '0NF — Analyseren',
+    context: 'We beginnen met één grote rommelige tabel met: gamertag, team, registrationdate, game, arena, score, sponsor, equipment, prize.',
+    q: 'Wat is het doel van 0NF (de analysestap)?',
+    options: [
+      'Begrijpen welke gegevens er zijn en wat herhaalt',
+      'Alle tabellen al direct opsplitsen',
+      'Een primaire sleutel toevoegen',
+      'Indirecte afhankelijkheden verwijderen'
+    ],
+    correct: 0,
+    feedback: 'In 0NF kijk je wat je hebt: welke attributen zijn er, wat herhaalt, en wat is de entiteit? Je maakt nog niks aan — je analyseert alleen.'
+  },
+  {
+    badge: '1NF — PK toevoegen',
+    context: 'In de begintabel is er geen kolom die elke rij uniek identificeert. ShadowSlayer kan meerdere keren meedoen aan verschillende toernooien.',
+    q: 'Waarom voegen we een kolom "id" toe als primaire sleutel (PK)?',
+    options: [
+      'Omdat de database anders niet opstart',
+      'Omdat id altijd kleiner is dan andere waarden',
+      'Omdat de docent dit heeft gezegd',
+      'Omdat gamertag soms twee keer voorkomt voor dezelfde gamer'
+    ],
+    correct: 3,
+    feedback: 'Een gamer kan meerdere keren meedoen aan een toernooi — dan staat dezelfde gamertag twee keer. Zonder unieke PK weet de database niet welke rij welke is.'
+  },
+  {
+    badge: '1NF — Afsplitsen',
+    context: 'In de tabel staat "NightRiders" als teamnaam bij 4 verschillende inschrijvingen. Als de naam verandert moet je 4 rijen aanpassen.',
+    q: 'Waarom maak je een aparte "team"-tabel?',
+    options: [
+      'Omdat team een moeilijk woord is',
+      'Omdat teams altijd in een aparte tabel horen',
+      'Omdat "NightRiders" anders 4× herhaald staat — aanpassen = 4 rijen wijzigen',
+      'Omdat de teamnaam dan sneller laadt'
+    ],
+    correct: 2,
+    feedback: 'Als "NightRiders" verandert naar "NightOwls" moet je zonder aparte tabel elke rij aanpassen. Met een eigen tabel pas je het op 1 plek aan.'
+  },
+  {
+    badge: '2NF — Juiste tabel',
+    context: 'Na 1NF staat gamertag nog in tourneyregistration. Maar ShadowSlayer kan meerdere toernooien spelen — zijn naam hoort niet bij elke inschrijving opnieuw.',
+    q: 'Waarom verplaats je gamertag en team_id naar een aparte "gamer"-tabel?',
+    options: [
+      'Omdat team_id al in de team-tabel staat',
+      'Omdat een gamer ook bestaat zonder inschrijving en een eigen entiteit is',
+      'Omdat gamertag te lang is om in tourneyregistration te staan',
+      'Omdat 2NF altijd precies één attribuut verplaatst'
+    ],
+    correct: 1,
+    feedback: 'Een gamer is een zelfstandige entiteit — hij bestaat ook als hij zich nooit inschrijft. Zelfstandige entiteiten krijgen hun eigen tabel.'
+  },
+  {
+    badge: '3NF — Ketens verbreken',
+    context: 'In de gamearena-tabel staan: id, game, arena, sponsor, prize. "League of Legends" heeft altijd RedBull als sponsor en €500 prize — ongeacht welke arena.',
+    q: 'Waarom is het een probleem dat sponsor en prize in de gamearena-tabel staan?',
+    options: [
+      'Omdat er maar twee sponsors zijn',
+      'Omdat prize altijd hetzelfde getal is',
+      'Omdat sponsor en prize te veel letters hebben',
+      'Omdat sponsor en prize afhangen van "game", niet van "game+arena" — dat is een keten'
+    ],
+    correct: 3,
+    feedback: 'inschrijving → game → sponsor is een A→B→C keten. Sponsor hangt af van game, niet van de inschrijving zelf. Dat is precies wat 3NF oplost.'
+  },
+  {
+    badge: 'Eindresultaat — redeneerroute',
+    context: 'In het eindresultaat verwijst tourneyregistration naar arena_id. Via arena kom je bij game, via game bij sponsor. LoL heeft €500 prize, EA FC €250.',
+    q: 'Je hebt een inschrijving met arena_id = 2 (arena "Red"). Hoe kom je erachter welke sponsor bij deze inschrijving hoort?',
+    options: [
+      'Dat staat direct in tourneyregistration',
+      'Opzoeken in de gamer-tabel via gamer_id',
+      'Via arena → game_id → game → sponsor_id → sponsor',
+      'Sponsor staat in de team-tabel'
+    ],
+    correct: 2,
+    feedback: 'De redeneerroute is: inschrijving → arena_id → arena → game_id → game → sponsor_id → sponsor. Zo vind je via één inschrijving alle gekoppelde informatie.'
+  }
+];
+
+let qIndex = 0;
+let qScore = 0;
+let qAnswered = false;
+
+function toggleRef(open) {
+  const panel = document.getElementById('ref-panel-content');
+  const btn = document.getElementById('ref-toggle');
+  if (open === true || panel.style.display === 'none') {
+    panel.style.display = 'block';
+    btn.textContent = '📋 Eindresultaat verbergen ▲';
+  } else {
+    panel.style.display = 'none';
+    btn.textContent = '📋 Eindresultaat tonen ▶';
+  }
+}
+
+// Vragen waarbij de tabelstructuur essentieel is — open paneel automatisch
+const AUTO_OPEN_REF = [2, 4, 5, 6]; // vraagnummers (1-based)
+
+function quizRender() {
+  const q = QUIZ[qIndex];
+  document.getElementById('q-current').textContent = qIndex + 1;
+  document.getElementById('q-total').textContent = QUIZ.length;
+  document.getElementById('q-progress').style.width = (qIndex / QUIZ.length * 100) + '%';
+  document.getElementById('q-badge').textContent = q.badge;
+  document.getElementById('q-text').innerHTML = '<div style="background:#f1f5f9;border-left:3px solid #7c3aed;padding:8px 12px;border-radius:0 6px 6px 0;font-size:.8rem;color:#475569;font-weight:400;margin-bottom:12px;line-height:1.5">📌 ' + q.context + '</div>' + '<div style="font-size:.95rem;font-weight:600;color:#1e293b">' + q.q + '</div>';
+  document.getElementById('q-feedback').style.display = 'none';
+  document.getElementById('q-next').style.display = 'none';
+  qAnswered = false;
+  // Auto-open referentiepaneel bij vragen waar tabelinfo nodig is
+  if (AUTO_OPEN_REF.includes(qIndex + 1)) {
+    toggleRef(true);
+  } else {
+    toggleRef(false);
+  }
+
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const letters = ['A','B','C','D'];
+    const btn = document.createElement('button');
+    btn.innerHTML = '<span style="display:inline-block;min-width:22px;font-weight:700;color:#7c3aed;margin-right:8px">' + letters[i] + '</span>' + opt;
+    btn.style.cssText = 'text-align:left;padding:10px 14px;border:2px solid #e2e8f0;border-radius:8px;background:#fff;font-size:.85rem;cursor:pointer;transition:all .2s;font-family:inherit;color:#1e293b;width:100%';
+    btn.onmouseenter = () => { if(!qAnswered) btn.style.borderColor = '#7c3aed'; };
+    btn.onmouseleave = () => { if(!qAnswered) btn.style.borderColor = '#e2e8f0'; };
+    btn.onclick = () => quizAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function quizAnswer(chosen) {
+  if (qAnswered) return;
+  qAnswered = true;
+  const q = QUIZ[qIndex];
+  const btns = document.getElementById('q-options').querySelectorAll('button');
+  const fb = document.getElementById('q-feedback');
+
+  btns.forEach((btn, i) => {
+    btn.style.cursor = 'default';
+    if (i === q.correct) {
+      btn.style.background = '#dcfce7';
+      btn.style.borderColor = '#22c55e';
+      btn.style.color = '#166534';
+      btn.style.fontWeight = '700';
+    }
+    if (i === chosen && chosen !== q.correct) {
+      btn.style.background = '#fee2e2';
+      btn.style.borderColor = '#ef4444';
+      btn.style.color = '#991b1b';
+    }
+  });
+
+  // Correct antwoord positie berekenen (A=0, B=1, C=2, D=3)
+  const letters = ['A','B','C','D'];
+  if (chosen === q.correct) {
+    qScore++;
+    document.getElementById('q-score').textContent = qScore;
+    fb.style.cssText = 'display:block;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.88rem;line-height:1.55;background:#dcfce7;border:2px solid #86efac;color:#166534';
+    fb.textContent = '✅ Correct! ' + q.feedback;
+  } else {
+    fb.style.cssText = 'display:block;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.88rem;line-height:1.55;background:#fee2e2;border:2px solid #fca5a5;color:#991b1b';
+    const slideRef = QUIZ_SLIDE_REFS[qIndex];
+    fb.innerHTML = '❌ Niet helemaal — antwoord ' + letters[q.correct] + ' is correct. <span style="font-size:.82rem;display:block;margin-top:4px;color:#7f1d1d">' + q.feedback + '</span><button onclick="goTo(' + slideRef + ')" style="margin-top:8px;background:#1e293b;color:#fff;border:none;padding:6px 14px;border-radius:14px;font-size:.75rem;font-family:inherit;cursor:pointer">← Bekijk slide ' + slideRef + ' terug</button>';
+    document.getElementById('q-next').style.display = 'block';
+    return;
+  }
+  document.getElementById('q-next').style.display = 'block';
+}
+
+function quizNext() {
+  qIndex++;
+  if (qIndex >= QUIZ.length) {
+    quizShowResult();
+  } else {
+    quizRender();
+  }
+}
+
+function quizShowResult() {
+  document.getElementById('quiz-container').style.display = 'none';
+  const res = document.getElementById('quiz-result');
+  res.style.display = 'block';
+  const pct = Math.round(qScore / QUIZ.length * 100);
+  document.getElementById('q-progress').style.width = '100%';
+
+  let emoji, title, sub;
+  if (pct === 100) {
+    emoji = '🏆'; title = 'Perfect! Database-meester!';
+    sub = 'Alle ' + QUIZ.length + ' vragen goed. Jij bent klaar voor de toets!';
+  } else if (pct >= 67) {
+    emoji = '🎮'; title = 'Goed bezig!';
+    sub = 'Bijna! Lees de uitleg bij de foute vragen nog eens terug.';
+  } else {
+    emoji = '📖'; title = 'Nog even herhalen';
+    sub = 'Loop de slides nog een keer door en probeer daarna opnieuw.';
+  }
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-sub').textContent = sub;
+  document.getElementById('result-score-box').textContent = qScore + ' / ' + QUIZ.length + ' correct (' + pct + '%)';
+}
+
+function quizReset() {
+  qIndex = 0; qScore = 0; qAnswered = false;
+  document.getElementById('q-score').textContent = '0';
+  document.getElementById('q-progress').style.width = '0%';
+  document.getElementById('quiz-container').style.display = 'block';
+  document.getElementById('quiz-result').style.display = 'none';
+  quizRender();
+}
+
+// Init quiz when slide 11 becomes active
+const _origGoTo = goTo;
+
+
+// ── SLEEP-OPDRACHT ──
+const DRAG_STEPS = {
+  0: {
+    title: '0NF → 1NF — Splits samengestelde attributen',
+    intro: 'Sommige cellen bevatten <strong>twee waarden tegelijk</strong> — dat mag niet in 1NF. Klik op het juiste antwoord: hoe splits je deze attributen op?',
+    splits: [
+      {
+        id: 'sp1',
+        label: 'customername = "Jan Jansen"',
+        question: 'Hoe splits je customername op?',
+        options: ['firstname + lastname', 'fullname + initials', 'name_part1 + name_part2', 'customername blijft zo'],
+        correct: 0,
+        result: ['firstname = "Jan"', 'lastname = "Jansen"'],
+        feedback: 'Voornaam en achternaam zijn twee aparte dingen. Zo kun je later sorteren op achternaam of zoeken op voornaam.'
+      },
+      {
+        id: 'sp2',
+        label: 'address = "Kerkstraat 12, Amsterdam"',
+        question: 'Hoe splits je address op?',
+        options: ['address1 + address2', 'street + city', 'housenumber + streetname', 'address blijft zo'],
+        correct: 1,
+        result: ['street = "Kerkstraat 12"', 'city = "Amsterdam"'],
+        feedback: 'Straat en stad zijn twee aparte dingen. Zo kun je later filteren op alle klanten in Amsterdam.'
+      }
+    ]
+  },
+  1: {
+    title: '1NF — Sleep klant- en productgegevens naar de juiste tabel',
+    intro: 'In 1NF splitsen we herhalende groepen af. Sleep elk attribuut naar de juiste tabel: <code>order</code> (bestellinginfo) of de nieuwe aparte tabel.',
+    attrs: [
+      { id: 'da_orderdate',    label: 'orderdate',    correct: 'order',    hint: 'De datum hoort bij de bestelling zelf.' },
+      { id: 'da_firstname',    label: 'firstname',    correct: 'customer', hint: 'Voornaam hoort bij de klant, niet bij de bestelling.' },
+      { id: 'da_lastname',     label: 'lastname',     correct: 'customer', hint: 'Achternaam hoort bij de klant.' },
+      { id: 'da_street',       label: 'street',       correct: 'customer', hint: 'Adres hoort bij de klant.' },
+      { id: 'da_city',         label: 'city',         correct: 'customer', hint: 'Stad hoort bij de klant.' },
+      { id: 'da_email',        label: 'email',        correct: 'customer', hint: 'E-mail hoort bij de klant.' },
+      { id: 'da_productname',  label: 'productname',  correct: 'product',  hint: 'Productnaam hoort bij het product.' },
+      { id: 'da_productprice', label: 'productprice', correct: 'product',  hint: 'Prijs hoort bij het product.' },
+      { id: 'da_discountcode', label: 'discountcode', correct: 'order',    hint: 'Kortingscode hoort bij de bestelling.' },
+    ],
+    tables: [
+      { id: 'order',    label: 'order', color: '#eef2ff', border: '#6366f1', text: '#4338ca', fixed: ['🔑 id', '◆ ordernumber'] },
+      { id: 'customer', label: 'customer ✨', color: '#cffafe', border: '#06b6d4', text: '#155e75', fixed: ['🔑 id'] },
+      { id: 'product',  label: 'product ✨',  color: '#fee2e2', border: '#ef4444', text: '#991b1b', fixed: ['🔑 id'] },
+    ]
+  },
+  2: {
+    title: '2NF — Split bestelling van orderregel',
+    intro: 'In 2NF moet elk attribuut volledig bij zijn PK horen. Stel jezelf de vraag: hoort dit attribuut bij de <strong>bestelling als geheel</strong> — of bij de combinatie <strong>bestelling + product</strong>? Sleep elk attribuut naar de juiste tabel.',
+    attrs: [
+      { id: 'db_orderdate',    label: 'orderdate',    correct: 'order',    hint: 'Datum hoort bij de bestelling als geheel.' },
+      { id: 'db_discountcode', label: 'discountcode', correct: 'order',    hint: 'Kortingscode hoort bij de bestelling, niet bij één product.' },
+      { id: 'db_customer_id',  label: 'customer_id',  correct: 'order',    hint: 'De klant hoort bij de bestelling.' },
+      { id: 'db_order_id',     label: 'order_id',     correct: 'orderrow', hint: 'orderrow verwijst terug naar de bestelling.' },
+      { id: 'db_product_id',   label: 'product_id',   correct: 'orderrow', hint: 'orderrow koppelt een bestelling aan een product.' },
+    ],
+    tables: [
+      { id: 'order',    label: 'order',       color: '#eef2ff', border: '#6366f1', text: '#4338ca', fixed: ['🔑 id', '◆ ordernumber'] },
+      { id: 'orderrow', label: 'orderrow ✨', color: '#f0fdf4', border: '#22c55e', text: '#166534', fixed: ['🔑 id'] },
+    ]
+  },
+  3: {
+    title: '3NF — Leverancier als eigen entiteit',
+    intro: 'In 3NF lossen we de keten op: <code>product → supplier → suppliergegevens</code>. "MobileWorld" staat twee keer in de product-tabel. Sleep de attributen naar de juiste tabel.',
+    attrs: [
+      { id: 'dc_productname',  label: 'productname',  correct: 'product',  hint: 'Productnaam hoort bij het product zelf.' },
+      { id: 'dc_productprice', label: 'productprice', correct: 'product',  hint: 'Prijs hoort bij het product.' },
+      { id: 'dc_supplier_id',  label: 'supplier_id',  correct: 'product',  hint: 'product behoudt een FK naar supplier.' },
+      { id: 'dc_suppliername', label: 'suppliername', correct: 'supplier', hint: 'Naam van de leverancier hoort in supplier.' },
+      { id: 'dc_email',        label: 'supplier email', correct: 'supplier', hint: 'Contact van de leverancier hoort in supplier.' },
+    ],
+    tables: [
+      { id: 'product',  label: 'product',     color: '#fee2e2', border: '#ef4444', text: '#991b1b', fixed: ['🔑 id'] },
+      { id: 'supplier', label: 'supplier ✨', color: '#fce7f3', border: '#ec4899', text: '#9d174d', fixed: ['🔑 id'] },
+    ]
+  }
+};
+
+let dragCurrentStep = 1;
+let dragPlaced = {}; // { attrId: tableId }
+let dragChecked = false;
+let dragTotalScore = 0;
+let dragStepScores = {};
+
+function dragStep(step) {
+  dragCurrentStep = step;
+  dragPlaced = {};
+  dragChecked = false;
+
+  // Tab styling voor alle tabs (0-3)
+  [0,1,2,3].forEach(s => {
+    const tab = document.getElementById('drag-tab-' + s);
+    if (!tab) return;
+    const done = dragStepScores[s] !== undefined;
+    const active = s === step;
+    if (s === 0) {
+      tab.style.background = active ? '#f59e0b' : done ? '#dcfce7' : '#fff';
+      tab.style.color = active ? '#fff' : done ? '#166534' : '#64748b';
+      tab.style.borderColor = active ? '#f59e0b' : done ? '#22c55e' : '#e2e8f0';
+      tab.textContent = done && !active ? 'Splitsen ✅' : 'Splitsen';
+    } else {
+      tab.style.background = active ? '#6366f1' : done ? '#dcfce7' : '#fff';
+      tab.style.color = active ? '#fff' : done ? '#166534' : '#64748b';
+      tab.style.borderColor = active ? '#6366f1' : done ? '#22c55e' : '#e2e8f0';
+      tab.textContent = done && !active ? ['','1NF ✅','2NF ✅','3NF ✅'][s] : ['','1NF','2NF','3NF'][s];
+    }
+  });
+
+  if (step === 0) {
+    renderSplitStep();
+  } else {
+    renderDragStep();
+  }
+}
+
+function renderSplitStep() {
+  const stepData = DRAG_STEPS[0];
+  const container = document.getElementById('drag-step-content');
+  let splitAnswers = {};
+
+  let html2 = `<div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 16px">
+    <div style="font-size:.8rem;color:#64748b;margin-bottom:14px">${stepData.intro}</div>`;
+
+  stepData.splits.forEach((sp, idx) => {
+    html2 += `
+    <div id="split-card-${sp.id}" style="margin-bottom:14px;padding:12px 14px;background:#fffbeb;border:2px solid #fde68a;border-radius:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;color:#854d0e;margin-bottom:8px">⚠️ ${sp.label}</div>
+      <div style="font-size:.85rem;font-weight:600;color:#1e293b;margin-bottom:8px">${sp.question}</div>
+      <div style="display:flex;flex-direction:column;gap:6px" id="split-opts-${sp.id}">
+        ${sp.options.map((opt, i) => `
+          <button onclick="splitAnswer('${sp.id}', ${i}, ${sp.correct}, ${idx})"
+            id="split-btn-${sp.id}-${i}"
+            style="text-align:left;padding:8px 12px;border:2px solid #e2e8f0;border-radius:8px;background:#fff;font-size:.83rem;cursor:pointer;font-family:inherit;color:#1e293b;transition:all .2s">
+            <span style="font-weight:700;color:#f59e0b;margin-right:8px">${['A','B','C','D'][i]}</span>${opt}
+          </button>`).join('')}
+      </div>
+      <div id="split-fb-${sp.id}" style="display:none;margin-top:10px;padding:8px 12px;border-radius:8px;font-size:.82rem"></div>
+    </div>`;
+  });
+
+  html2 += `<div style="display:flex;gap:8px;margin-top:4px">
+    <button id="split-next-btn" onclick="dragStep(1)" style="display:none;background:#6366f1;color:#fff;border:none;padding:9px 22px;border-radius:20px;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer">Verder naar 1NF →</button>
+  </div>
+  </div>`;
+
+  container.innerHTML = html2;
+  window._splitDone = {};
+}
+
+function splitAnswer(spId, chosen, correct, idx) {
+  if (window._splitDone[spId]) return;
+  window._splitDone[spId] = true;
+
+  const sp = DRAG_STEPS[0].splits[idx];
+  const btns = document.querySelectorAll(`[id^="split-btn-${spId}-"]`);
+  btns.forEach((btn, i) => {
+    btn.style.cursor = 'default';
+    if (i === correct) { btn.style.background = '#dcfce7'; btn.style.borderColor = '#22c55e'; btn.style.color = '#166534'; btn.style.fontWeight = '700'; }
+    if (i === chosen && chosen !== correct) { btn.style.background = '#fee2e2'; btn.style.borderColor = '#ef4444'; btn.style.color = '#991b1b'; }
+  });
+
+  const fb = document.getElementById('split-fb-' + spId);
+  if (chosen === correct) {
+    fb.style.cssText = 'display:block;margin-top:10px;padding:8px 12px;border-radius:8px;font-size:.82rem;background:#dcfce7;border:2px solid #86efac;color:#166534';
+    fb.innerHTML = '✅ Correct! ' + sp.feedback + '<br><div style="margin-top:6px;font-family:JetBrains Mono,monospace;font-size:.75rem">'
+      + sp.result.map(r => `<span style="background:#86efac;padding:1px 6px;border-radius:3px;margin-right:6px">${r}</span>`).join('') + '</div>';
+  } else {
+    fb.style.cssText = 'display:block;margin-top:10px;padding:8px 12px;border-radius:8px;font-size:.82rem;background:#fee2e2;border:2px solid #fca5a5;color:#991b1b';
+    fb.innerHTML = '❌ Niet helemaal — ' + ['A','B','C','D'][correct] + ' is correct. ' + sp.feedback;
+  }
+
+  // Check of alle splits gedaan zijn
+  if (Object.keys(window._splitDone).length === DRAG_STEPS[0].splits.length) {
+    dragStepScores[0] = Object.values(window._splitDone).length;
+    dragStep_updateTabs();
+    const nxt = document.getElementById('split-next-btn');
+    if (nxt) nxt.style.display = 'inline-block';
+  }
+}
+
+function renderDragStep() {
+  const stepData = DRAG_STEPS[dragCurrentStep];
+  const container = document.getElementById('drag-step-content');
+
+  // Attribuut pills
+  let attrHtml = '<div style="margin-bottom:10px"><div style="font-size:.7rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Sleep deze attributen naar de juiste tabel:</div><div id="attr-pool" style="display:flex;flex-wrap:wrap;gap:7px;min-height:36px;padding:10px;background:#fff;border:2px dashed #cbd5e1;border-radius:10px">';
+  stepData.attrs.forEach(a => {
+    attrHtml += `<div id="${a.id}" draggable="true" ondragstart="dragStart(event)" onclick="selectAttr(this)" style="padding:6px 12px;background:#1e293b;color:#fff;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.75rem;cursor:pointer;user-select:none;transition:all .15s">${a.label}</div>`;
+  });
+  attrHtml += '</div></div>';
+
+  // Tabellen
+  let tablesHtml = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">';
+  stepData.tables.forEach(t => {
+    tablesHtml += `
+      <div style="flex:1;min-width:160px">
+        <div style="font-size:.72rem;font-weight:700;padding:6px 10px;border-radius:8px 8px 0 0;background:${t.color};color:${t.text};border:2px solid ${t.border};border-bottom:none">${t.label}</div>
+        <div id="table-${t.id}" ondragover="event.preventDefault()" ondrop="dropAttr(event,'${t.id}')" onclick="tapTable('${t.id}')" style="min-height:80px;padding:8px;background:${t.color};border:2px solid ${t.border};border-top:none;border-radius:0 0 8px 8px;cursor:pointer">
+          ${t.fixed.map(f => `<div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:${t.text};padding:2px 0;opacity:.6">${f}</div>`).join('')}
+        </div>
+      </div>`;
+  });
+  tablesHtml += '</div>';
+
+  // Buttons + feedback
+  let btnHtml = `<div style="display:flex;gap:8px;align-items:center">
+    <button onclick="checkDrag()" style="background:#1e293b;color:#fff;border:none;padding:9px 22px;border-radius:20px;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer">✅ Controleer</button>
+    <button onclick="resetDrag()" style="background:#fff;color:#64748b;border:2px solid #e2e8f0;padding:9px 22px;border-radius:20px;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer">🔄 Reset</button>
+    ${dragCurrentStep < 3 ? `<button id="next-step-btn" onclick="dragStep(dragCurrentStep+1)" style="display:none;background:#6366f1;color:#fff;border:none;padding:9px 22px;border-radius:20px;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer">Volgende stap →</button>` : ''}
+  </div>
+  <div id="drag-feedback" style="margin-top:10px"></div>`;
+
+  container.innerHTML = `<div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 16px">
+    <div style="font-size:.8rem;color:#64748b;margin-bottom:10px">${stepData.intro}</div>
+    ${attrHtml}${tablesHtml}${btnHtml}
+  </div>`;
+}
+
+// Touch/click state
+let selectedAttr = null;
+
+function dragStart(e) {
+  e.dataTransfer.setData('text/plain', e.target.id);
+}
+
+function dropAttr(e, tableId) {
+  e.preventDefault();
+  if (dragChecked) return;
+  const attrId = e.dataTransfer.getData('text/plain');
+  placeAttr(attrId, tableId);
+}
+
+function selectAttr(el) {
+  if (dragChecked) return;
+  // Deselect vorige
+  if (selectedAttr && selectedAttr !== el) {
+    selectedAttr.style.outline = 'none';
+    selectedAttr.style.background = '#1e293b';
+  }
+  if (selectedAttr === el) {
+    // Deselect zichzelf
+    el.style.outline = 'none';
+    el.style.background = '#1e293b';
+    selectedAttr = null;
+  } else {
+    el.style.outline = '3px solid #f59e0b';
+    el.style.background = '#7c3aed';
+    selectedAttr = el;
+  }
+}
+
+function tapTable(tableId) {
+  if (dragChecked) return;
+  if (!selectedAttr) return;
+  placeAttr(selectedAttr.id, tableId);
+  selectedAttr.style.outline = 'none';
+  selectedAttr = null;
+}
+
+function placeAttr(attrId, tableId) {
+  const el = document.getElementById(attrId);
+  if (!el) return;
+  delete dragPlaced[attrId];
+  const tableEl = document.getElementById('table-' + tableId);
+  tableEl.appendChild(el);
+  el.style.cursor = 'pointer';
+  el.style.margin = '2px 0';
+  el.style.outline = 'none';
+  el.style.background = '#1e293b';
+  dragPlaced[attrId] = tableId;
+}
+
+function checkDrag() {
+  if (dragChecked) return;
+  const stepData = DRAG_STEPS[dragCurrentStep];
+  let correct = 0;
+  let feedback = '';
+
+  // Slide referenties per stap
+  const stepSlideRefs = {1: 5, 2: 7, 3: 8};
+  const slideRef = stepSlideRefs[dragCurrentStep] || 5;
+
+  stepData.attrs.forEach(a => {
+    const el = document.getElementById(a.id);
+    const placed = dragPlaced[a.id];
+    if (!el) return;
+
+    if (placed === a.correct) {
+      el.style.background = '#166534';
+      el.style.outline = '2px solid #22c55e';
+      correct++;
+    } else {
+      el.style.background = '#991b1b';
+      el.style.outline = '2px solid #ef4444';
+      feedback += `<div style="font-size:.78rem;color:#991b1b;margin-top:3px">❌ <strong>${a.label}</strong> hoort in <code>${a.correct}</code> — ${a.hint}</div>`;
+      const correctTable = document.getElementById('table-' + a.correct);
+      if (correctTable) {
+        setTimeout(() => {
+          el.style.background = '#475569';
+          el.style.outline = '2px solid #94a3b8';
+          correctTable.appendChild(el);
+        }, 1200);
+      }
+    }
+  });
+
+  dragChecked = true;
+  dragStepScores[dragCurrentStep] = correct;
+  dragTotalScore = Object.values(dragStepScores).reduce((a,b) => a+b, 0);
+  const total = Object.values(DRAG_STEPS).filter(s => s.attrs).reduce((a,s) => a + s.attrs.length, 0);
+  document.getElementById('drag-score').textContent = dragTotalScore;
+  document.getElementById('drag-total').textContent = total;
+
+  const pct = Math.round(correct / stepData.attrs.length * 100);
+  let summary = correct === stepData.attrs.length
+    ? `<div style="background:#dcfce7;border:2px solid #86efac;border-radius:8px;padding:10px 14px;font-size:.85rem;color:#166534;font-weight:700">✅ Perfect! Alle ${correct} attributen op de juiste plek.</div>`
+    : `<div style="background:#fffbeb;border:2px solid #fde68a;border-radius:8px;padding:10px 14px;font-size:.85rem;color:#854d0e">${correct} van ${stepData.attrs.length} correct (${pct}%). De foute attributen zijn automatisch verplaatst.${feedback}<button onclick="goTo(${slideRef})" style="margin-top:10px;background:#1e293b;color:#fff;border:none;padding:6px 14px;border-radius:14px;font-size:.75rem;font-family:inherit;cursor:pointer">← Bekijk slide ${slideRef} terug</button></div>`;
+
+  document.getElementById('drag-feedback').innerHTML = summary;
+
+  // Toon "volgende stap" knop
+  const nxt = document.getElementById('next-step-btn');
+  if (nxt) nxt.style.display = 'inline-block';
+
+  // Update tab
+  dragStep_updateTabs();
+
+  // Eindscherm bij stap 3
+  if (dragCurrentStep === 3) {
+    const allTotal = Object.values(DRAG_STEPS).filter(s => s.attrs).reduce((a,s) => a + s.attrs.length, 0);
+    const allScore = Object.values(dragStepScores).reduce((a,b) => a+b, 0);
+    setTimeout(() => showDragResult(allScore, allTotal), 1500);
+  }
+}
+
+function dragStep_updateTabs() {
+  [0,1,2,3].forEach(s => {
+    const tab = document.getElementById('drag-tab-' + s);
+    if (!tab) return;
+    const done = dragStepScores[s] !== undefined;
+    const active = s === dragCurrentStep;
+    if (s === 0) {
+      tab.style.background = active ? '#f59e0b' : done ? '#dcfce7' : '#fff';
+      tab.style.color = active ? '#fff' : done ? '#166534' : '#64748b';
+      tab.style.borderColor = active ? '#f59e0b' : done ? '#22c55e' : '#e2e8f0';
+      tab.textContent = done && !active ? 'Splitsen ✅' : 'Splitsen';
+    } else {
+      tab.style.background = active ? '#6366f1' : done ? '#dcfce7' : '#fff';
+      tab.style.color = active ? '#fff' : done ? '#166534' : '#64748b';
+      tab.style.borderColor = active ? '#6366f1' : done ? '#22c55e' : '#e2e8f0';
+      tab.textContent = done && !active ? ['','1NF ✅','2NF ✅','3NF ✅'][s] : ['','1NF','2NF','3NF'][s];
+    }
+  });
+}
+
+function showDragResult(score, total) {
+  const pct = Math.round(score / total * 100);
+  const emoji = pct === 100 ? '🏆' : pct >= 70 ? '🎮' : '📖';
+  const title = pct === 100 ? 'Perfect! Klaar voor de toets!' : pct >= 70 ? 'Goed bezig!' : 'Nog even oefenen';
+  document.getElementById('drag-feedback').innerHTML += `
+    <div style="margin-top:14px;text-align:center;padding:20px;background:#fff;border:2px solid #6366f1;border-radius:12px">
+      <div style="font-size:2.5rem;margin-bottom:8px">${emoji}</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:900;color:#1e293b;margin-bottom:4px">${title}</div>
+      <div style="font-size:.85rem;color:#64748b;margin-bottom:12px">Totaalscore: ${score} / ${total} attributen correct (${pct}%)</div>
+      <button onclick="resetAllDrag()" style="background:#1e293b;color:#fff;border:none;padding:9px 22px;border-radius:20px;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer">🔄 Opnieuw</button>
+    </div>`;
+}
+
+function resetDrag() {
+  dragPlaced = {};
+  dragChecked = false;
+  renderDragStep();
+}
+
+function resetAllDrag() {
+  dragPlaced = {};
+  dragChecked = false;
+  dragTotalScore = 0;
+  dragStepScores = {};
+  dragStep(0);
+}
+
+
+function toggleSplit() {
+  var p = document.getElementById('split-toggle-content');
+  var btn = document.getElementById('split-toggle-btn');
+  var isOpen = p.style.display !== 'none';
+  p.style.display = isOpen ? 'none' : 'block';
+  btn.innerHTML = isOpen
+    ? '⚠️ <strong>Samengestelde attributen</strong> — klik om uit te klappen ▶'
+    : '⚠️ <strong>Samengestelde attributen</strong> — klik om in te klappen ▲';
+}
+
+function nextSlide(){ goTo(current+1) }
+function prevSlide(){ goTo(current-1) }
+
+// Keyboard
+document.addEventListener('keydown', e=>{
+  if(['ArrowRight','ArrowDown',' '].includes(e.key)){ e.preventDefault(); nextSlide(); }
+  if(['ArrowLeft','ArrowUp'].includes(e.key)){ e.preventDefault(); prevSlide(); }
+});
+</script>
+</body>
+</html>

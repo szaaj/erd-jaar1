@@ -13,7 +13,7 @@ body{
   background:#f0f2f8;
   color:#1a1d2e;
   font-family:'DM Sans',sans-serif;
-  font-size:15px;
+  font-size:16px;
 }
 
 /* ── SLIDE ENGINE ── */
@@ -1504,7 +1504,7 @@ function goTo(n){
 
 // ── QUIZ ──
 // Slide-referenties per vraag voor de fout-feedback
-const QUIZ_SLIDE_REFS = [3, 4, 5, 7, 8, 8]; // slidenum per vraag
+const QUIZ_SLIDE_REFS = [3, 4, 5, 4, 7, 7, 8, 8, 9, 9]; // slidenum per vraag
 
 const QUIZ = [
   {
@@ -1584,6 +1584,58 @@ const QUIZ = [
     ],
     correct: 2,
     feedback: 'De redeneerroute is: inschrijving → arena_id → arena → game_id → game → sponsor_id → sponsor. Zo vind je via één inschrijving alle gekoppelde informatie.'
+  },
+  {
+    badge: '1NF — Foreign Key begrijpen',
+    context: 'Na het afsplitsen van de team-tabel staat in tourneyregistration een kolom team_id met waarden 1, 2 of 3 in plaats van "NightRiders", "ShadowTeam" of "StormChasers".',
+    q: 'Wat is het doel van een Foreign Key (FK) zoals team_id in tourneyregistration?',
+    options: [
+      'De teamnaam onthouden zodat je hem niet hoeft op te zoeken',
+      'Een verwijzing naar de PK van de team-tabel, zodat je de tabellen kunt koppelen',
+      'Zorgen dat team_id altijd een lager getal heeft dan id',
+      'Voorkomen dat twee gamers in hetzelfde team zitten'
+    ],
+    correct: 1,
+    feedback: 'Een FK is een verwijzing: team_id = 1 betekent "zoek in de team-tabel de rij met id = 1". Zo koppel je twee tabellen zonder gegevens te herhalen.'
+  },
+  {
+    badge: '2NF — equipment begrijpen',
+    context: 'In de gamer-tabel staan: id, gamertag, team_id. Het attribuut equipment staat in tourneyregistration, niet in gamer.',
+    q: 'Waarom staat equipment in tourneyregistration en niet in de gamer-tabel?',
+    options: [
+      'Omdat equipment een Engels woord is',
+      'Omdat equipment te lang is voor de gamer-tabel',
+      'Omdat een gamer per inschrijving ander materiaal kan meenemen — het hoort bij de inschrijving',
+      'Omdat equipment altijd hetzelfde is voor elke gamer'
+    ],
+    correct: 2,
+    feedback: 'ShadowSlayer kan bij de ene inschrijving een Razer Keyboard gebruiken en bij de volgende een Logitech Mouse. Equipment beschrijft de inschrijving, niet de gamer zelf.'
+  },
+  {
+    badge: '3NF — keten herkennen',
+    context: 'In de game-tabel staat: id, name, sponsor_id, prize. De sponsor-tabel heeft: id, name, website.',
+    q: 'Welke keten (A → B → C) werd opgelost door de sponsor-tabel aan te maken?',
+    options: [
+      'inschrijving → gamer → team',
+      'inschrijving → arena → game',
+      'game → sponsor_id → sponsor (naam, website)',
+      'team → gamer → inschrijving'
+    ],
+    correct: 2,
+    feedback: 'game → sponsor_id → sponsor is de keten. Sponsorgegevens hangen af van de sponsor, niet van het game. Door een aparte sponsor-tabel staat "RedBull" nog maar 1× in de database.'
+  },
+  {
+    badge: 'Eindresultaat — tabellen tellen',
+    context: 'Na het volledig normaliseren zijn er 6 tabellen: tourneyregistration, gamer, team, arena, game, sponsor.',
+    q: 'In welke tabel zoek je op welk team "ShadowSlayer" speelt?',
+    options: [
+      'Rechtstreeks in tourneyregistration via team_id',
+      'In de team-tabel via de teamnaam',
+      'In de gamer-tabel — die heeft een team_id als FK naar de team-tabel',
+      'In de sponsor-tabel'
+    ],
+    correct: 2,
+    feedback: 'ShadowSlayer staat in de gamer-tabel met zijn team_id. Via die FK zoek je in de team-tabel de bijbehorende teamnaam op. tourneyregistration heeft alleen een gamer_id, niet rechtstreeks een team_id.'
   }
 ];
 
@@ -1604,7 +1656,7 @@ function toggleRef(open) {
 }
 
 // Vragen waarbij de tabelstructuur essentieel is — open paneel automatisch
-const AUTO_OPEN_REF = [2, 4, 5, 6]; // vraagnummers (1-based)
+const AUTO_OPEN_REF = [2, 4, 5, 6, 7, 8, 9, 10]; // vraagnummers (1-based)
 
 function quizRender() {
   const q = QUIZ[qIndex];

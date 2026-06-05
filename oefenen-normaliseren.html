@@ -408,11 +408,11 @@ code{
       <div class="step-card">
         <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">1</div>
         <div class="step-body-txt">
-          <div class="step-title">Constanten vs. procesdata — wat blijft hetzelfde, wat verandert?</div>
-          <div style="font-size:.78rem;color:#92400e;margin:4px 0 6px;line-height:1.5">📚 <strong>Vakterm:</strong> <em>Constanten</em> = gegevens die altijd hetzelfde blijven. <em>Procesdata</em> = gegevens die per inschrijving verschillen.</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <div class="box info" style="flex:1;margin:0;font-size:.82rem"><span class="box-icon">📌</span><div><strong>Constanten</strong> (blijven hetzelfde): game, sponsor, prize — voor elke inschrijving bij die game identiek</div></div>
-            <div class="box purple" style="flex:1;margin:0;font-size:.82rem"><span class="box-icon">🔄</span><div><strong>Procesdata</strong> (verschilt per inschrijving): gamertag, team, registrationdate, <strong>arena</strong>, score, equipment</div></div>
+          <div class="step-title">Welke gegevens herhalen in de tabel?</div>
+          <div style="font-size:.78rem;color:#92400e;margin:4px 0 6px;line-height:1.5">Zoek welke waarden meerdere keren voorkomen. <strong>Herhalende gegevens zijn het probleem</strong> — ze worden kandidaten voor een eigen tabel in 1NF. Kijk naar de rode cellen in de beginsituatie links.</div>
+          <div class="box danger" style="margin-top:6px;font-size:.82rem">
+            <span class="box-icon">🔴</span>
+            <div><strong>Herhaalt → wordt eigen tabel:</strong> <code>team</code> (NightRiders staat 4×) · <code>game</code> (LoL staat 4×) · <code>sponsor</code> (RedBull staat 4×) · <code>prize</code> (€500 staat 4×)</div>
           </div>
         </div>
       </div>
@@ -673,6 +673,7 @@ code{
       </div>
     </div>
     <div class="content-panel">
+      <div style="background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:8px;padding:6px 14px;font-size:.78rem;color:#4338ca;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px">❓ <span>Scroll helemaal naar beneden voor een <strong>tussenvraag</strong></span> ↓</div>
       <div class="nf-label" style="background:#cffafe;border:1.5px solid #a5f3fc;color:#155e75">1️⃣ 1NF — Repeterende groep 2 wegwerken</div>
 
       <div class="box danger" style="margin-bottom:10px">
@@ -759,6 +760,7 @@ code{
       </div>
     </div>
     <div class="content-panel">
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:6px 14px;font-size:.78rem;color:#166534;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px">❓ <span>Scroll helemaal naar beneden voor een <strong>tussenvraag</strong></span> ↓</div>
       <div class="nf-label" style="background:#dcfce7;border:1.5px solid #86efac;color:#166534">2️⃣ 2NF — Hoort elk attribuut bij de inschrijving?</div>
 
       <div class="box info" style="margin-bottom:8px">
@@ -867,6 +869,7 @@ code{
       </div>
     </div>
     <div class="content-panel">
+      <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:6px 14px;font-size:.78rem;color:#1e40af;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px">❓ <span>Scroll helemaal naar beneden voor een <strong>tussenvraag</strong></span> ↓</div>
       <div class="nf-label" style="background:#dbeafe;border:1.5px solid #bfdbfe;color:#1e40af">3️⃣ 3NF — Geen A → B → C ketens</div>
 
       <div class="box info" style="margin-bottom:8px">
@@ -1614,7 +1617,7 @@ const QUIZ = [
     context: 'In de gamer-tabel staan: id, gamertag, team_id. Het attribuut equipment staat in tourneyregistration, niet in gamer.',
     q: 'Waarom staat equipment in tourneyregistration en niet in de gamer-tabel?',
     options: [
-      'Omdat equipment een Engels woord is',
+      'Omdat equipment per game altijd hetzelfde is voor alle gamers',
       'Omdat equipment te lang is voor de gamer-tabel',
       'Omdat een gamer per inschrijving ander materiaal kan meenemen — het hoort bij de inschrijving',
       'Omdat equipment altijd hetzelfde is voor elke gamer'
@@ -1668,7 +1671,7 @@ function toggleRef(open) {
 }
 
 // Vragen waarbij de tabelstructuur essentieel is — open paneel automatisch
-const AUTO_OPEN_REF = [2, 4, 5, 6, 7, 8, 9, 10]; // vraagnummers (1-based)
+const AUTO_OPEN_REF = [5, 6, 9, 10]; // vraagnummers (1-based) — alleen bij vragen die tabelstructuur nodig hebben
 
 function quizRender() {
   const q = QUIZ[qIndex];

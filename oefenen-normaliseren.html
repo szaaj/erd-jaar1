@@ -428,32 +428,42 @@ code{
         </div>
       </div>
 
-      <div class="step-card">
-        <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">3</div>
-        <div class="step-body-txt">
-          <div class="step-title">Naam van de entiteit</div>
-          <div class="step-desc">Alle data gaat over het inschrijven voor het toernooi → entiteit heet <code>tourneyregistration</code></div>
-        </div>
-      </div>
+      <!-- Stap 3–5: inklapbaar om cognitieve belasting te verlagen -->
+      <button id="steps35-btn" onclick="toggleSteps('steps35-content','steps35-btn')"
+        style="width:100%;text-align:left;padding:9px 14px;background:#fef9c3;border:2px solid #fde68a;border-radius:10px;cursor:pointer;font-size:.85rem;color:#854d0e;font-family:inherit;margin-bottom:4px">
+        📋 Toon stappen 3–5 ▶
+      </button>
+      <div id="steps35-content" style="display:none">
 
-      <div class="step-card">
-        <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">4</div>
-        <div class="step-body-txt">
-          <div class="step-title">Uniek attribuut — PK-kandidaat</div>
-          <div class="step-desc"><code>gamertag</code> lijkt uniek, maar een gamer kan meerdere keren meedoen. We voegen later een eigen <code>id</code> toe als PK.</div>
-        </div>
-      </div>
-
-      <div class="step-card">
-        <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">5</div>
-        <div class="step-body-txt">
-          <div class="step-title">Repeterende groepen</div>
-          <div class="box danger" style="margin-top:6px;font-size:.82rem">
-            <span class="box-icon">🔴</span>
-            <div><code>team</code> herhaalt — NightRiders staat 4×.<br><code>game</code> herhaalt — League of Legends staat 4×.<br><code>sponsor</code> + <code>prize</code> herhalen ook.<br>→ Dit lossen we op in 1NF!</div>
+        <div class="step-card">
+          <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">3</div>
+          <div class="step-body-txt">
+            <div class="step-title">Naam van de entiteit</div>
+            <div style="font-size:.78rem;color:#92400e;margin:4px 0 6px;line-height:1.5">📚 <strong>Entiteit</strong> = een 'ding' waarover je gegevens bijhoudt. Vergelijk het met een formulier: elk formulier gaat over één ding (een persoon, een bestelling, een inschrijving).</div>
+            <div class="step-desc">Alle data gaat over het inschrijven voor het toernooi → entiteit heet <code>tourneyregistration</code></div>
           </div>
         </div>
-      </div>
+
+        <div class="step-card">
+          <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">4</div>
+          <div class="step-body-txt">
+            <div class="step-title">Uniek attribuut — PK-kandidaat</div>
+            <div class="step-desc"><code>gamertag</code> lijkt uniek, maar een gamer kan meerdere keren meedoen. We voegen later een eigen <code>id</code> toe als PK.</div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">5</div>
+          <div class="step-body-txt">
+            <div class="step-title">Repeterende groepen</div>
+            <div class="box danger" style="margin-top:6px;font-size:.82rem">
+              <span class="box-icon">🔴</span>
+              <div><code>team</code> herhaalt — NightRiders staat 4×.<br><code>game</code> herhaalt — League of Legends staat 4×.<br><code>sponsor</code> + <code>prize</code> herhalen ook.<br>→ Dit lossen we op in 1NF!</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /steps35 -->
     </div>
   </div>
 </div>
@@ -702,6 +712,18 @@ code{
           </div>
           <div class="box ok" style="margin-top:8px;font-size:.82rem"><span class="box-icon">✅</span><div><strong>1NF bereikt!</strong> Geen grote herhalingen meer in de hoofdtabel. Gamertag verplaatsen we in de volgende stap (2NF).</div></div>
           <div class="box warn" style="font-size:.82rem"><span class="box-icon">⚠️</span><div><strong>Nog niet helemaal klaar!</strong> "LoL" staat nog 3× in <code>gamearena</code>. En <code>sponsor</code>/<code>prize</code> hangen af van <code>game</code> — niet van de combinatie game+arena. We parkeren dit bewust en lossen het op in 3NF. Databases bouw je stap voor stap!</div></div>
+
+          <!-- ❓ TUSSENVRAAG 1NF -->
+          <div style="margin-top:14px;background:#fff;border:2px solid #6366f1;border-radius:10px;padding:12px 16px">
+            <div style="font-size:.78rem;font-weight:700;color:#4338ca;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">❓ Tussenvraag — check jezelf</div>
+            <div style="font-size:.9rem;font-weight:600;color:#1e293b;margin-bottom:10px">Welke drie dingen heb je in 1NF gedaan voor de <code>tourneyregistration</code>-tabel?</div>
+            <button id="tv-1nf-btn" onclick="toggleTV('tv-1nf')" style="background:#6366f1;color:#fff;border:none;padding:7px 18px;border-radius:16px;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer">❓ Toon antwoord</button>
+            <div id="tv-1nf" style="display:none;margin-top:10px;background:#eef2ff;border-radius:8px;padding:10px 14px;font-size:.86rem;color:#3730a3;line-height:1.7">
+              ✅ <strong>1.</strong> Primaire sleutel <code>id</code> toegevoegd — elke rij is nu uniek identificeerbaar.<br>
+              ✅ <strong>2.</strong> <code>team</code> afgesplitst → eigen <code>team</code>-tabel, <code>team_id</code> als FK terug in de hoofdtabel.<br>
+              ✅ <strong>3.</strong> <code>game</code>, <code>arena</code>, <code>sponsor</code> afgesplitst → <code>gamearena</code>-tabel, <code>gamearena_id</code> als FK.
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -800,6 +822,18 @@ code{
         <span class="box-icon">🔗</span>
         <div><strong>tourneyregistration is een koppeltabel (N:M)!</strong> Een gamer kan meerdere arena's spelen, en in één arena spelen meerdere gamers. De tabel <code>tourneyregistration</code> legt die koppeling vast — dit heet een <strong>N:M-koppeltabel</strong>. Je herkent zo'n tabel doordat hij twee (of meer) FK's heeft en zelf geen zelfstandige entiteit beschrijft.</div>
       </div>
+
+      <!-- ❓ TUSSENVRAAG 2NF -->
+      <div style="margin-top:14px;background:#fff;border:2px solid #22c55e;border-radius:10px;padding:12px 16px">
+        <div style="font-size:.78rem;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">❓ Tussenvraag — check jezelf</div>
+        <div style="font-size:.9rem;font-weight:600;color:#1e293b;margin-bottom:10px">Waarom is <code>gamertag</code> verplaatst naar een aparte <code>gamer</code>-tabel en niet gewoon in <code>tourneyregistration</code> blijven staan?</div>
+        <button id="tv-2nf-btn" onclick="toggleTV('tv-2nf')" style="background:#22c55e;color:#fff;border:none;padding:7px 18px;border-radius:16px;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer">❓ Toon antwoord</button>
+        <div id="tv-2nf" style="display:none;margin-top:10px;background:#f0fdf4;border-radius:8px;padding:10px 14px;font-size:.86rem;color:#166534;line-height:1.7">
+          ✅ Een gamer is een <strong>zelfstandige entiteit</strong> — hij bestaat ook als hij zich nooit inschrijft.<br>
+          ✅ <code>gamertag</code> beschrijft de <em>gamer</em>, niet de <em>inschrijving</em>. In 2NF hoort elk attribuut bij de juiste entiteit.<br>
+          ✅ Bonus: door een aparte <code>gamer</code>-tabel kan één gamer meerdere inschrijvingen hebben zonder zijn naam te herhalen.
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -840,20 +874,24 @@ code{
         <strong>Onze situatie:</strong> inschrijving → game → sponsor. Sponsor hangt af van game, niet van de inschrijving. Dus <code>sponsor</code> hoort niet in de <code>gamearena</code>-tabel!</div>
       </div>
 
-      <div class="box danger" style="margin-bottom:8px">
-        <span class="box-icon">🔴</span>
-        <div>
-          <strong>Twee ketens in de <code>gamearena</code>-tabel:</strong><br>
-          <strong>1.</strong> <code>id</code> → <code>game</code> → <code>sponsor</code> + <code>prize</code> — sponsor en prize hangen af van game, niet van game+arena. Dat is een keten!<br>
-          <strong>2.</strong> <code>sponsor</code> is zelf een entiteit — RedBull en Nike hebben eigen gegevens (website, contactpersoon). Ook een indirecte afhankelijkheid.
-        </div>
+      <!-- Keten 1 -->
+      <div style="background:#fff;border:2px solid #fca5a5;border-radius:10px;padding:12px 16px;margin-bottom:8px">
+        <div style="font-size:.72rem;font-weight:800;color:#991b1b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">🔴 Keten 1 — gamearena splitsen</div>
+        <div style="font-size:.86rem;color:#1e293b;line-height:1.6"><code>id</code> → <code>game</code> → <code>arena</code> — game en arena zijn twee aparte dingen. Een arena hoort bij één game, maar in de <code>gamearena</code>-tabel staat de game telkens herhaald (LoL staat 3×).<br>
+        <strong>Oplossing:</strong> splits <code>gamearena</code> op in een <code>game</code>-tabel en een <code>arena</code>-tabel. Arena krijgt een <code>game_id</code> als FK.</div>
       </div>
 
-      <div class="box ok" style="margin-bottom:10px">
-        <span class="box-icon">✅</span>
-        <div><strong>Oplossing — twee stappen:</strong><br>
-        Stap 1: Splits <code>gamearena</code> → <code>game</code> + <code>arena</code><br>
-        Stap 2: Splits <code>sponsor</code> uit <code>game</code> → aparte <code>sponsor</code>-tabel, <code>game</code> krijgt <code>sponsor_id</code> als FK</div>
+      <!-- Keten 2 inklapbaar -->
+      <button id="stap2-btn" onclick="toggleStap2('stap2-content','stap2-btn')"
+        style="width:100%;text-align:left;padding:9px 14px;background:#fce7f3;border:2px solid #f9a8d4;border-radius:10px;cursor:pointer;font-size:.85rem;color:#9d174d;font-family:inherit;margin-bottom:8px">
+        🔓 Toon stap 2: sponsor afsplitsen ▶
+      </button>
+      <div id="stap2-content" style="display:none">
+        <div style="background:#fff;border:2px solid #f9a8d4;border-radius:10px;padding:12px 16px;margin-bottom:8px">
+          <div style="font-size:.72rem;font-weight:800;color:#9d174d;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">🔴 Keten 2 — sponsor is een eigen entiteit</div>
+          <div style="font-size:.86rem;color:#1e293b;line-height:1.6"><code>game</code> → <code>sponsor</code> — sponsor hangt af van game, niet van de inschrijving. Bovendien zijn RedBull en Nike zelfstandige entiteiten met eigen gegevens (website, contactpersoon).<br>
+          <strong>Oplossing:</strong> aparte <code>sponsor</code>-tabel. De <code>game</code>-tabel krijgt een <code>sponsor_id</code> als FK.</div>
+        </div>
       </div>
 
       <div class="row" style="gap:10px;align-items:flex-start">
@@ -925,6 +963,17 @@ code{
           inschrijving → <code>arena_id</code> → arena → <code>game_id</code> → game → <code>sponsor_id</code> → sponsor<br>
           <span style="color:#bbf7d0;font-size:.75rem">Via één inschrijving vind je zo de arena, het game én de sponsor.</span>
         </div>
+        </div>
+      </div>
+
+      <!-- ❓ TUSSENVRAAG 3NF -->
+      <div style="margin-top:14px;background:#fff;border:2px solid #1d4ed8;border-radius:10px;padding:12px 16px">
+        <div style="font-size:.78rem;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">❓ Tussenvraag — check jezelf</div>
+        <div style="font-size:.9rem;font-weight:600;color:#1e293b;margin-bottom:10px">Welke keten bestond er in de <code>gamearena</code>-tabel en hoe heb je die opgelost?</div>
+        <button id="tv-3nf-btn" onclick="toggleTV('tv-3nf')" style="background:#1d4ed8;color:#fff;border:none;padding:7px 18px;border-radius:16px;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer">❓ Toon antwoord</button>
+        <div id="tv-3nf" style="display:none;margin-top:10px;background:#eff6ff;border-radius:8px;padding:10px 14px;font-size:.86rem;color:#1e40af;line-height:1.7">
+          ✅ <strong>Keten 1:</strong> <code>gamearena.id</code> → <code>game</code> → <code>arena</code> — game en arena zijn twee aparte entiteiten. Oplossing: losse <code>game</code>- en <code>arena</code>-tabel, arena krijgt <code>game_id</code> als FK.<br>
+          ✅ <strong>Keten 2:</strong> <code>game</code> → <code>sponsor</code> — sponsor hangt af van game, niet van de inschrijving. Dat is een A→B→C keten. Oplossing: aparte <code>sponsor</code>-tabel, <code>game</code> krijgt <code>sponsor_id</code> als FK.
         </div>
       </div>
     </div>
@@ -2054,6 +2103,35 @@ function resetAllDrag() {
   dragStep(0);
 }
 
+
+// ── TUSSENVRAAG TOGGLE ──
+function toggleTV(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById(id + '-btn');
+  const isOpen = el.style.display !== 'none';
+  el.style.display = isOpen ? 'none' : 'block';
+  if (btn) btn.textContent = isOpen ? '❓ Toon antwoord' : '✅ Verberg antwoord';
+}
+
+function toggleSteps(id, btnId) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById(btnId);
+  const isOpen = el.style.display !== 'none';
+  el.style.display = isOpen ? 'none' : 'block';
+  if (btn) btn.innerHTML = isOpen
+    ? '📋 Toon stappen 3–5 ▶'
+    : '📋 Verberg stappen 3–5 ▲';
+}
+
+function toggleStap2(id, btnId) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById(btnId);
+  const isOpen = el.style.display !== 'none';
+  el.style.display = isOpen ? 'none' : 'block';
+  if (btn) btn.innerHTML = isOpen
+    ? '🔓 Toon stap 2: sponsor afsplitsen ▶'
+    : '🔒 Verberg stap 2 ▲';
+}
 
 function toggleSplit() {
   var p = document.getElementById('split-toggle-content');

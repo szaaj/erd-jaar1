@@ -1488,7 +1488,10 @@ function goTo(n){
   setTimeout(()=>prev.classList.remove('exit'), 380);
   current = n;
   document.getElementById('s'+current).classList.add('active');
-  if(current===11 && typeof quizRender==='function'){ quizReset(); }
+  if(current===11 && typeof quizRender==='function'){
+    // Alleen resetten bij eerste bezoek — niet als student terugkomt vanuit theorieslide
+    if(qIndex === 0 && qScore === 0 && !qAnswered){ quizReset(); }
+  }
   if(current===12 && typeof dragStep==='function'){ dragStep(0); }
   document.querySelectorAll('.dot').forEach((d,i)=>{
     d.classList.remove('active','done');

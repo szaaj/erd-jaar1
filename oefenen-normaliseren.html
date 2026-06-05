@@ -1489,8 +1489,16 @@ function goTo(n){
   current = n;
   document.getElementById('s'+current).classList.add('active');
   if(current===11 && typeof quizRender==='function'){
-    // Alleen resetten bij eerste bezoek — niet als student terugkomt vanuit theorieslide
-    if(qIndex === 0 && qScore === 0 && !qAnswered){ quizReset(); }
+    if(qIndex === 0 && qScore === 0 && !qAnswered){
+      // Eerste bezoek — quiz initialiseren
+      quizReset();
+    } else if(qAnswered) {
+      // Terugkeer na theorieslide — vraag opnieuw proberen, score telt niet meer
+      qAnswered = false;
+      qRetry = true;
+      quizRender();
+    }
+    // Quiz loopt nog (niet beantwoord): laat huidige staat staan
   }
   if(current===12 && typeof dragStep==='function'){ dragStep(0); }
   document.querySelectorAll('.dot').forEach((d,i)=>{
@@ -1645,6 +1653,7 @@ const QUIZ = [
 let qIndex = 0;
 let qScore = 0;
 let qAnswered = false;
+let qRetry = false;
 
 function toggleRef(open) {
   const panel = document.getElementById('ref-panel-content');
@@ -1695,6 +1704,8 @@ function quizRender() {
 function quizAnswer(chosen) {
   if (qAnswered) return;
   qAnswered = true;
+  const isRetry = qRetry;
+  qRetry = false;
   const q = QUIZ[qIndex];
   const btns = document.getElementById('q-options').querySelectorAll('button');
   const fb = document.getElementById('q-feedback');
@@ -1714,13 +1725,17 @@ function quizAnswer(chosen) {
     }
   });
 
-  // Correct antwoord positie berekenen (A=0, B=1, C=2, D=3)
   const letters = ['A','B','C','D'];
   if (chosen === q.correct) {
-    qScore++;
-    document.getElementById('q-score').textContent = qScore;
+    if (!isRetry) {
+      qScore++;
+      document.getElementById('q-score').textContent = qScore;
+    }
     fb.style.cssText = 'display:block;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.88rem;line-height:1.55;background:#dcfce7;border:2px solid #86efac;color:#166534';
-    fb.textContent = '✅ Correct! ' + q.feedback;
+    fb.innerHTML = (isRetry
+      ? '✅ Goed, na herlezen! <span style="background:#fef9c3;color:#854d0e;padding:1px 8px;border-radius:5px;font-size:.8rem;margin-left:4px">tweede poging — telt niet voor score</span><br>'
+      : '✅ Correct! ')
+      + q.feedback;
   } else {
     fb.style.cssText = 'display:block;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.88rem;line-height:1.55;background:#fee2e2;border:2px solid #fca5a5;color:#991b1b';
     const slideRef = QUIZ_SLIDE_REFS[qIndex];
@@ -1765,7 +1780,7 @@ function quizShowResult() {
 }
 
 function quizReset() {
-  qIndex = 0; qScore = 0; qAnswered = false;
+  qIndex = 0; qScore = 0; qAnswered = false; qRetry = false;
   document.getElementById('q-score').textContent = '0';
   document.getElementById('q-progress').style.width = '0%';
   document.getElementById('quiz-container').style.display = 'block';

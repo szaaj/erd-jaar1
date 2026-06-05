@@ -415,9 +415,9 @@ code{
             <span style="display:inline-block;margin-top:6px;background:#fde68a;color:#7c3200;padding:3px 10px;border-radius:6px;font-weight:700">🏆 Gouden regel: constanten worden eigen tabellen — procesdata blijft in de inschrijvingstabel.</span>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <div class="box danger" style="flex:1;margin:0;font-size:.82rem">
+            <div class="box info" style="flex:1;margin:0;font-size:.82rem">
               <span class="box-icon">📌</span>
-              <div><strong>Constanten</strong> (eigen entiteit → eigen tabel):<br><code>game</code> · <code>team</code> · <code>arena</code> · <code>sponsor</code> · <code>gamertag</code></div>
+              <div><strong>Constanten</strong> (eigen entiteit → eigen tabel):<br><code>game</code> · <code>team</code> · <code>arena</code> · <code>sponsor</code> · <code>gamertag</code><br><span style="font-size:.76rem;opacity:.85">Let op: <code>prize</code> is geen eigen entiteit — het is een attribuut van <code>game</code> en gaat mee in de game-tabel.</span></div>
             </div>
             <div class="box ok" style="flex:1;margin:0;font-size:.82rem">
               <span class="box-icon">🔄</span>
@@ -1540,7 +1540,7 @@ function goTo(n){
 
 // ── QUIZ ──
 // Slide-referenties per vraag voor de fout-feedback
-const QUIZ_SLIDE_REFS = [3, 4, 5, 4, 7, 7, 8, 8, 9, 9]; // slidenum per vraag
+const QUIZ_SLIDE_REFS = [3, 4, 5, 3, 3, 4, 7, 7, 8, 8, 9, 9]; // slidenum per vraag
 
 const QUIZ = [
   {
@@ -1581,6 +1581,32 @@ const QUIZ = [
     ],
     correct: 2,
     feedback: 'Als "NightRiders" verandert naar "NightOwls" moet je zonder aparte tabel elke rij aanpassen. Met een eigen tabel pas je het op 1 plek aan.'
+  },
+  {
+    badge: '0NF — Constanten vs procesdata',
+    context: 'In de beginsituatie staan alle gegevens door elkaar: gamertag, team, registrationdate, game, arena, score, sponsor, equipment.',
+    q: 'Welke van de volgende attributen is een CONSTANTE — een zelfstandig "ding" dat onafhankelijk van een inschrijving bestaat?',
+    options: [
+      'registrationdate — de datum van de inschrijving',
+      'score — het aantal punten dat een gamer haalt',
+      'arena — een locatie die onafhankelijk van een inschrijving bestaat',
+      'equipment — het materiaal dat een gamer meeneemt'
+    ],
+    correct: 2,
+    feedback: 'Arena is een constante: het bestaat ook zonder dat iemand zich inschrijft. Registrationdate, score en equipment beschrijven juist de inschrijving zelf — dat is procesdata.'
+  },
+  {
+    badge: '0NF — Gouden regel',
+    context: 'De gouden regel luidt: constanten worden eigen tabellen — procesdata blijft in de inschrijvingstabel.',
+    q: 'Welk attribuut is procesdata en blijft daarom in de tourneyregistration-tabel?',
+    options: [
+      'team — een team bestaat los van inschrijvingen',
+      'sponsor — RedBull bestaat ook zonder toernooi',
+      'game — League of Legends bestaat onafhankelijk',
+      'score — de score verschilt per inschrijving en beschrijft de gebeurtenis'
+    ],
+    correct: 3,
+    feedback: 'Score is procesdata: het is het resultaat van één specifieke inschrijving. Team, sponsor en game zijn constanten — ze bestaan onafhankelijk en krijgen elk hun eigen tabel.'
   },
   {
     badge: '2NF — Juiste tabel',
@@ -1693,7 +1719,7 @@ function toggleRef(open) {
 }
 
 // Vragen waarbij de tabelstructuur essentieel is — open paneel automatisch
-const AUTO_OPEN_REF = [5, 6, 9, 10]; // vraagnummers (1-based) — alleen bij vragen die tabelstructuur nodig hebben
+const AUTO_OPEN_REF = [7, 8, 11, 12]; // vraagnummers (1-based) — alleen bij vragen die tabelstructuur nodig hebben
 
 function quizRender() {
   const q = QUIZ[qIndex];

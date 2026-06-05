@@ -408,11 +408,21 @@ code{
       <div class="step-card">
         <div class="step-num" style="background:#fef9c3;color:#854d0e;border:2px solid #fde68a">1</div>
         <div class="step-body-txt">
-          <div class="step-title">Welke gegevens herhalen in de tabel?</div>
-          <div style="font-size:.78rem;color:#92400e;margin:4px 0 6px;line-height:1.5">Zoek welke waarden meerdere keren voorkomen. <strong>Herhalende gegevens zijn het probleem</strong> — ze worden kandidaten voor een eigen tabel in 1NF. Kijk naar de rode cellen in de beginsituatie links.</div>
-          <div class="box danger" style="margin-top:6px;font-size:.82rem">
-            <span class="box-icon">🔴</span>
-            <div><strong>Herhaalt → wordt eigen tabel:</strong> <code>team</code> (NightRiders staat 4×) · <code>game</code> (LoL staat 4×) · <code>sponsor</code> (RedBull staat 4×) · <code>prize</code> (€500 staat 4×)</div>
+          <div class="step-title">Constanten vs. procesdata</div>
+          <div style="font-size:.78rem;color:#92400e;margin:4px 0 8px;line-height:1.6">
+            📚 <strong>Constanten</strong> = gegevens die een zelfstandig "ding" beschrijven — ze bestaan onafhankelijk van een inschrijving.<br>
+            📚 <strong>Procesdata</strong> = gegevens die per inschrijving anders zijn — ze beschrijven de gebeurtenis zelf.<br>
+            <span style="display:inline-block;margin-top:6px;background:#fde68a;color:#7c3200;padding:3px 10px;border-radius:6px;font-weight:700">🏆 Gouden regel: constanten worden eigen tabellen — procesdata blijft in de inschrijvingstabel.</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+            <div class="box danger" style="flex:1;margin:0;font-size:.82rem">
+              <span class="box-icon">📌</span>
+              <div><strong>Constanten</strong> (eigen entiteit → eigen tabel):<br><code>game</code> · <code>team</code> · <code>arena</code> · <code>sponsor</code> · <code>gamertag</code></div>
+            </div>
+            <div class="box ok" style="flex:1;margin:0;font-size:.82rem">
+              <span class="box-icon">🔄</span>
+              <div><strong>Procesdata</strong> (per inschrijving anders → blijft in inschrijvingstabel):<br><code>registrationdate</code> · <code>score</code> · <code>equipment</code></div>
+            </div>
           </div>
         </div>
       </div>
@@ -596,9 +606,12 @@ code{
     <div class="content-panel">
       <div class="nf-label" style="background:#cffafe;border:1.5px solid #a5f3fc;color:#155e75">1️⃣ 1NF — Repeterende groep 1 wegwerken</div>
 
-      <div class="box danger" style="margin-bottom:10px">
+      <div class="box danger" style="margin-bottom:6px">
         <span class="box-icon">🔴</span>
         <div><strong>"NightRiders" staat 4×!</strong> Als de naam verandert → 4 rijen aanpassen. Kans op fouten. <strong>Oplossing:</strong> aparte <code>team</code>-tabel. In de hoofdtabel → <code>team_id</code> als FK (verwijzing).</div>
+      </div>
+      <div style="background:#fef9c3;border-left:3px solid #f59e0b;padding:5px 12px;border-radius:0 6px 6px 0;font-size:.8rem;color:#854d0e;margin-bottom:10px">
+        💡 <strong>Constante:</strong> een team bestaat onafhankelijk van een inschrijving → eigen tabel. Dit is de gouden regel in de praktijk.
       </div>
 
       <div class="ba-wrap">
@@ -676,9 +689,12 @@ code{
       <div style="background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:8px;padding:6px 14px;font-size:.78rem;color:#4338ca;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px">❓ <span>Scroll helemaal naar beneden voor een <strong>tussenvraag</strong></span> ↓</div>
       <div class="nf-label" style="background:#cffafe;border:1.5px solid #a5f3fc;color:#155e75">1️⃣ 1NF — Repeterende groep 2 wegwerken</div>
 
-      <div class="box danger" style="margin-bottom:10px">
+      <div class="box danger" style="margin-bottom:6px">
         <span class="box-icon">🔴</span>
         <div>"League of Legends" staat 4× + "RedBull" staat 4× + "€500" staat 4×. Game, arena, sponsor en prize horen samen → aparte tabel <code>gamearena</code>. Hoofdtabel krijgt <code>gamearena_id</code> als FK.</div>
+      </div>
+      <div style="background:#fef9c3;border-left:3px solid #f59e0b;padding:5px 12px;border-radius:0 6px 6px 0;font-size:.8rem;color:#854d0e;margin-bottom:10px">
+        💡 <strong>Constanten:</strong> <code>game</code>, <code>arena</code> en <code>sponsor</code> zijn alle drie zelfstandige dingen die onafhankelijk van een inschrijving bestaan → elk krijgt straks zijn eigen tabel.
       </div>
 
       <div class="row" style="gap:12px;align-items:flex-start">
@@ -774,10 +790,13 @@ code{
         In de vorige stap heette de FK in <code>tourneyregistration</code> nog <code>gamearena_id</code>. Nu we de <code>gamearena</code>-tabel hebben opgesplitst in <code>arena</code> en <code>game</code>, verwijst de FK voortaan naar <code>arena_id</code>. De arena kent zijn bijbehorende game zelf via <code>game_id</code>.</div>
       </div>
 
-      <div class="box warn" style="margin-bottom:10px">
+      <div class="box warn" style="margin-bottom:6px">
         <span class="box-icon">🔍</span>
         <div><strong>Hoort <code>gamertag</code> écht bij een inschrijving?</strong><br>
         Nee! Een gamer bestaat ook <em>zonder</em> inschrijving — en kan meerdere keren meedoen. <code>gamertag</code> en <code>team_id</code> beschrijven de <em>gamer</em>, niet de inschrijving. Elke zelfstandige entiteit krijgt zijn eigen tabel → aparte <code>gamer</code>-tabel.</div>
+      </div>
+      <div style="background:#fef9c3;border-left:3px solid #f59e0b;padding:5px 12px;border-radius:0 6px 6px 0;font-size:.8rem;color:#854d0e;margin-bottom:10px">
+        💡 <strong>Constante:</strong> <code>gamertag</code> was in de 0NF-analyse al aangemerkt als constante. Nu in 2NF halen we hem pas uit de inschrijvingstabel — hij hoorde daar nooit thuis.
       </div>
 
       <div class="ba-wrap">
@@ -895,6 +914,9 @@ code{
           <div style="font-size:.72rem;font-weight:800;color:#9d174d;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">🔴 Keten 2 — sponsor is een eigen entiteit</div>
           <div style="font-size:.86rem;color:#1e293b;line-height:1.6"><code>game</code> → <code>sponsor</code> — sponsor hangt af van game, niet van de inschrijving. Bovendien zijn RedBull en Nike zelfstandige entiteiten met eigen gegevens (website, contactpersoon).<br>
           <strong>Oplossing:</strong> aparte <code>sponsor</code>-tabel. De <code>game</code>-tabel krijgt een <code>sponsor_id</code> als FK.</div>
+          <div style="background:#fef9c3;border-left:3px solid #f59e0b;padding:5px 12px;border-radius:0 6px 6px 0;font-size:.8rem;color:#854d0e;margin-top:8px">
+            💡 <strong>Constante:</strong> <code>sponsor</code> was in de 0NF-analyse al aangemerkt als constante. In 3NF lossen we op dat hij in de <em>verkeerde</em> tabel stond — hij hoort niet bij game+arena, maar bij game.
+          </div>
         </div>
       </div>
 
